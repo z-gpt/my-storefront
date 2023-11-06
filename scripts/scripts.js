@@ -82,6 +82,7 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  window.adobeDataLayer = window.adobeDataLayer || [];
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -117,6 +118,8 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  import('./adobe-client-data-layer.min.js');
 
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
