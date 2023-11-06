@@ -147,6 +147,9 @@ export default async function decorate(block) {
     navTools.append(searchButton);
     navTools.querySelector('.nav-search-button').addEventListener('click', () => {
       document.querySelector('header .nav-search-input').classList.toggle('hidden');
+      window.adobeDataLayer.push({
+        event: 'search-request-sent',
+      });
     });
 
     // hamburger for mobile

@@ -82,6 +82,18 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+
+  window.adobeDataLayer = window.adobeDataLayer || [];
+  window.acdlIndex = (parseInt(window.sessionStorage.acdlIndex, 10) || 0) + 1;
+  if (!window.acdlDisableStorage) window.sessionStorage.setItem('acdlIndex', window.acdlIndex);
+  window.adobeDataLayer.push = function (...args) {
+    Array.prototype.push.apply(window.adobeDataLayer, args);
+    if (window.acdlDisableStorage) return;
+    const array = JSON.parse(window.sessionStorage.getItem(`acdl:${window.acdlIndex}`)) || [];
+    array.push(...args.filter((a) => typeof a !== 'function'));
+    window.sessionStorage.setItem(`acdl:${window.acdlIndex}`, JSON.stringify(array));
+  };
+
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -117,6 +129,8 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  import('./acdl2.min.js');
 
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
