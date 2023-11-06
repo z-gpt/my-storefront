@@ -13,7 +13,10 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 .product-list-page .facets {
   display: none;
   position: fixed;
-  inset: var(--nav-height) 0 48px 0;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  bottom: 48px;
   z-index: 2;
   overflow: auto;
   background: var(--background-color);
@@ -46,10 +49,14 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 .product-list-page .products .title .sort > .overlay {
   display: none;
   position: fixed;
-  inset: var(--nav-height) 0 48px 0;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  bottom: 48px;
   z-index: 2;
   overflow: auto;
   background: var(--background-color);
+  font-size: 1.6rem;
 }
 
 .product-list-page .products .title .sort > .overlay.active {
@@ -66,13 +73,25 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   padding: 5px 0;
 }
 
+.product-list-page .products .title .sort .overlay a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.product-list-page .products .title .sort .overlay a:hover,
+.product-list-page .products .title .sort .overlay a.active {
+  text-decoration: none;
+}
+
 .product-list-page .facets .facet-list .facet {
-  border-bottom: var(--shape-border-width-1) solid var(--color-neutral-900);
+  border-bottom: 1px solid #000;
+  font-size: 1.6rem;
   padding: 20px;
+  text-transform: uppercase;
 }
 
 .product-list-page .facets .facet-list .facet:first-child {
-  border-top: var(--shape-border-width-1) solid var(--color-neutral-900);
+  border-top: 1px solid #000;
 }
 
 .product-list-page .facets .facet-list .facet > label {
@@ -139,12 +158,14 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 
 .product-list-page .facets .facet-list .facet.radio .facet-content ol label,
 .product-list-page .facets .facet-list .facet.checkbox .facet-content ol label {
+  font-size: 1.4rem;
   text-transform: none;
   letter-spacing: normal;
 }
 
 .product-list-page .facets .facet-list .facet.radio .facet-content ol label .count,
 .product-list-page .facets .facet-list .facet.checkbox .facet-content ol label .count {
+  font-size: 1.4rem;
   text-transform: none;
 }
 
@@ -167,19 +188,20 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 }
 
 .product-list-page .facets .facet-list .facet.swatch.facet-size .facet-content ol li button {
-  border: 1px solid var(--color-brand-700);
-  background: var(--color-neutral-50);
-  color: var(--color-brand-700);
+  border: 1px solid var(--text-color);
+  background: var(--background-color);
+  color: var(--text-color);
   border-radius: 3px;
   min-width: 60px;
   min-height: 38px;
   padding: 0 0 3px;
   margin: 0;
+  font-size: 1.4rem;
 }
 
 .product-list-page .facets .facet-list .facet.swatch.facet-size .facet-content ol li button.active {
-  background: var(--color-brand-700);
-  color: var(--color-neutral-50);
+  background: var(--text-color);
+  color: var(--background-color);
 }
 
 /* Swatch Color Facet */
@@ -192,7 +214,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 
 .product-list-page .facets .facet-list .facet.swatch.facet-color .facet-content ol li button {
   color: transparent;
-  border: 1px solid var(--color-brand-700);
+  border: 1px solid var(--text-color);
   background-size: cover;
   width: 34px;
   height: 34px;
@@ -202,8 +224,8 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 }
 
 .product-list-page .facets .facet-list .facet.swatch.facet-color .facet-content ol li button.active {
-  box-shadow: 0 0 0 2px var(--color-neutral-50) inset;
-  border-color: var(--color-neutral-600);
+  box-shadow: 0 0 0 2px var(--background-color) inset;
+  border-color: var(--link-color);
 }
 
 .product-list-page .facets .facet-list .facet.swatch.facet-color .facet-content ol li button:hover {
@@ -211,7 +233,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 }
 
 .product-list-page .facets .facet-list .facet.swatch.facet-color .facet-content ol li button.active:hover {
-  box-shadow: inset 0 0 0 18px rgba(255 255 255 / 30%), 0 0 0 2px var(--color-neutral-50) inset;
+  box-shadow: inset 0 0 0 18px rgba(255 255 255 / 30%), 0 0 0 2px var(--background-color) inset;
 }
 
 /* Price Facet */
@@ -246,7 +268,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  background-color: var(--color-brand-500);
+  background-color: var(--link-color);
   position: relative;
   cursor: pointer;
   appearance: none;
@@ -260,7 +282,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  background-color: var(--color-brand-500);
+  background-color: var(--link-color);
   position: relative;
   cursor: pointer;
   appearance: none;
@@ -274,7 +296,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 .product-list-page .facets .facet-list .facet .price-facet .price-slider input[type='range']::-webkit-slider-runnable-track {
   width: 100%;
   height: 5px;
-  background: var(--color-neutral-500);
+  background: var(--highlight-background-color);
   border-radius: 3px;
   border: none;
 }
@@ -282,7 +304,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 .product-list-page .facets .facet-list .facet .price-facet .price-slider input[type='range']:first-of-type::-moz-range-track {
   width: 100%;
   height: 5px;
-  background: var(--color-neutral-500);
+  background: var(--highlight-background-color);
   border-radius: 3px;
   border: none;
 }
@@ -299,7 +321,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   align-items: last baseline;
 }
 
-@media (width >= 900px) {
+@media (min-width: 900px) {
   .product-list-page .products .title {
     display: flex;
     /* gap: 2rem; */
@@ -309,13 +331,18 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 }
 
 .product-list-page .products .title h1 {
+  text-transform: uppercase;
   margin: 0;
   padding: 0;
+  font-size: 3rem;
+  line-height: 1;
 }
 
 .product-list-page .products .title h1 ~ span {
   display: none;
-  margin-inline: 1rem 48px;
+  font-size: 1.6rem;
+  color: var(--text-color);
+  margin-inline: 1rem 3rem;
   white-space: nowrap;
 }
 
@@ -332,10 +359,11 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 
 .product-list-page .products .title .sort > button {
   width: 100%;
-  border: var(--shape-border-width-3) solid currentcolor;
-  background: var(--color-neutral-50);
-  color: var(--color-brand-700);
-  padding: 16px;
+  border: 1px solid var(--text-color);
+  background: var(--background-color);
+  color: var(--text-color);
+  font-size: 1.2rem;
+  padding: 1rem;
   margin: 0;
 }
 
@@ -347,13 +375,15 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 
 .product-list-page .products .mobile-menu > button {
   width: max-content;
-  border: var(--shape-border-width-3) solid currentcolor;
-  border-radius: var(--shape-border-radius-2);
-  background: var(--color-neutral-50);
-  color: var(--color-brand-700);
+  border: 1px solid var(--text-color);
+  border-radius: .3rem;
+  background: var(--background-color);
+  color: var(--text-color);
+  font-size: 1.4rem;
   line-height: 1;
-  padding: .5rem 24px;
+  padding: .5rem 1.5rem 1rem;
   margin: 0;
+  height: 3.1rem;
   min-width: 10rem;
 }
 
@@ -407,6 +437,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   aspect-ratio: 1 / 1.20;
   width: 100%;
   object-fit: cover;
+  font-size: 1.2rem;
 }
 
 .product-list-page .products .list > ol > li .disruptor {
@@ -423,23 +454,34 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 }
 
 .product-list-page .products .list > ol > li .name a {
-  font: var(--type-headline-2-strong-font);
-  letter-spacing: var(--type-headline-2-strong-letter-spacing);
   display: inline-block;
+  font-size: 1.4rem;
   line-height: 1.3;
   text-decoration: none;
   text-overflow: ellipsis;
   overflow: hidden;
-  height: 6.1rem;
+  height: 3.9rem;
+}
+
+.product-list-page .products .list > ol > li .name a sup {
+  font-size: 70%;
+}
+
+@media (min-width: 1024px) {
+  .product-list-page .products .list > ol > li .name a {
+    font-size: 1.6rem;
+    line-height: 1.3;
+    height: 4.1rem;
+  }
 }
 
 .product-list-page .products .list > ol > li .name a:hover {
-  color: var(--color-brand-700);
+  color: var(--link-color);
 }
 
 .product-list-page .products .list > ol > li .price {
-  font: var(--type-headline-2-strong-font);
-  letter-spacing: var(--type-headline-2-strong-letter-spacing);
+  font-size: 1.6rem;
+  line-height: 1.4;
   height: 2.8rem;
   display: flex;
   align-items: baseline;
@@ -447,10 +489,14 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 }
 
 .product-list-page .products .list > ol > li .price .price-regular {
-  font: var(--type-headline-2-default-font);
-  letter-spacing: var(--type-headline-2-default-letter-spacing);
+  font-size: 1.2rem;
+  color: var(--text-color);
   text-decoration: line-through;
-  color: var(--color-neutral-600);
+}
+
+.product-list-page .products .list > ol > li .price .price-final,
+.product-list-page .products .list > ol > li .price .price-from {
+  font-weight: bold;
 }
 
 .product-list-page .products .list > ol > li .price .price-range {
@@ -461,16 +507,16 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 
 .product-list-page .products .list > ol > li .price .price-range .price-from:first-child::after {
   content: "-";
-  padding: 0 8px;
+  padding: 0 .5rem;
 }
 
 .product-list-page .products .list > ol > li .price .price-range .price-regular {
-  margin-left: 6.4px;
+  margin-left: .4rem;
 }
 
-@media (width >= 600px) {
+@media (min-width: 600px) {
   .product-list-page .products .list > ol > li .price .price-range .price-regular {
-    margin-left: 9.6rem;
+    margin-left: .6rem;
   }
 }
 
@@ -485,7 +531,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   padding-bottom: 3rem;
 }
 
-@media (width >= 1024px) {
+@media (min-width: 1024px) {
   .product-list-page .products .pagination {
     padding-top: 3rem;
   }
@@ -504,12 +550,20 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   padding: 0 0 0 0.2rem;
 }
 
+.product-list-page .products .pagination label,
+.product-list-page .products .pagination span {
+  text-transform: uppercase;
+  font-size: 1.4rem;
+}
+
 .product-list-page .products .pagination button {
+  text-transform: uppercase;
+  font-size: 1.6rem;
   background: transparent;
   border: 0;
   padding: 0;
-  margin: 0 0 0 32px;
-  color: var(--color-brand-700);
+  margin: 0 0 0 2rem;
+  color: var(--text-color);
   border-radius: 0;
 }
 
@@ -531,7 +585,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   margin-left: 8px;
 }
 
-@media (width >= 900px) {
+@media (min-width: 900px) {
   .product-list-page {
     display: flex;
   }
@@ -544,7 +598,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
     display: block;
     flex: 25;
     max-width: 430px;
-    background: var(--color-neutral-500);
+    background: var(--highlight-background-color);
     padding: 20px 30px;
     position: unset;
     z-index: unset;
@@ -559,6 +613,8 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
     display: block;
     margin: 0;
     padding: 20px 5px;
+    font-size: 1.8rem;
+    text-transform: uppercase;
   }
 
   .product-list-page .facets .facet-list .facet {
@@ -597,6 +653,11 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
     display: unset;
   }
 
+  .product-list-page .products .title .sort > button {
+    height: 3.8rem;
+    text-transform: uppercase;
+  }
+
   .product-list-page .products .title .sort > button::after {
     display: inline-block;
     content: '';
@@ -622,6 +683,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
     z-index: 2;
     box-shadow: 0 36px 51px 0 rgb(0 0 0 / 30%);
     border-radius: 6px;
+    font-size: 1.4rem;
     left: unset;
     top: unset;
     bottom: unset;
@@ -634,6 +696,17 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 
   .product-list-page .products .title .sort > .overlay.active {
     display: none;
+  }
+
+  .product-list-page .products .title .sort .overlay a {
+    color: var(--link-color);
+  }
+
+  .product-list-page .products .title .sort .overlay a:hover,
+  .product-list-page .products .title .sort .overlay a.active {
+    color: var(--text-color);
+    text-decoration: none;
+    font-family: unset;
   }
 
   .product-list-page .products .title .sort .overlay ul {
@@ -649,7 +722,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 }
 
 .product-list-page .shimmer {
-  background: var(--color-neutral-500);
+  background: var(--highlight-background-color);
   border-radius: 4px;
 }
 
@@ -657,4 +730,27 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   border-radius: 8px;
   min-height: 1.5rem;
   margin-bottom: 4px;
+}
+
+/* PLP rules from styles.css */
+
+body.plp main .section .breadcrumb-wrapper {
+  max-width: 1920px;
+}
+
+body.plp main .section .default-content-wrapper {
+  font-size: 1.6rem;
+}
+
+body.plp main .section .default-content-wrapper h1 {
+  margin-top: 0;
+  text-transform: uppercase;
+  font-size: 3rem;
+}
+
+/* seo heading */
+body.plp main .section .default-content-wrapper h2 {
+  color: var(--text-color);
+  font-size: 2.8rem;
+  margin-bottom: 0;
 }

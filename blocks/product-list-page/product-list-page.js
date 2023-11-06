@@ -1,4 +1,4 @@
-import { readBlockConfig, loadScript } from '../../scripts/aem.js';
+import { loadScript, readBlockConfig } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/configs.js';
 
 export default async function decorate(block) {
