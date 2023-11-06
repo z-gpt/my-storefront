@@ -1,5 +1,5 @@
-import { cartApi } from '../../scripts/minicart/api.js';
 import { getMetadata } from '../../scripts/aem.js';
+import { cartApi } from '../../scripts/minicart/api.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
@@ -113,6 +113,46 @@ export default async function decorate(block) {
   if (brandLink) {
     brandLink.className = '';
     brandLink.closest('.button-container').className = '';
+    // =======
+    //     const classes = ['brand', 'sections', 'tools'];
+    //     classes.forEach((c, i) => {
+    //       const section = nav.children[i];
+    //       if (section) section.classList.add(`nav-${c}`);
+    //     });
+
+    //     const navSections = nav.querySelector('.nav-sections');
+    //     if (navSections) {
+    //       navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
+    //         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+    //         navSection.addEventListener('click', () => {
+    //           if (isDesktop.matches) {
+    //             const expanded = navSection.getAttribute('aria-expanded') === 'true';
+    //             toggleAllNavSections(navSections);
+    //             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    //           }
+    //         });
+    //       });
+    //     }
+
+    //     const navTools = nav.querySelector('.nav-tools');
+
+    //     // Search
+    //     const searchInput = document.createRange().createContextualFragment(
+    //    `<div class="nav-search-input hidden">
+    //       <form id="search_mini_form" action="/search" method="GET">
+    //         <input id="search" type="search" name="q" placeholder="Search" />
+    //         <div id="search_autocomplete" class="search-autocomplete"></div>
+    //       </form>
+    //     </div>`);
+    //     document.body.querySelector('header').append(searchInput);
+
+    //     const searchButton = document.createRange().createContextualFragment(
+    //    '<button type="button" class="nav-search-button">Search</button>');
+    //     navTools.append(searchButton);
+    //     navTools.querySelector('.nav-search-button').addEventListener('click', async () => {
+    //       await import('./searchbar.js');
+    //       document.querySelector('header .nav-search-input').classList.toggle('hidden');
+    //     });
   }
 
   const navSections = nav.querySelector('.nav-sections');
