@@ -5,7 +5,7 @@ export default async function decorate(block) {
   const { urlpath, category, type } = readBlockConfig(block);
   block.textContent = '';
 
-  const widgetProd = 'https://plp-widgets-ui.magento-ds.com/v1/search.js';
+  const widgetProd = '/scripts/widgets/search.js';
   await loadScript(widgetProd);
 
   const storeDetails = {

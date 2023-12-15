@@ -2,7 +2,7 @@ import { loadScript } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/configs.js';
 
 (async () => {
-  const widgetProd = 'https://livesearch-autocomplete.magento-ds.com/v0/LiveSearchAutocomplete.js';
+  const widgetProd = '/scripts/widgets/LiveSearchAutocomplete.js';
   await loadScript(widgetProd);
 
   const storeDetails = {
