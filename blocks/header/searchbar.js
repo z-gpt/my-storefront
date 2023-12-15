@@ -1,11 +1,8 @@
-import { readBlockConfig, loadScript } from '../../scripts/aem.js';
+import { loadScript } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/configs.js';
 
-export default async function decorate(block) {
-  const { urlpath, category, type } = readBlockConfig(block);
-  block.textContent = '';
-
-  const widgetProd = 'https://plp-widgets-ui.magento-ds.com/v1/search.js';
+(async () => {
+  const widgetProd = 'https://livesearch-autocomplete.magento-ds.com/v0/LiveSearchAutocomplete.js';
   await loadScript(widgetProd);
 
   const storeDetails = {
@@ -26,30 +23,26 @@ export default async function decorate(block) {
       currencyRate: '1',
       displayOutOfStock: true,
       allowAllProducts: false,
-      displayMode: '', // "" for plp || "PAGE" for category/catalog
     },
     context: {
       customerGroup: await getConfigValue('commerce-customer-group'),
     },
     route: ({ sku }) => `/products/missing-url-key/${sku}`, // TODO: We need urlKey as parameter as well!
+    searchRoute: {
+      route: '/search',
+      query: 'q',
+    },
   };
-
-  if (type !== 'search') {
-    storeDetails.config.categoryName = document.querySelector('.default-content-wrapper > h1')?.innerText;
-    storeDetails.config.currentCategoryUrlPath = urlpath;
-
-    // Enable enrichment
-    block.dataset.category = category;
-  }
 
   await new Promise((resolve) => {
     const interval = setInterval(() => {
-      if (window.LiveSearchPLP) {
+      if (window.LiveSearchAutocomplete) {
         clearInterval(interval);
         resolve();
       }
     }, 200);
   });
 
-  window.LiveSearchPLP({ storeDetails, root: block });
-}
+  // eslint-disable-next-line no-new
+  new window.LiveSearchAutocomplete(storeDetails);
+})();

@@ -297,3 +297,7 @@ header .nav-search-input.hidden {
 header .nav-search-input input {
   width: 100%;
 }
+
+header .nav-search-input .search_autocomplete .popover-container {
+  width: 100%;
+}
