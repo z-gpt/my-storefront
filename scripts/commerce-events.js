@@ -66,7 +66,9 @@ export default async function init() {
     result = JSON.parse(window.localStorage.getItem(STOREFRONT_QUERY_RESULT_KEY));
   } else {
     ({ data: result } = await performMonolithGraphQLQuery(STOREFRONT_CONTEXT_QUERY, {}));
-    window.localStorage.setItem(STOREFRONT_QUERY_RESULT_KEY, JSON.stringify(result));
+    if (result) {
+      window.localStorage.setItem(STOREFRONT_QUERY_RESULT_KEY, JSON.stringify(result));
+    }
   }
 
   if (!result) {
@@ -108,8 +110,6 @@ export default async function init() {
     catalogExtensionVersion,
     storefrontTemplate: 'Franklin',
   };
-
-  console.log('storefront context', context);
 
   getMagentoStorefrontEvents((mse) => {
     mse.context.setStorefrontInstance(context);
