@@ -122,7 +122,9 @@ function renderProduct(product, config, block) {
   if (addToCartButton) {
     addToCartButton.addEventListener('click', async () => {
       const { cartApi } = await import('../../scripts/minicart/api.js');
-      cartApi.addToCart(product.sku, [], 1);
+      // TODO: productId not exposed by catalog service as number
+      window.adobeDataLayer.push({ productContext: { productId: 0, ...product } });
+      cartApi.addToCart(product.sku, [], 1, 'product-teaser');
     });
   }
 
