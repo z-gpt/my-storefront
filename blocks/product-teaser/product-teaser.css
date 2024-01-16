@@ -1,3 +1,7 @@
+.product-teaser-wrapper {
+    padding: 20px 0;
+}
+
 .product-teaser {
     display: flex;
     gap: 40px;
@@ -70,9 +74,13 @@
     letter-spacing: var(--type-headline-2-strong-letter-spacing);
 }
 
-@media (width >=1280px) {
+@media (width >= 600px) {
     .product-teaser {
         flex-direction: row;
+    }
+
+    .product-teaser .details {
+        flex: 1;
     }
 
     .product-teaser .actions {
