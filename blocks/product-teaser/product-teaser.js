@@ -64,7 +64,7 @@ function renderPlaceholder(config, block) {
 function renderImage(image, size = 250) {
   const { url: imageUrl, label } = image;
   const createUrlForWidth = (url, w, useWebply = true) => {
-    const newUrl = new URL(url);
+    const newUrl = new URL(url, window.location);
     if (useWebply) {
       newUrl.searchParams.set('format', 'webply');
       newUrl.searchParams.set('optimize', 'medium');
@@ -145,6 +145,7 @@ export default async function decorate(block) {
     return;
   }
   const [product] = products;
+  product.images = product.images.map((image) => ({ ...image, url: image.url.replace(/^https?:/, '') }));
 
   renderProduct(product, config, block);
 }
