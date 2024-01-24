@@ -25,7 +25,7 @@ export default async function decorate(block) {
   heading.classList.add('pdp-product__heading');
   heading.textContent = 'product description';
 
-  productRenderer.render(ProductDetails, {
+  return productRenderer.render(ProductDetails, {
     sku: getSkuFromUrl(),
     hideQuantity: false,
     slots: {
