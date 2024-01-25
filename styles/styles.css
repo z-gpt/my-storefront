@@ -281,13 +281,11 @@ a.button:hover,
 a.button:focus,
 button:hover,
 button:focus {
-  background-color: var(--color-brand-600);
   cursor: pointer;
 }
 
 button:disabled,
 button:disabled:hover {
-  background-color: var(--color-neutral-300);
   cursor: unset;
 }
 
