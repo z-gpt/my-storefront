@@ -9,7 +9,6 @@ import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 import Checkout from '@dropins/storefront-checkout/containers/Checkout.js';
 import { render as checkoutRenderer } from '@dropins/storefront-checkout/render.js';
 import { getConfigValue } from '../../scripts/configs.js';
-import { store } from '../../scripts/minicart/api.js';
 
 /**
  * Example integration of Checkout Dropin + EDS.
@@ -21,7 +20,8 @@ export default async function decorate(block) {
   setEndpoint(commerceEndpoint);
 
   initializers.register(checkoutApi.initialize, {
-    cartId: store.getCartId(),
+    // TODO:
+    // cartId: store.getCartId(),
   });
 
   initializers.register(adyenApi.initialize, {

@@ -36,10 +36,8 @@ export default async function decorate(block) {
           icon: 'cart',
           variant: 'primary',
           onClick: async () => {
-            const { cartApi } = await import('../../scripts/minicart/api.js');
-            const { sku, options = [], quantity } = ctx.values;
-            console.debug('Add to Cart', sku, options, quantity);
-            cartApi.addToCart(sku, options, quantity);
+            // TODO: implement
+            alert('Missing implementation');
           },
         });
 
