@@ -39,19 +39,14 @@ export default async function decorate(block) {
   initializers.register(cart.initialize);
 
   // Render Containers
-  const heading = document.createElement('h2');
-  heading.classList.add('pdp-product__heading');
-  heading.textContent = 'product description';
-
   return productRenderer.render(ProductDetails, {
     sku: getSkuFromUrl(),
-    hideQuantity: false,
     slots: {
       Actions: (ctx) => {
         // Add to Cart Button
         ctx.appendButton({
           text: 'Add to Cart',
-          icon: 'cart',
+          icon: 'Cart',
           variant: 'primary',
           onClick: async () => {
             cart.addProductsToCart([{ ...ctx.values }]);
@@ -59,14 +54,11 @@ export default async function decorate(block) {
         });
 
         // Add to Wishlist Button
-        ctx.appendButton({
-          icon: 'Heart',
-          variant: 'primary',
-          onClick: () => console.debug('Add to Wishlist', ctx.data),
-        });
-
-        // Add Product Details Description header
-        ctx.appendHTMLElement(heading);
+        // ctx.appendButton({
+        //   icon: 'Heart',
+        //   variant: 'primary',
+        //   onClick: () => console.debug('Add to Wishlist', ctx.data),
+        // });
       },
     },
   })(block);
