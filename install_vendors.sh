@@ -1,9 +1,7 @@
 #!/bin/bash
 
 # Array of files to copy
-declare -a files_to_copy=(
-  "@dropins"
-)
+declare -a files_to_copy=("@dropins")
 
 # Remove existing dropins folder
 rm -rf vendors/
