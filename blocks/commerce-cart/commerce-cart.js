@@ -24,8 +24,17 @@ export default async function decorate(block) {
   // Register Initializers
   initializers.register(cart.initialize);
 
+  // Temporary link to Checkout
+  const goToCheckoutLink = document.createElement('a');
+  goToCheckoutLink.href = '/checkout';
+  goToCheckoutLink.innerText = 'Checkout';
+  goToCheckoutLink.style = 'background: black; color: white; display: block; margin-top: 1rem; float: right; padding: 1rem; text-decoration: none;';
+
+  block.appendChild(goToCheckoutLink);
+
   // Render Containers
   return provider.render(Cart, {
     routeEmptyCartCTA: () => '/',
+    routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
   })(block);
 }
