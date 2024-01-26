@@ -33,10 +33,10 @@
     "stylelint-config-standard": "36.0.0"
   },
   "dependencies": {
-    "@dropins/elsie": "^0.14.0",
+    "@dropins/elsie": "latest",
     "@dropins/storefront-cart": "~0.1.0-alpha2",
     "@dropins/storefront-checkout": "~0.1.0-alpha11",
     "@dropins/storefront-order-confirmation": "~0.1.0-alpha6",
-    "@dropins/storefront-pdp": "^0.2.1"
+    "@dropins/storefront-pdp": "latest"
   }
 }
