@@ -1,3 +1,4 @@
+import Cart from '@dropins/storefront-cart/containers/Cart.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 
 export default function decorate(block) {
