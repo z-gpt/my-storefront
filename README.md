@@ -14,7 +14,9 @@ Out of the box, this project template uses a pre-configured Adobe Commerce envir
 Additionally, you need to have the following modules and customizations installed on your environment:
 
 1. magento/magento-extra-graphql: Commerce module required for Cart and Checkout Drop-Ins.
-1. module-data-services-graphql: Commerce module with functionality necessary for adding context to events.
+1. magento/module-data-services-graphql: Commerce module with functionality necessary for adding context to events.
+1. magento/module-page-builder-product-recommendations: Commerce module required for PRex Widget
+1. magento/module-visual-product-recommendations: Commerce module required for PRex Widget
 <!-- 1. TODO: Add further prereqs.  -->
 
 ## Installation
