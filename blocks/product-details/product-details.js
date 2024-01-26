@@ -1,13 +1,9 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 
-// Drop-in Tools
-import * as mesh from '@dropins/elsie/fetch-graphql.js';
-import { initializers } from '@dropins/elsie/initializer.js';
-
 // Drop-in APIs
 import * as product from '@dropins/storefront-pdp/api.js';
-import * as cart from '@dropins/storefront-cart/api.js';
+import { addProductsToCart } from '@dropins/storefront-cart/api.js';
 
 // Drop-in Providers
 import { render as productRenderer } from '@dropins/storefront-pdp/render.js';
@@ -20,9 +16,8 @@ import { getConfigValue } from '../../scripts/configs.js';
 import { getSkuFromUrl } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
-  // Set Commerce Endpoints
+  // Set Data Service Endpoint (optional if not using Commerce Mesh)
   product.setEndpoint(await getConfigValue('commerce-endpoint'));
-  mesh.setEndpoint(await getConfigValue('commerce-core-endpoint'));
 
   // Set Fetch Headers
   product.setFetchGraphQlHeaders({
@@ -35,10 +30,6 @@ export default async function decorate(block) {
     'x-api-key': await getConfigValue('commerce-x-api-key'),
   });
 
-  // Register Initializers
-  initializers.register(product.initialize);
-  initializers.register(cart.initialize);
-
   // Render Containers
   return productRenderer.render(ProductDetails, {
     sku: getSkuFromUrl(),
@@ -50,7 +41,7 @@ export default async function decorate(block) {
           icon: 'Cart',
           variant: 'primary',
           onClick: async () => {
-            cart.addProductsToCart([{ ...ctx.values }]);
+            addProductsToCart([{ ...ctx.values }]);
           },
         });
 

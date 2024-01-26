@@ -1,6 +1,3 @@
-/* eslint-disable import/no-unresolved */
-import { events } from '@dropins/elsie/event-bus.js';
-import { initializers } from '@dropins/elsie/initializer.js';
 import {
   buildBlock,
   decorateBlocks,
@@ -15,6 +12,7 @@ import {
   sampleRUM,
   waitForLCP,
 } from './aem.js';
+import initializeDropins from './dropins.js';
 
 const LCP_BLOCKS = [
   'product-list-page',
@@ -24,20 +22,6 @@ const LCP_BLOCKS = [
   'commerce-account',
   'commerce-login',
 ]; // add your LCP blocks to the list
-
-/**
- * Load/run general storefront @dropins logic
- */
-function loadDropins() {
-  if (document.readyState === 'complete') {
-    // eslint-disable-next-line no-console
-    console.log('document already loaded');
-    initializers.mount();
-  } else {
-    window.addEventListener('load', initializers.mount);
-  }
-  events.enableLogger(true);
-}
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -99,7 +83,7 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
-  loadDropins();
+  initializeDropins();
   decorateTemplateAndTheme();
 
   window.adobeDataLayer = window.adobeDataLayer || [];
