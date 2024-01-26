@@ -1,10 +1,1 @@
-/* stylelint-disable selector-class-pattern */
-
-.pdp-product__buttons {
-  grid-template-columns: 1fr auto;
-}
-
-.elsie-incrementer__decrease-button,
-.elsie-incrementer__increase-button {
-  color: inherit;
-}
+/* stylelint-disable no-empty-source */
