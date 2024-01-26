@@ -1,14 +1,30 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
+// Drop-in Tools
+import * as mesh from '@dropins/elsie/fetch-graphql.js';
+import { initializers } from '@dropins/elsie/initializer.js';
+
+// Drop-in APIs
+import * as cart from '@dropins/storefront-cart/api.js';
+
+// Drop-in Providers
+import { render as provider } from '@dropins/storefront-cart/render.js';
+
+// Drop-in Containers
 import Cart from '@dropins/storefront-cart/containers/Cart.js';
-import { readBlockConfig } from '../../scripts/aem.js';
 
-export default function decorate(block) {
-  const config = readBlockConfig(block);
+// Libs
+import { getConfigValue } from '../../scripts/configs.js';
 
-  const content = document.createRange().createContextualFragment(`<div>
-    Commerce Cart drop-in
-    <pre>${JSON.stringify(config, null, 2)}</pre>
-  </div>`);
+export default async function decorate(block) {
+  // Set Commerce Endpoints
+  mesh.setEndpoint(await getConfigValue('commerce-core-endpoint'));
 
-  block.textContent = '';
-  block.append(content);
+  // Register Initializers
+  initializers.register(cart.initialize);
+
+  // Render Containers
+  return provider.render(Cart, {
+    routeEmptyCartCTA: () => '/',
+  })(block);
 }

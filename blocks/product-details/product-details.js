@@ -1,16 +1,30 @@
-/* eslint-disable import/no-unresolved */
+/* eslint-disable import/no-extraneous-dependencies */
+
+// Drop-in Tools
+import * as mesh from '@dropins/elsie/fetch-graphql.js';
 import { initializers } from '@dropins/elsie/initializer.js';
-import * as productApi from '@dropins/storefront-pdp/api.js';
-import ProductDetails from '@dropins/storefront-pdp/containers/ProductDetails.js';
+
+// Drop-in APIs
+import * as product from '@dropins/storefront-pdp/api.js';
+import * as cart from '@dropins/storefront-cart/api.js';
+
+// Drop-in Providers
 import { render as productRenderer } from '@dropins/storefront-pdp/render.js';
+
+// Drop-in Containers
+import ProductDetails from '@dropins/storefront-pdp/containers/ProductDetails.js';
+
+// Libs
 import { getConfigValue } from '../../scripts/configs.js';
 import { getSkuFromUrl } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
-  const commerceEndpoint = await getConfigValue('commerce-endpoint');
-  productApi.setEndpoint(commerceEndpoint);
+  // Set Commerce Endpoints
+  product.setEndpoint(await getConfigValue('commerce-endpoint'));
+  mesh.setEndpoint(await getConfigValue('commerce-core-endpoint'));
 
-  productApi.setFetchGraphQlHeaders({
+  // Set Fetch Headers
+  product.setFetchGraphQlHeaders({
     'Content-Type': 'application/json',
     'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
     'Magento-Website-Code': await getConfigValue('commerce-website-code'),
@@ -19,8 +33,12 @@ export default async function decorate(block) {
     'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
     'x-api-key': await getConfigValue('commerce-x-api-key'),
   });
-  initializers.register(productApi.initialize);
 
+  // Register Initializers
+  initializers.register(product.initialize);
+  initializers.register(cart.initialize);
+
+  // Render Containers
   const heading = document.createElement('h2');
   heading.classList.add('pdp-product__heading');
   heading.textContent = 'product description';
@@ -36,8 +54,7 @@ export default async function decorate(block) {
           icon: 'cart',
           variant: 'primary',
           onClick: async () => {
-            // TODO: implement
-            alert('Missing implementation');
+            cart.addProductsToCart([{ ...ctx.values }]);
           },
         });
 

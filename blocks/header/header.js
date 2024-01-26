@@ -1,5 +1,7 @@
+import { events } from '@dropins/elsie/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import '../../scripts/minicart.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -132,13 +134,13 @@ export default async function decorate(block) {
 
   // Minicart
   const minicartButton = document.createRange().createContextualFragment(`<div class="minicart-wrapper">
-    <button type="button" class="nav-cart-button">0</button>
+    <button type="button" class="nav-cart-button">&nbsp;&nbsp;</button>
     <div class="minicart-panel"></div>
   </div>`);
 
   navTools.append(minicartButton);
 
-  // TODO: Toggle Mini Cart – Mini Cart Drop-in is not yet available, go to Cart page instead.
+  // TODO: Toggle Mini Cart - Mini Cart Drop-in is not yet available, go to Cart page instead.
   // const minicartPanel = navTools.querySelector('.minicart-panel');
   // let cartVisible = false;
   navTools.querySelector('.nav-cart-button').addEventListener('click', async () => {
@@ -148,9 +150,9 @@ export default async function decorate(block) {
   });
 
   // Cart Item Counter
-  // cartApi.cartItemsQuantity.watch((quantity) => {
-  //   navTools.querySelector('.nav-cart-button').textContent = quantity;
-  // });
+  events.on('cart/data', ({ totalQuantity }) => {
+    navTools.querySelector('.nav-cart-button').textContent = totalQuantity || '';
+  });
 
   // Search
   const searchInput = document.createRange().createContextualFragment('<div class="nav-search-input hidden"><form action="/search" method="GET"><input type="search" name="q" placeholder="Search" /></form></div>');
