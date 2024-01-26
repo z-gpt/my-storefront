@@ -20,7 +20,7 @@ export default async function decorate(block) {
   const params = new URLSearchParams(window.location.search);
   const orderRef = params.get('orderRef');
 
-  provider.render(OrderConfirmation, {
+  return provider.render(OrderConfirmation, {
     orderRef,
     // eslint-disable-next-line no-console
     onContinueShopping: () => console.log('continue shopping'),
