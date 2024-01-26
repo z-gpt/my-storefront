@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Array of files to copy
-declare -a files_to_copy=("@dropins")
+declare -a files_to_copy=(
+  "@dropins"
+)
 
 # Remove existing dropins folder
 rm -rf vendors/
@@ -16,3 +18,5 @@ done
 
 # Remove package.json files inside dropins
 find vendors -type f -name "package.json" -exec rm {} \;
+
+echo "🫡 Vendors installed successfully!"
