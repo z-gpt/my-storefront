@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 
 // TODO: Pending MiniCart Container from Drop-ins

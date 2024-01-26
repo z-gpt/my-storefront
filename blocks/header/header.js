@@ -1,3 +1,5 @@
+/* eslint-disable import/no-unresolved */
+
 import { events } from '@dropins/elsie/event-bus.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
@@ -140,12 +142,12 @@ export default async function decorate(block) {
 
   navTools.append(minicartButton);
 
-  // TODO: Toggle Mini Cart - Mini Cart Drop-in is not yet available, go to Cart page instead.
+  // TODO: Toggle Mini Cart; Mini Cart Drop-in is not yet available, go to Cart page instead.
   // const minicartPanel = navTools.querySelector('.minicart-panel');
   // let cartVisible = false;
   navTools.querySelector('.nav-cart-button').addEventListener('click', async () => {
   //   cartVisible = !cartVisible;
-  //   minicartPanel.classList.toggle('minicart-panel--visible', cartVisible);
+  //   minicartPanel.classList.toggle('minicart-panel-visible', cartVisible);
     window.location.href = '/cart';
   });
 

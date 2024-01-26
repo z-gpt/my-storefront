@@ -30,6 +30,7 @@ const LCP_BLOCKS = [
  */
 function loadDropins() {
   if (document.readyState === 'complete') {
+    // eslint-disable-next-line no-console
     console.log('document already loaded');
     initializers.mount();
   } else {
