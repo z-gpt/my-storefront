@@ -8,6 +8,8 @@ import { render as provider } from '@dropins/storefront-cart/render.js';
 import Cart from '@dropins/storefront-cart/containers/Cart.js';
 
 export default async function decorate(block) {
+  // Initialize Drop-ins – already initialized in scripts/dropins.js
+
   // Temporary link to Checkout
   const goToCheckoutLink = document.createElement('a');
   goToCheckoutLink.href = '/checkout';

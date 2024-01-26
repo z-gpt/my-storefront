@@ -1,6 +1,9 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 
+// Drop-in Tools
+import { initializers } from '@dropins/elsie/initializer.js';
+
 // Drop-in APIs
 import * as product from '@dropins/storefront-pdp/api.js';
 import { addProductsToCart } from '@dropins/storefront-cart/api.js';
@@ -16,10 +19,13 @@ import { getConfigValue } from '../../scripts/configs.js';
 import { getSkuFromUrl } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
-  // Set Data Service Endpoint (optional if not using Commerce Mesh)
+  // Initialize Drop-ins
+  initializers.register(product.initialize, {});
+
+  // Set Fetch Endpoint (Service)
   product.setEndpoint(await getConfigValue('commerce-endpoint'));
 
-  // Set Fetch Headers
+  // Set Fetch Headers (Service)
   product.setFetchGraphQlHeaders({
     'Content-Type': 'application/json',
     'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),

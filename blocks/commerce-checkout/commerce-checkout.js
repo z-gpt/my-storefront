@@ -2,7 +2,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 // Drop-in Tools
+import { initializers } from '@dropins/elsie/initializer.js';
 import { events } from '@dropins/elsie/event-bus.js';
+
+// Drop-in APIs
+import * as checkout from '@dropins/storefront-checkout/api.js';
 
 // Drop-in Providers
 import { render as provider } from '@dropins/storefront-checkout/render.js';
@@ -11,6 +15,9 @@ import { render as provider } from '@dropins/storefront-checkout/render.js';
 import Checkout from '@dropins/storefront-checkout/containers/Checkout.js';
 
 export default async function decorate(block) {
+  // Initialize Drop-ins
+  initializers.register(checkout.initialize, {});
+
   // Listen for order confirmation and redirect to order confirmation page
   events.on('checkout/order', (data) => {
     window.location.replace(`/order-confirmation?orderRef=${data.masked_order_id}`);
