@@ -13,4 +13,4 @@ cp -R node_modules/@dropins/* scripts/__dropins__/
 # Remove package.json files inside dropins
 find scripts/__dropins__ -type f -name "package.json" -exec rm {} \;
 
-echo "🫡 Vendors installed successfully!"
+echo "🫡 Drop-ins installed successfully!"
