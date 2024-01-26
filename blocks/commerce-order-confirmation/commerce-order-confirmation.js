@@ -1,21 +1,26 @@
 /* eslint-disable import/no-unresolved */
-import { setEndpoint } from '@dropins/elsie/fetch-graphql.js';
+/* eslint-disable import/no-extraneous-dependencies */
+
+// Drop-in Tools
 import { initializers } from '@dropins/elsie/initializer.js';
-import * as orderConfirmationApi from '@dropins/storefront-order-confirmation/api.js';
-import { render as orderConfirmationRenderer } from '@dropins/storefront-order-confirmation/render.js';
-import { OrderConfirmation } from '@dropins/storefront-order-confirmation/containers/OrderConfirmation.js';
-import { getConfigValue } from '../../scripts/configs.js';
+
+// Drop-in APIs
+import * as orderConfirmation from '@dropins/storefront-order-confirmation/api.js';
+
+// Drop-in Providers
+import { render as provider } from '@dropins/storefront-order-confirmation/render.js';
+
+// Drop-in Containers
+import OrderConfirmation from '@dropins/storefront-order-confirmation/containers/OrderConfirmation.js';
 
 export default async function decorate(block) {
-  const commerceEndpoint = await getConfigValue('commerce-core-endpoint');
-  setEndpoint(commerceEndpoint);
+  // Initialize Drop-ins
+  initializers.register(orderConfirmation.initialize, {});
 
   const params = new URLSearchParams(window.location.search);
   const orderRef = params.get('orderRef');
 
-  initializers.register(orderConfirmationApi.initialize, {});
-
-  orderConfirmationRenderer.render(OrderConfirmation, {
+  return provider.render(OrderConfirmation, {
     orderRef,
     // eslint-disable-next-line no-console
     onContinueShopping: () => console.log('continue shopping'),

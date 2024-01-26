@@ -3,3 +3,4 @@ scripts/preact.js
 scripts/htm.js
 scripts/dropins
 tools/picker
+scripts/__dropins__
