@@ -20,7 +20,7 @@ fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) 
   }
   fs.cpSync(path.join('node_modules', '@dropins', file.name), path.join(dropinsDir, file.name), {
     recursive: true,
-    filter: (src) => (!src.endsWith('/package.json')),
+    filter: (src) => (!src.endsWith('package.json')),
   });
 });
 
