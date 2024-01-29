@@ -31,7 +31,7 @@ export default async function decorate(block) {
     context: {
       customerGroup: await getConfigValue('commerce-customer-group'),
     },
-    route: ({ sku }) => `/products/missing-url-key/${sku}`, // TODO: We need urlKey as parameter as well!
+    route: ({ sku, urlKey }) => `/products/${urlKey}/${sku}`,
   };
 
   if (type !== 'search') {
