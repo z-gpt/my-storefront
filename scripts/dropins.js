@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 // Drop-in Tools
 import { events } from '@dropins/elsie/event-bus.js';
 import { setEndpoint } from '@dropins/elsie/fetch-graphql.js';
