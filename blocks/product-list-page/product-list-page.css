@@ -1,4 +1,4 @@
-/* stylelint-disable no-empty-source */
+/* stylelint-disable selector-class-pattern */
 .product-list-page .ds-sdk-product-item__image img {
     aspect-ratio: 185 / 230;
 }
