@@ -27,6 +27,8 @@ export default async function decorate(block) {
       displayOutOfStock: true,
       allowAllProducts: false,
       displayMode: '', // "" for plp || "PAGE" for category/catalog
+      optimizeImages: true,
+      imageBaseWidth: 185,
     },
     context: {
       customerGroup: await getConfigValue('commerce-customer-group'),
