@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery, renderPrice } from '../../scripts/commerce.js';
 

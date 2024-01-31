@@ -11,11 +11,7 @@ export default async function decorate(block) {
   // Initialize Drop-ins – already initialized in scripts/dropins.js
 
   // Temporary link to Checkout
-  const goToCheckoutLink = document.createElement('a');
-  goToCheckoutLink.href = '/checkout';
-  goToCheckoutLink.innerText = 'Checkout';
-  goToCheckoutLink.style = 'background: black; color: white; display: block; margin-top: 1rem; float: right; padding: 1rem; text-decoration: none;';
-
+  const goToCheckoutLink = document.createRange().createContextualFragment('<a href="/checkout" class="button">Checkout</a>');
   block.appendChild(goToCheckoutLink);
 
   // Render Containers
