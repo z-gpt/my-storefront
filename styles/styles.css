@@ -284,6 +284,7 @@ button:focus {
   cursor: pointer;
 }
 
+a.button.disabled,
 button:disabled,
 button:disabled:hover {
   cursor: unset;
