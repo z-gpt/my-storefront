@@ -15,8 +15,10 @@ import { render as provider } from '@dropins/storefront-checkout/render.js';
 import Checkout from '@dropins/storefront-checkout/containers/Checkout.js';
 
 export default async function decorate(block) {
+  const cartId = new URLSearchParams(window.location.search).get('cart') || undefined;
+
   // Initialize Drop-ins
-  initializers.register(checkout.initialize, {});
+  initializers.register(checkout.initialize, { cartId });
 
   // Listen for order confirmation and redirect to order confirmation page
   events.on('checkout/order', (data) => {
