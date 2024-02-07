@@ -48,6 +48,11 @@ export default async function decorate(block) {
           variant: 'primary',
           onClick: async () => {
             try {
+              if (!ctx.valid) {
+                console.warn('Invalid product', ctx.values);
+                return;
+              }
+
               await addProductsToCart([{
                 ...ctx.values,
               }]);
