@@ -48,12 +48,13 @@ export default async function decorate(block) {
           variant: 'primary',
           onClick: async () => {
             try {
+              if (!ctx.valid) {
+                console.warn('Invalid product', ctx.values);
+                return;
+              }
+
               await addProductsToCart([{
                 ...ctx.values,
-
-                // TODO: PDP to rename values.optionUIDs to values.optionsUIDs
-                // for consistency. i.e. addProductsToCart([{ ...ctx.values }])
-                optionsUIDs: ctx.values.optionUIDs,
               }]);
 
               window.location.href = '/cart';
