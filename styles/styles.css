@@ -12,7 +12,7 @@
  * governing permissions and limitations under the License.
  */
 
-:root {
+:root, .elsie-base-design.elsie-base-design {
   /* Elsie base design */
   --color-brand-300: #6d6d6d;
   --color-brand-500: #454545;
