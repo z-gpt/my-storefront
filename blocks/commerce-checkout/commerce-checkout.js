@@ -15,7 +15,9 @@ import { render as provider } from '@dropins/storefront-checkout/render.js';
 import Checkout from '@dropins/storefront-checkout/containers/Checkout.js';
 
 export default async function decorate(block) {
-  const cartId = new URLSearchParams(window.location.search).get('cart') || undefined;
+  // If cartId is cached in session storage, use
+  // otherwise, checkout drop-in will look for one in the event-bus
+  const cartId = sessionStorage.getItem('DROPINS_CART_ID');
 
   // Initialize Drop-ins
   initializers.register(checkout.initialize, { cartId });

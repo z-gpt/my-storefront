@@ -14,6 +14,6 @@ export default async function decorate(block) {
   return provider.render(Cart, {
     routeEmptyCartCTA: () => '/',
     routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
-    routeCheckout: (cart) => `/checkout?cart=${cart.cartId}`,
+    routeCheckout: () => '/checkout',
   })(block);
 }
