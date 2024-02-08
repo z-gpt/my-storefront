@@ -135,7 +135,7 @@ export default async function decorate(block) {
 
   // Minicart
   const minicartButton = document.createRange().createContextualFragment(`<div class="minicart-wrapper">
-    <button type="button" class="nav-cart-button">&nbsp;&nbsp;</button>
+    <button type="button" class="button nav-cart-button">&nbsp;&nbsp;</button>
     <div class="minicart-panel"></div>
   </div>`);
 
@@ -159,7 +159,7 @@ export default async function decorate(block) {
   const searchInput = document.createRange().createContextualFragment('<div class="nav-search-input hidden"><form action="/search" method="GET"><input type="search" name="q" placeholder="Search" /></form></div>');
   document.body.querySelector('header').append(searchInput);
 
-  const searchButton = document.createRange().createContextualFragment('<button type="button" class="nav-search-button">Search</button>');
+  const searchButton = document.createRange().createContextualFragment('<button type="button" class="button nav-search-button">Search</button>');
   navTools.append(searchButton);
   navTools.querySelector('.nav-search-button').addEventListener('click', () => {
     document.querySelector('header .nav-search-input').classList.toggle('hidden');

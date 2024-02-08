@@ -12,7 +12,8 @@
  * governing permissions and limitations under the License.
  */
 
-:root, .elsie-base-design.elsie-base-design {
+:root,
+.elsie-base-design.elsie-base-design {
   /* Elsie base design */
   --color-brand-300: #6d6d6d;
   --color-brand-500: #454545;
@@ -274,20 +275,20 @@ u {
 }
 
 a > u,
-button > u {
+button.button > u {
   text-decoration: none;
 }
 
 /* buttons */
 a.button:any-link,
-button:not([class^='elsie-']) {
+button.button {
   font: var(--type-button-2-font);
   letter-spacing: var(--type-button-2-letter-spacing);
   display: inline-block;
   box-sizing: border-box;
   text-decoration: none;
   border: var(--shape-border-width-3) solid transparent;
-  padding: 5px 3.0rem;
+  padding: 5px 3rem;
   text-align: center;
   cursor: pointer;
   color: var(--color-neutral-50);
@@ -301,28 +302,28 @@ button:not([class^='elsie-']) {
 
 a.button:hover,
 a.button:focus,
-button:not([class^='elsie-']):hover,
-button:not([class^='elsie-']):focus {
+button.button:hover,
+button.button:focus {
   background-color: var(--color-brand-600);
   cursor: pointer;
 }
 
 a.button.disabled,
-button:not([class^='elsie-']):disabled,
-button:not([class^='elsie-']):disabled:hover {
+button.button:disabled,
+button.button:disabled:hover {
   background-color: var(--color-neutral-300);
   cursor: unset;
 }
 
 a.button.secondary,
-button:not([class^='elsie-']).secondary {
+button.button.secondary {
   background-color: unset;
   border: var(--shape-border-width-3) solid currentcolor;
   color: var(--color-brand-500);
 }
 
 a.button.secondary:hover,
-button:not([class^='elsie-']).secondary:hover {
+button.button.secondary:hover {
   color: var(--color-brand-600);
 }
 
