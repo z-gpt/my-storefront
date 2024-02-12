@@ -135,7 +135,7 @@ export default async function decorate(block) {
 
   // Minicart
   const minicartButton = document.createRange().createContextualFragment(`<div class="minicart-wrapper">
-    <button type="button" class="nav-cart-button">&nbsp;&nbsp;</button>
+    <button type="button" class="button nav-cart-button">&nbsp;&nbsp;</button>
     <div class="minicart-panel"></div>
   </div>`);
 
@@ -151,9 +151,9 @@ export default async function decorate(block) {
   });
 
   // Cart Item Counter
-  events.on('cart/data', ({ totalQuantity }) => {
-    navTools.querySelector('.nav-cart-button').textContent = totalQuantity || '';
-  });
+  events.on('cart/data', (data) => {
+    navTools.querySelector('.nav-cart-button').textContent = data?.totalQuantity || '0';
+  }, { eager: true });
 
   // Search
   const searchInput = document.createRange().createContextualFragment(`<div class="nav-search-input hidden">
@@ -164,7 +164,7 @@ export default async function decorate(block) {
     </div>`);
   document.body.querySelector('header').append(searchInput);
 
-  const searchButton = document.createRange().createContextualFragment('<button type="button" class="nav-search-button">Search</button>');
+  const searchButton = document.createRange().createContextualFragment('<button type="button" class="button nav-search-button">Search</button>');
   navTools.append(searchButton);
   navTools.querySelector('.nav-search-button').addEventListener('click', async () => {
     await import('./searchbar.js');

@@ -39,6 +39,10 @@ export default async function decorate(block) {
   // Render Containers
   return productRenderer.render(ProductDetails, {
     sku: getSkuFromUrl(),
+    carousel: {
+      controls: 'dots', // 'thumbnailsColumn', 'thumbnailsRow', 'dots'
+      mobile: true,
+    },
     slots: {
       Actions: (ctx) => {
         // Add to Cart Button
@@ -47,7 +51,22 @@ export default async function decorate(block) {
           icon: 'Cart',
           variant: 'primary',
           onClick: async () => {
-            addProductsToCart([{ ...ctx.values }]);
+            try {
+              if (!ctx.valid) {
+                // eslint-disable-next-line no-console
+                console.warn('Invalid product', ctx.values);
+                return;
+              }
+
+              await addProductsToCart([{
+                ...ctx.values,
+              }]);
+
+              window.location.href = '/cart';
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.warn('Error adding product to cart', error);
+            }
           },
         });
 
