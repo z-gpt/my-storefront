@@ -28,6 +28,8 @@ export default async function decorate(block) {
   });
 
   return provider.render(Checkout, {
+    routeHome: () => '/',
+    routeCart: () => '/cart',
     slots: {
       PaymentMethods: async (context) => {
         context.addPaymentMethodHandler('checkmo', {
