@@ -20,7 +20,7 @@ export default async function decorate(block) {
   const cartId = sessionStorage.getItem('DROPINS_CART_ID');
 
   // Initialize Drop-ins
-  initializers.register(checkout.initialize, { cartId });
+  initializers.register(checkout.initialize, {});
 
   // Listen for order confirmation and redirect to order confirmation page
   events.on('checkout/order', (data) => {
@@ -28,6 +28,7 @@ export default async function decorate(block) {
   });
 
   return provider.render(Checkout, {
+    cartId,
     routeHome: () => '/',
     routeCart: () => '/cart',
     slots: {
