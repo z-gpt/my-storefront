@@ -1,8 +1,16 @@
 /* eslint-disable import/no-unresolved */
 
+// Drop-in Providers
+import { render as cartProvider } from '@dropins/storefront-cart/render.js';
+
+// Drop-in Containers
+import MiniCart from '@dropins/storefront-cart/containers/MiniCart.js';
+
+// Drop-in Tools
 import { events } from '@dropins/elsie/event-bus.js';
-import { getMetadata } from '../../scripts/aem.js';
+
 import { loadFragment } from '../fragment/fragment.js';
+import { getMetadata } from '../../scripts/aem.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -133,36 +141,85 @@ export default async function decorate(block) {
 
   const navTools = nav.querySelector('.nav-tools');
 
-  // Minicart
-  const minicartButton = document.createRange().createContextualFragment(`<div class="minicart-wrapper">
-    <button type="button" class="button nav-cart-button">&nbsp;&nbsp;</button>
-    <div class="minicart-panel"></div>
-  </div>`);
+  /** Mini Cart */
+  const minicart = document.createRange().createContextualFragment(`
+    <div class="minicart-wrapper">
+      <button type="button" class="button nav-cart-button"></button>
+      <div class="minicart-panel nav-panel"></div>
+    </div>
+  `);
 
-  navTools.append(minicartButton);
+  navTools.append(minicart);
 
-  // TODO: Toggle Mini Cart; Mini Cart Drop-in is not yet available, go to Cart page instead.
-  // const minicartPanel = navTools.querySelector('.minicart-panel');
-  // let cartVisible = false;
-  navTools.querySelector('.nav-cart-button').addEventListener('click', async () => {
-  //   cartVisible = !cartVisible;
-  //   minicartPanel.classList.toggle('minicart-panel-visible', cartVisible);
-    window.location.href = '/cart';
-  });
+  const minicartPanel = navTools.querySelector('.minicart-panel');
+
+  const cartButton = navTools.querySelector('.nav-cart-button');
+  cartButton.setAttribute('aria-label', 'Cart');
+
+  async function toggleMiniCart(state) {
+    const show = state ?? !minicartPanel.classList.contains('nav-panel--show');
+
+    if (show) {
+      await cartProvider.render(MiniCart, {
+        routeEmptyCartCTA: () => '/',
+        routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
+        routeCart: () => '/cart',
+        routeCheckout: () => '/checkout',
+      })(minicartPanel);
+    } else {
+      minicartPanel.innerHTML = '';
+    }
+
+    minicartPanel.classList.toggle('nav-panel--show', show);
+  }
+
+  cartButton.addEventListener('click', () => toggleMiniCart());
 
   // Cart Item Counter
   events.on('cart/data', (data) => {
-    navTools.querySelector('.nav-cart-button').textContent = data?.totalQuantity || '0';
+    if (data?.totalQuantity) {
+      cartButton.setAttribute('data-count', data.totalQuantity);
+    } else {
+      cartButton.removeAttribute('data-count');
+    }
   }, { eager: true });
 
-  // Search
-  const searchInput = document.createRange().createContextualFragment('<div class="nav-search-input hidden"><form action="/search" method="GET"><input type="search" name="q" placeholder="Search" /></form></div>');
-  document.body.querySelector('header').append(searchInput);
+  /** Search */
 
-  const searchButton = document.createRange().createContextualFragment('<button type="button" class="button nav-search-button">Search</button>');
-  navTools.append(searchButton);
-  navTools.querySelector('.nav-search-button').addEventListener('click', () => {
-    document.querySelector('header .nav-search-input').classList.toggle('hidden');
+  const search = document.createRange().createContextualFragment(`
+  <div class="search-wrapper">
+    <button type="button" class="button nav-search-button">Search</button>
+    <div class="nav-search-input nav-search-panel nav-panel"><form action="/search" method="GET"><input type="search" name="q" placeholder="Search" /></form></div>
+  </div>
+  `);
+
+  navTools.append(search);
+
+  const searchPanel = navTools.querySelector('.nav-search-panel');
+
+  const searchButton = navTools.querySelector('.nav-search-button');
+
+  const searchInput = searchPanel.querySelector('input');
+
+  function toggleSearch(state) {
+    const show = state ?? !searchPanel.classList.contains('nav-panel--show');
+
+    searchPanel.classList.toggle('nav-panel--show', show);
+
+    if (show) searchInput.focus();
+  }
+
+  navTools.querySelector('.nav-search-button').addEventListener('click', () => toggleSearch());
+
+  // Close panels when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!minicartPanel.contains(e.target) && !cartButton.contains(e.target)) {
+      toggleMiniCart(false);
+    }
+
+    if (!searchPanel.contains(e.target) && !searchButton.contains(e.target)) {
+      toggleSearch(false);
+    }
   });
 
   // hamburger for mobile
