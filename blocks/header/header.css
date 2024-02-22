@@ -269,19 +269,20 @@ header nav .nav-sections ul > li > ul > li {
 }
 
 /* tools */
-header nav .nav-panel {
+header nav .nav-tools-panel {
   z-index: 100;
   position: absolute;
   box-shadow: var(--shape-shadow-2);
   background: var(--background-color);
   box-sizing: content-box;
-  left: 0;
+  top: var(--nav-height);
+  right: 0;
   width: 100%;
   display: none;
   box-sizing: border-box;
 }
 
-header nav .nav-panel--show {
+header nav .nav-tools-panel--show {
   display: block;
 }
 
@@ -290,31 +291,32 @@ header nav .nav-tools {
   display: flex;
   height: 100%;
   gap: var(--spacing-small);
+  align-items: center;
 }
 
-header nav .nav-tools .search-wrapper > button,
-header nav .nav-tools .minicart-wrapper > button {
+header nav .nav-tools-wrapper > button {
   color: var(--color-brand-700);
   background: transparent;
-  padding: 5px 10px;
-  height: 100%;
+  padding: 10px;
   border: unset;
   cursor: pointer;
+  height: 40px;
+  width: 40px;
 }
 
 header nav .nav-tools button.nav-cart-button {
   background-image: url('../../icons/cart.svg');
   background-repeat: no-repeat;
   background-position: center;
-  padding: 5px 15px;
   position: relative;
 }
 
 header nav .nav-tools button.nav-cart-button[data-count]::after {
   content: attr(data-count);
   position: absolute;
-  top: 1.5em;
-  right: -0.75em;
+  top: 0;
+
+  right: -2px;
   background-color: var(--color-brand-700);
   color: var(--color-neutral-100);
   border-radius: 50%;
@@ -331,7 +333,6 @@ header nav .nav-tools button.nav-search-button {
   background-image: url('../../icons/search.svg');
   background-repeat: no-repeat;
   background-position: center;
-  padding: 5px 15px;
 }
 
 header .nav-search-panel {
@@ -363,20 +364,19 @@ header .nav-search-panel input {
 }
 
 @media (width >= 1024px) {
-  header nav .minicart-wrapper,
-  header nav .search-wrapper {
+  header nav .nav-tools-wrapper {
     position: relative;
+  }
+
+  header nav .nav-tools-panel {
+    top: calc(-12px + var(--nav-height));
   }
 
   header nav .minicart-panel {
     width: 398px;
-    left: unset;
-    right: 0;
   }
 
   header nav .nav-search-panel {
     width: 398px;
-    left: unset;
-    right: 0;
   }
 }
