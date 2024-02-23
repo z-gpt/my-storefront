@@ -167,11 +167,10 @@ body {
   margin: 0;
   color: var(--color-brand-700);
   background-color: var(--background-color);
-  display: none;
 }
 
-body.appear {
-  display: block;
+body:not(.appear) {
+  visibility: hidden;
 }
 
 header {
