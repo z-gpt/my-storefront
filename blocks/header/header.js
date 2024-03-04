@@ -212,10 +212,16 @@ export default async function decorate(block) {
 
   /** Search */
 
+  // TODO
   const search = document.createRange().createContextualFragment(`
   <div class="search-wrapper nav-tools-wrapper">
     <button type="button" class="button nav-search-button">Search</button>
-    <div class="nav-search-input nav-search-panel nav-tools-panel"><form action="/search" method="GET"><input type="search" name="q" placeholder="Search" /></form></div>
+    <div class="nav-search-input nav-search-panel nav-tools-panel">
+      <form action="/search" method="GET">
+        <input id="search" type="search" name="q" placeholder="Search" />
+        <div id="search_autocomplete" class="search-autocomplete"></div>
+      </form>
+    </div>
   </div>
   `);
 
@@ -227,13 +233,16 @@ export default async function decorate(block) {
 
   const searchInput = searchPanel.querySelector('input');
 
-  function toggleSearch(state) {
+  async function toggleSearch(state) {
     const show =
       state ?? !searchPanel.classList.contains('nav-tools-panel--show');
 
     searchPanel.classList.toggle('nav-tools-panel--show', show);
 
-    if (show) searchInput.focus();
+    if (show) {
+      await import('./searchbar.js');
+      searchInput.focus();
+    }
   }
 
   navTools
@@ -262,9 +271,7 @@ export default async function decorate(block) {
   nav.setAttribute('aria-expanded', 'false');
   // prevent mobile nav behavior on window resize
   toggleMenu(nav, navSections, isDesktop.matches);
-  isDesktop.addEventListener('change', () =>
-    toggleMenu(nav, navSections, isDesktop.matches)
-  );
+  isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';

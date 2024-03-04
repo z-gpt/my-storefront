@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+
 /* header and nav layout */
 header .nav-wrapper {
   background-color: var(--background-color);
@@ -361,6 +363,10 @@ header .nav-search-panel input {
   .cart-mini-cart:not(:has(.cart-empty-cart)) {
     max-height: calc(100vh - var(--nav-height));
   }
+}
+
+header .nav-search-input .search_autocomplete .popover-container {
+  width: 100%;
 }
 
 @media (width >= 1024px) {
