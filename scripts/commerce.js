@@ -2,8 +2,7 @@
 import { getConfigValue } from './configs.js';
 
 /* Common query fragments */
-
-const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
+export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
   regular {
       amount {
           currency
@@ -103,89 +102,6 @@ export const productDetailQuery = `query ProductQuery($sku: String!) {
 }
 ${priceFieldsFragment}`;
 
-/* Queries PLP */
-
-export const productSearchQuery = (addCategory = false) => `query ProductSearch(
-  $currentPage: Int = 1
-  $pageSize: Int = 20
-  $phrase: String = ""
-  $sort: [ProductSearchSortInput!] = []
-  $filter: [SearchClauseInput!] = []
-  ${addCategory ? '$categoryId: String!' : ''}
-) {
-  ${addCategory ? `categories(ids: [$categoryId]) {
-      name
-      urlKey
-      urlPath
-  }` : ''}
-  productSearch(
-      current_page: $currentPage
-      page_size: $pageSize
-      phrase: $phrase
-      sort: $sort
-      filter: $filter
-  ) {
-      facets {
-          title
-          type
-          attribute
-          buckets {
-              title
-              __typename
-              ... on RangeBucket {
-                  count
-                  from
-                  to
-              }
-              ... on ScalarBucket {
-                  count
-                  id
-              }
-              ... on StatsBucket {
-                  max
-                  min
-              }
-          }
-      }
-      items {
-          product {
-            id
-          }
-          productView {
-              name
-              sku
-              urlKey
-              images(roles: "thumbnail") {
-                url
-              }
-              __typename
-              ... on SimpleProductView {
-                  price {
-                      ...priceFields
-                  }
-              }
-              ... on ComplexProductView {
-                  priceRange {
-                      minimum {
-                          ...priceFields
-                      }
-                      maximum {
-                          ...priceFields
-                      }
-                  }
-              }
-          }
-      }
-      page_info {
-          current_page
-          total_pages
-          page_size
-      }
-      total_count
-  }
-}
-${priceFieldsFragment}`;
-
 /* Common functionality */
 
 export async function performCatalogServiceQuery(query, variables) {
@@ -228,7 +144,7 @@ export async function performMonolithGraphQLQuery(query, variables, GET = true, 
 
   const headers = {
     'Content-Type': 'application/json',
-    Store: 'default', // TODO await getConfigValue('commerce-store-code'),
+    Store: await getConfigValue('commerce-store-view-code'),
   };
 
   if (USE_TOKEN) {
@@ -269,7 +185,7 @@ export async function performMonolithGraphQLQuery(query, variables, GET = true, 
   return response.json();
 }
 
-export function renderPrice(product, format, html, Fragment) {
+export function renderPrice(product, format, html = (strings, ...values) => strings.reduce((result, string, i) => result + string + (values[i] || ''), ''), Fragment = null) {
   // Simple product
   if (product.price) {
     const { regular, final } = product.price;
@@ -289,14 +205,14 @@ export function renderPrice(product, format, html, Fragment) {
     if (finalMin.amount.value !== finalMax.amount.value) {
       return html`
       <div class="price-range">
-        <span class="price-from">${format(finalMin.amount.value)}</span><span class="price-from">${format(finalMax.amount.value)}</span>
         ${finalMin.amount.value !== regularMin.amount.value ? html`<span class="price-regular">${format(regularMin.amount.value)}</span>` : ''}
+        <span class="price-from">${format(finalMin.amount.value)} - ${format(finalMax.amount.value)}</span>
       </div>`;
     }
 
     if (finalMin.amount.value !== regularMin.amount.value) {
       return html`<${Fragment}>
-      <span class="price-final">${format(finalMin.amount.value)}</span> <span class="price-regular">${format(regularMin.amount.value)}</span> 
+      <span class="price-final">${format(finalMin.amount.value)} - ${format(regularMin.amount.value)}</span> 
     </${Fragment}>`;
     }
 
@@ -332,126 +248,6 @@ export async function getProduct(sku) {
 
   productsCache[sku] = productPromise;
   return productPromise;
-}
-
-/* PLP specific functionality */
-
-// TODO
-// You can get this list via attributeMetadata query
-export const ALLOWED_FILTER_PARAMETERS = ['page', 'pageSize', 'sort', 'sortDirection', 'q', 'price', 'size', 'color_family'];
-
-export async function loadCategory(state) {
-  try {
-    // TODO: Be careful if query exceeds GET size limits, then switch to POST
-    const variables = {
-      pageSize: state.currentPageSize,
-      currentPage: state.currentPage,
-      sort: [{
-        attribute: state.sort,
-        direction: state.sortDirection === 'desc' ? 'DESC' : 'ASC',
-      }],
-    };
-
-    variables.phrase = state.type === 'search' ? state.searchTerm : '';
-
-    if (Object.keys(state.filters).length > 0) {
-      variables.filter = [];
-      Object.keys(state.filters).forEach((key) => {
-        if (key === 'price') {
-          const [from, to] = state.filters[key];
-          if (from && to) {
-            variables.filter.push({ attribute: key, range: { from, to } });
-          }
-        } else if (state.filters[key].length > 1) {
-          variables.filter.push({ attribute: key, in: state.filters[key] });
-        } else if (state.filters[key].length === 1) {
-          variables.filter.push({ attribute: key, eq: state.filters[key][0] });
-        }
-      });
-    }
-
-    if (state.type === 'category' && state.category.id) {
-      variables.categoryId = state.category.id;
-      variables.filter = variables.filter || [];
-      variables.filter.push({ attribute: 'categoryIds', eq: state.category.id });
-    }
-
-    window.adobeDataLayer.push((dl) => {
-      const requestId = crypto.randomUUID();
-      window.sessionStorage.setItem('searchRequestId', requestId);
-      const searchInputContext = dl.getState('searchInputContext') ?? { units: [] };
-      const searchUnitId = 'livesearch-plp';
-      const unit = {
-        searchUnitId,
-        searchRequestId: requestId,
-        queryTypes: ['products', 'suggestions'],
-        ...variables,
-      };
-      const index = searchInputContext.units.findIndex((u) => u.searchUnitId === searchUnitId);
-      if (index < 0) {
-        searchInputContext.units.push(unit);
-      } else {
-        searchInputContext.units[index] = unit;
-      }
-      dl.push({ searchInputContext }, { event: 'search-request-sent', eventInfo: { searchUnitId } });
-    });
-
-    const response = await performCatalogServiceQuery(productSearchQuery(state.type === 'category'), variables);
-
-    // Parse response into state
-    return {
-      pages: Math.max(response.productSearch.page_info.total_pages, 1),
-      products: {
-        items: response.productSearch.items
-          .map((product) => ({ ...product.productView, ...product.product }))
-          .filter((product) => product !== null),
-        total: response.productSearch.total_count,
-      },
-      category: response.categories?.[0] ?? {},
-      facets: response.productSearch.facets.filter((facet) => facet.attribute !== 'categories'),
-    };
-  } catch (e) {
-    console.error('Error loading products', e);
-    return {
-      pages: 1,
-      products: {
-        items: [],
-        total: 0,
-      },
-      facets: [],
-    };
-  }
-}
-
-export function parseQueryParams() {
-  const params = new URLSearchParams(window.location.search);
-  const newState = {
-    filters: {
-      inStock: ['true'],
-    },
-  };
-  params.forEach((value, key) => {
-    if (!ALLOWED_FILTER_PARAMETERS.includes(key)) {
-      return;
-    }
-
-    if (key === 'page') {
-      newState.currentPage = parseInt(value, 10) || 1;
-    } else if (key === 'pageSize') {
-      newState.currentPageSize = parseInt(value, 10) || 10;
-    } else if (key === 'sort') {
-      newState.sort = value;
-    } else if (key === 'sortDirection') {
-      newState.sortDirection = value === 'desc' ? 'desc' : 'asc';
-    } else if (key === 'q') {
-      newState.searchTerm = value;
-    } else if (key === 'price') {
-      newState.filters[key] = value.split(',').map((v) => parseInt(v, 10) || 0);
-    } else {
-      newState.filters[key] = value.split(',');
-    }
-  });
-  return newState;
 }
 
 export function setJsonLd(data, name) {

@@ -133,7 +133,7 @@ export default async function decorate(block) {
 
   // Minicart
   const minicartButton = document.createRange().createContextualFragment(`<div class="minicart-wrapper">
-    <button type="button" class="nav-cart-button">Cart (0)</button>
+    <button type="button" class="nav-cart-button">0</button>
     <div></div>
   </div>`);
   navTools.append(minicartButton);
@@ -141,16 +141,22 @@ export default async function decorate(block) {
     cartApi.toggleCart();
   });
   cartApi.cartItemsQuantity.watch((quantity) => {
-    navTools.querySelector('.nav-cart-button').textContent = `Cart (${quantity})`;
+    navTools.querySelector('.nav-cart-button').textContent = quantity;
   });
 
   // Search
-  const searchInput = document.createRange().createContextualFragment('<div class="nav-search-input hidden"><form action="/search" method="GET"><input type="search" name="q" placeholder="Search" /></form></div>');
+  const searchInput = document.createRange().createContextualFragment(`<div class="nav-search-input hidden">
+      <form id="search_mini_form" action="/search" method="GET">
+        <input id="search" type="search" name="q" placeholder="Search" />
+        <div id="search_autocomplete" class="search-autocomplete"></div>
+      </form>
+    </div>`);
   document.body.querySelector('header').append(searchInput);
 
   const searchButton = document.createRange().createContextualFragment('<button type="button" class="nav-search-button">Search</button>');
   navTools.append(searchButton);
-  navTools.querySelector('.nav-search-button').addEventListener('click', () => {
+  navTools.querySelector('.nav-search-button').addEventListener('click', async () => {
+    await import('./searchbar.js');
     document.querySelector('header .nav-search-input').classList.toggle('hidden');
   });
 
