@@ -1,30 +1,4 @@
-import { performMonolithGraphQLQuery } from './commerce.js';
-
-const STOREFRONT_QUERY_RESULT_KEY = 'storefront-query-result';
-
-const STOREFRONT_CONTEXT_QUERY = `
-   query DataServicesStorefrontInstanceContext {
-        dataServicesStorefrontInstanceContext {
-            catalog_extension_version
-            environment
-            environment_id
-            store_code
-            store_id
-            store_name
-            store_url
-            store_view_code
-            store_view_id
-            store_view_name
-            website_code
-            website_id
-            website_name
-        }
-        storeConfig {
-            base_currency_code
-            store_code
-        }
-    }
-`;
+import { getConfigValue } from './configs.js';
 
 async function getMagentoStorefrontEvents(callback) {
   return new Promise((resolve) => {
@@ -60,59 +34,26 @@ export default async function init() {
   import('./commerce-events-sdk.js');
   import('./commerce-events-collector.js');
 
-  // Load configuration
-  let result;
-  if (window.localStorage.getItem(STOREFRONT_QUERY_RESULT_KEY)) {
-    result = JSON.parse(window.localStorage.getItem(STOREFRONT_QUERY_RESULT_KEY));
-  } else {
-    ({ data: result } = await performMonolithGraphQLQuery(STOREFRONT_CONTEXT_QUERY, {}));
-    if (result) {
-      window.localStorage.setItem(STOREFRONT_QUERY_RESULT_KEY, JSON.stringify(result));
-    }
-  }
-
-  if (!result) {
-    throw new Error('error fetching storefront context');
-  }
-
-  const {
-    environment,
-    environment_id: environmentId,
-    website_id: websiteId,
-    website_code: websiteCode,
-    website_name: websiteName,
-    store_url: storeUrl,
-    store_id: storeId,
-    store_code: storeCode,
-    store_name: storeName,
-    store_view_id: storeViewId,
-    store_view_code: storeViewCode,
-    store_view_name: storeViewName,
-    catalog_extension_version: catalogExtensionVersion,
-  } = result.dataServicesStorefrontInstanceContext;
-  const { base_currency_code: baseCurrencyCode } = result.storeConfig;
-
-  const context = {
-    environmentId,
-    environment,
-    storeUrl,
-    websiteId,
-    websiteCode,
-    storeId,
-    storeCode,
-    storeViewId,
-    storeViewCode,
-    websiteName,
-    storeName,
-    storeViewName,
-    baseCurrencyCode,
-    storeViewCurrencyCode: baseCurrencyCode,
-    catalogExtensionVersion,
+  const config = {
+    environmentId: await getConfigValue('commerce-environment-id'),
+    environment: await getConfigValue('commerce-environment'),
+    storeUrl: await getConfigValue('commerce-store-url'),
+    websiteId: await getConfigValue('commerce-website-id'),
+    websiteCode: await getConfigValue('commerce-website-code'),
+    storeId: await getConfigValue('commerce-store-id'),
+    storeCode: await getConfigValue('commerce-store-code'),
+    storeViewId: await getConfigValue('commerce-store-view-id'),
+    storeViewCode: await getConfigValue('commerce-store-view-code'),
+    websiteName: await getConfigValue('commerce-website-name'),
+    storeName: await getConfigValue('commerce-store-name'),
+    storeViewName: await getConfigValue('commerce-store-view-name'),
+    baseCurrencyCode: await getConfigValue('commerce-base-currency-code'),
+    storeViewCurrencyCode: await getConfigValue('commerce-base-currency-code'),
     storefrontTemplate: 'Franklin',
   };
 
   getMagentoStorefrontEvents((mse) => {
-    mse.context.setStorefrontInstance(context);
+    mse.context.setStorefrontInstance(config);
     mse.context.setEventForwarding({
       commerce: true,
       aep: false,
