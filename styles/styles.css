@@ -157,11 +157,6 @@
   src: local('Arial');
 }
 
-html,
-body {
-  height: 100%;
-}
-
 html {
   font-size: 62.5%;
 }
@@ -172,8 +167,6 @@ body {
   margin: 0;
   color: var(--color-brand-700);
   background-color: var(--background-color);
-  display: grid;
-  grid-template-rows: auto 1fr auto;
 }
 
 body:not(.appear) {
