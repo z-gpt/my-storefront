@@ -34,3 +34,26 @@ window.adobeDataLayer.push(
 // Load events SDK and collector
 import('./commerce-events-sdk.js');
 import('./commerce-events-collector.js');
+
+// Conversion tracking
+function convert(event, value, extraData = {}) {
+  sampleRUM('convert', { source: event, target: value, ...extraData });
+}
+
+window.adobeDataLayer.push((dl) => {
+  dl.addEventListener('add-to-cart', ({ eventInfo }) => {
+    convert('addToCart', 'addToCart', eventInfo?.shoppingCartContext?.items?.map((item) => item.product.sku));
+  });
+
+  dl.addEventListener('create-account', () => {
+    convert('createAccount', 'createAccount');
+  });
+
+  dl.addEventListener('sign-in', () => {
+    convert('signIn', 'signIn');
+  });
+
+  dl.addEventListener('place-order', ({ eventInfo }) => {
+    convert('placeOrder', 'placeOrder', eventInfo.shoppingCartContext.items.map((item) => item.product.sku));
+  });
+});
