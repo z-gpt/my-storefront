@@ -54,6 +54,6 @@ window.adobeDataLayer.push((dl) => {
   });
 
   dl.addEventListener('place-order', ({ eventInfo }) => {
-    convert('placeOrder', 'placeOrder', eventInfo.shoppingCartContext.items.map((item) => item.product.sku));
+    convert('placeOrder', 'placeOrder', eventInfo?.shoppingCartContext?.items?.map((item) => item.product.sku));
   });
 });
