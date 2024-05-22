@@ -19,6 +19,7 @@ import {
   readBlockConfig,
 } from './aem.js';
 import { getProduct, getSkuFromUrl, trackHistory } from './commerce.js';
+import initializeDropins from './dropins.js';
 
 const LCP_BLOCKS = [
   'product-list-page',
@@ -132,6 +133,7 @@ function preloadFile(href, as) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  await initializeDropins();
   decorateTemplateAndTheme();
 
   // Instrument experimentation plugin
@@ -147,6 +149,11 @@ async function loadEager(doc) {
 
   let pageType = 'CMS';
   if (document.body.querySelector('main .product-details')) {
+    const sku = getSkuFromUrl();
+    window.getProductPromise = getProduct(sku);
+
+    // TODO: preload PDP files
+  } else if (document.body.querySelector('main .product-details-custom')) {
     pageType = 'Product';
     preloadFile('/scripts/preact.js', 'script');
     preloadFile('/scripts/htm.js', 'script');
