@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { events } from '@dropins/tools/event-bus.js';
 import {
   sampleRUM,
   buildBlock,
@@ -20,7 +21,6 @@ import {
 } from './aem.js';
 import { getProduct, getSkuFromUrl, trackHistory } from './commerce.js';
 import initializeDropins from './dropins.js';
-import { events } from '@dropins/tools/event-bus.js';
 
 const LCP_BLOCKS = [
   'product-list-page',
