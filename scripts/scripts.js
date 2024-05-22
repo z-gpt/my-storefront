@@ -153,7 +153,14 @@ async function loadEager(doc) {
     const sku = getSkuFromUrl();
     window.getProductPromise = getProduct(sku);
 
-    // TODO: preload PDP files
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDetails.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/runtime.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/713.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/275.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/918.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/148.js', 'script');
   } else if (document.body.querySelector('main .product-details-custom')) {
     pageType = 'Product';
     preloadFile('/scripts/preact.js', 'script');
