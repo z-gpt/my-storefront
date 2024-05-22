@@ -90,10 +90,8 @@ function setMetaTags(product) {
     return;
   }
 
-  const price = product.price_range
-    ? product.price_range.minimum.final.amount : product.price.final.amount;
-  const currency = product.price_range
-    ? product.price_range.minimum.final.currency : product.price.final.currency;
+  const price = product.priceRange
+    ? product.priceRange.minimum.final.amount : product.price.final.amount;
 
   createMetaTag('title', product.metaTitle, 'name');
   createMetaTag('description', product.metaDescription, 'name');
@@ -107,8 +105,8 @@ function setMetaTags(product) {
   const metaImage = mainImage?.url || product?.images[0]?.url;
   createMetaTag('og:image', metaImage, 'property');
   createMetaTag('og:image:secure_url', metaImage, 'property');
-  createMetaTag('og:product:price:amount', price, 'property');
-  createMetaTag('og:product:price:currency', currency, 'property');
+  createMetaTag('og:product:price:amount', price.value, 'property');
+  createMetaTag('og:product:price:currency', price.currency, 'property');
 
   createMetaTag('twitter:card', product.shortDescription, 'name');
   createMetaTag('twitter:title', product.metaTitle, 'name');
