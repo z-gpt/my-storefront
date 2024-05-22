@@ -20,6 +20,7 @@ import {
 } from './aem.js';
 import { getProduct, getSkuFromUrl, trackHistory } from './commerce.js';
 import initializeDropins from './dropins.js';
+import { events } from '@dropins/tools/event-bus.js';
 
 const LCP_BLOCKS = [
   'product-list-page',
@@ -204,6 +205,8 @@ async function loadEager(doc) {
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
   }
+
+  events.emit('eds/lcp', true);
 
   try {
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */

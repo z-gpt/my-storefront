@@ -1,16 +1,9 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
-
-// Drop-in Tools
+import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
-
-// Drop-in APIs
 import * as productApi from '@dropins/storefront-pdp/api.js';
-
-// Drop-in Providers
 import { render as productRenderer } from '@dropins/storefront-pdp/render.js';
-
-// Drop-in Containers
 import ProductDetails from '@dropins/storefront-pdp/containers/ProductDetails.js';
 
 // Libs
@@ -66,6 +59,23 @@ export default async function decorate(block) {
     await errorGettingProduct();
     return Promise.reject();
   }
+
+  events.on('eds/lcp', () => {
+    if (!product) {
+      return;
+    }
+    // Set Data Collection Context
+    window.adobeDataLayer.push((dl) => {
+      dl.push({
+        productContext: {
+          productId: parseInt(product.externalId, 10) || 0,
+          ...product,
+        },
+      });
+      // TODO: Remove eventInfo once collector is updated
+      dl.push({ event: 'product-page-view', eventInfo: { ...dl.getState() } });
+    });
+  }, { eager: true });
 
   // Render Containers
   return new Promise((resolve) => {
