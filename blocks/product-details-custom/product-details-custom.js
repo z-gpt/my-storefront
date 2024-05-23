@@ -14,6 +14,7 @@ import {
   refineProductQuery,
   setJsonLd,
 } from '../../scripts/commerce.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 
 const html = htm.bind(h);
 
@@ -175,7 +176,7 @@ class ProductDetailPage extends Component {
 
     return html`
       <${Fragment} >
-        <${Carousel} product=${this.state.product} />
+        <${Carousel} product=${this.state.product} sku=${this.props.sku} />
         <${Sidebar}
           product=${this.state.product}
           selection=${this.state.selection}
@@ -194,9 +195,10 @@ class ProductDetailPage extends Component {
 }
 
 export default async function decorate($block) {
+  const blockConfig = readBlockConfig($block);
   $block.innerHTML = '<div class="full-height"></div>';
 
-  const skuFromUrl = getSkuFromUrl();
+  const skuFromUrl = getSkuFromUrl() || blockConfig.sku;
   if (!skuFromUrl) {
     errorGettingProduct();
   }

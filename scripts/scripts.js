@@ -165,12 +165,13 @@ async function loadEager(doc) {
     pageType = 'Product';
     preloadFile('/scripts/preact.js', 'script');
     preloadFile('/scripts/htm.js', 'script');
-    preloadFile('/blocks/product-details/ProductDetailsCarousel.js', 'script');
-    preloadFile('/blocks/product-details/ProductDetailsSidebar.js', 'script');
-    preloadFile('/blocks/product-details/ProductDetailsShimmer.js', 'script');
-    preloadFile('/blocks/product-details/Icon.js', 'script');
+    preloadFile('/blocks/product-details-custom/ProductDetailsCarousel.js', 'script');
+    preloadFile('/blocks/product-details-custom/ProductDetailsSidebar.js', 'script');
+    preloadFile('/blocks/product-details-custom/ProductDetailsShimmer.js', 'script');
+    preloadFile('/blocks/product-details-custom/Icon.js', 'script');
 
-    const sku = getSkuFromUrl();
+    const blockConfig = readBlockConfig(document.body.querySelector('main .product-details-custom'));
+    const sku = getSkuFromUrl() || blockConfig.sku;
     window.getProductPromise = getProduct(sku);
   } else if (document.body.querySelector('main .product-list-page')) {
     pageType = 'Category';
