@@ -331,4 +331,8 @@ async function loadPage() {
   loadDelayed();
 }
 
-loadPage();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadPage);
+} else {
+  loadPage();
+}
