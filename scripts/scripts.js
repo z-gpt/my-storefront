@@ -146,7 +146,7 @@ async function loadEager(doc) {
     await runEager(document, { audiences: AUDIENCES }, pluginContext);
   }
 
-  window.adobeDataLayer = window.adobeDataLayer || [];
+  await import('./commerce-events-sdk.js');
 
   let pageType = 'CMS';
   if (document.body.querySelector('main .product-details')) {
@@ -194,21 +194,17 @@ async function loadEager(doc) {
     pageType = 'Checkout';
   }
 
-  window.adobeDataLayer.push({
-    pageContext: {
-      pageType,
-      pageName: document.title,
-      eventType: 'visibilityHidden',
-      maxXOffset: 0,
-      maxYOffset: 0,
-      minXOffset: 0,
-      minYOffset: 0,
-    },
+  window.magentoStorefrontEvents.context.setPage({
+    pageType,
+    pageName: document.title,
+    eventType: 'visibilityHidden',
+    maxXOffset: 0,
+    maxYOffset: 0,
+    minXOffset: 0,
+    minYOffset: 0,
   });
   if (pageType !== 'Product') {
-    window.adobeDataLayer.push((dl) => {
-      dl.push({ event: 'page-view', eventInfo: { ...dl.getState() } });
-    });
+    window.magentoStorefrontEvents.publish.pageView();
   }
 
   const main = doc.querySelector('main');
@@ -248,11 +244,6 @@ async function loadLazy(doc) {
     loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`),
     loadFonts(),
   ]);
-
-  await import('./acdl/adobe-client-data-layer.min.js');
-  if (sessionStorage.getItem('acdl:debug')) {
-    import('./acdl/validate.js');
-  }
 
   trackHistory();
 

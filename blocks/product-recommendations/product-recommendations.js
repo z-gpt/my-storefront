@@ -90,9 +90,9 @@ function renderItems(block, recommendations) {
     return;
   }
 
-  window.adobeDataLayer.push((dl) => {
+  /* window.adobeDataLayer.push((dl) => {
     dl.push({ event: 'recs-unit-impression-render', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
-  });
+  }); */
 
   // Title
   block.querySelector('h2').textContent = recommendation.storefrontLabel;
@@ -108,9 +108,9 @@ function renderItems(block, recommendations) {
   const inViewObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        window.adobeDataLayer.push((dl) => {
+        /* window.adobeDataLayer.push((dl) => {
           dl.push({ event: 'recs-unit-view', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
-        });
+        }); */
         inViewObserver.disconnect();
       }
     });
@@ -166,17 +166,17 @@ async function loadRecommendation(block, context) {
     console.error('Error parsing purchase history', e);
   }
 
-  window.adobeDataLayer.push((dl) => {
+  /* window.adobeDataLayer.push((dl) => {
     dl.push({ event: 'recs-api-request-sent', eventInfo: { ...dl.getState() } });
-  });
+  }); */
 
   recommendationsPromise = performCatalogServiceQuery(recommendationsQuery, context);
   const { recommendations } = await recommendationsPromise;
 
-  window.adobeDataLayer.push((dl) => {
+  /* window.adobeDataLayer.push((dl) => {
     dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
     dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
-  });
+  }); */
 
   renderItems(block, recommendations);
 }
@@ -186,29 +186,30 @@ export default async function decorate(block) {
 
   const context = {};
 
-  function handleProductChanges({ productContext }) {
-    context.currentSku = productContext.sku;
+  function handleProductChanges({ eventInfo }) {
+    context.currentSku = eventInfo.productContext.sku;
     loadRecommendation(block, context);
   }
 
-  function handleCategoryChanges({ categoryContext }) {
-    context.category = categoryContext.name;
+  function handleCategoryChanges({ eventInfo }) {
+    context.category = eventInfo.categoryContext.name;
     loadRecommendation(block, context);
   }
 
-  function handlePageTypeChanges({ pageContext }) {
-    context.pageType = pageContext.pageType;
+  function handlePageTypeChanges({ eventInfo }) {
+    context.pageType = eventInfo.pageContext.pageType;
     loadRecommendation(block, context);
   }
 
-  function handleCartChanges({ shoppingCartContext }) {
-    context.cartSkus = shoppingCartContext.items.map(({ product }) => product.sku);
+  function handleCartChanges({ eventInfo }) {
+    context.cartSkus = eventInfo.shoppingCartContext.items.map(({ product }) => product.sku);
     loadRecommendation(block, context);
   }
+
+  window.magentoStorefrontEvents.subscribe.pageView(handlePageTypeChanges);
+  window.magentoStorefrontEvents.subscribe.productPageView(handleProductChanges);
 
   window.adobeDataLayer.push((dl) => {
-    dl.addEventListener('adobeDataLayer:change', handlePageTypeChanges, { path: 'pageContext' });
-    dl.addEventListener('adobeDataLayer:change', handleProductChanges, { path: 'productContext' });
     dl.addEventListener('adobeDataLayer:change', handleCategoryChanges, { path: 'categoryContext' });
     dl.addEventListener('adobeDataLayer:change', handleCartChanges, { path: 'shoppingCartContext' });
   });

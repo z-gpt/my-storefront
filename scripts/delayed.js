@@ -28,12 +28,11 @@ if (getConsent('commerce-collection')) {
     storefrontTemplate: 'Franklin',
   };
 
-  window.adobeDataLayer.push(
-    { storefrontInstanceContext: config },
-    { eventForwardingContext: { commerce: true, aep: false } },
-  );
-
-  // Load events SDK and collector
-  import('./commerce-events-sdk.js');
+  // Load events collector
+  window.magentoStorefrontEvents.context.setStorefrontInstance(config);
+  window.magentoStorefrontEvents.context.setEventForwarding({
+    commerce: true,
+    aep: false,
+  });
   import('./commerce-events-collector.js');
 }
