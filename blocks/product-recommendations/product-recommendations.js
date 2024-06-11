@@ -191,8 +191,8 @@ export default async function decorate(block) {
     loadRecommendation(block, context);
   }
 
-  function handleCategoryChanges({ eventInfo }) {
-    context.category = eventInfo.categoryContext.name;
+  function handleCategoryChanges({ categoryContext }) {
+    context.category = categoryContext.name;
     loadRecommendation(block, context);
   }
 
@@ -201,8 +201,8 @@ export default async function decorate(block) {
     loadRecommendation(block, context);
   }
 
-  function handleCartChanges({ eventInfo }) {
-    context.cartSkus = eventInfo.shoppingCartContext.items.map(({ product }) => product.sku);
+  function handleCartChanges({ shoppingCartContext }) {
+    context.cartSkus = shoppingCartContext.items.map(({ product }) => product.sku);
     loadRecommendation(block, context);
   }
 
