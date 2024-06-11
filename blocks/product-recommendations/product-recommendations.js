@@ -91,7 +91,9 @@ function renderItems(block, recommendations) {
   }
 
   /* window.adobeDataLayer.push((dl) => {
-    dl.push({ event: 'recs-unit-impression-render', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
+    dl.push({
+      event: 'recs-unit-impression-render',
+      eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
   }); */
 
   // Title
@@ -109,7 +111,9 @@ function renderItems(block, recommendations) {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         /* window.adobeDataLayer.push((dl) => {
-          dl.push({ event: 'recs-unit-view', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
+          dl.push({
+            event: 'recs-unit-view',
+            eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
         }); */
         inViewObserver.disconnect();
       }
@@ -118,7 +122,7 @@ function renderItems(block, recommendations) {
   inViewObserver.observe(block);
 }
 
-const mapUnit = (unit) => ({
+/* const mapUnit = (unit) => ({
   ...unit,
   unitType: 'primary',
   searchTime: 0,
@@ -132,7 +136,7 @@ const mapUnit = (unit) => ({
     type: '?',
     queryType: product.__typename,
   })),
-});
+}); */
 
 async function loadRecommendation(block, context) {
   // Only proceed if all required data is available
