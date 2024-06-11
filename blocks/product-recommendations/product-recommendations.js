@@ -192,6 +192,9 @@ export default async function decorate(block) {
 
   function handleProductChanges({ eventInfo }) {
     context.currentSku = eventInfo.productContext.sku;
+    if (eventInfo.pageContext) {
+      context.pageType = eventInfo.pageContext.pageType;
+    }
     loadRecommendation(block, context);
   }
 

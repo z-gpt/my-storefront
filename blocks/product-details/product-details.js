@@ -158,16 +158,11 @@ export default async function decorate(block) {
     setMetaTags(product);
     document.title = product.name;
 
-    window.adobeDataLayer.push((dl) => {
-      dl.push({
-        productContext: {
-          productId: parseInt(product.externalId, 10) || 0,
-          ...product,
-        },
-      });
-      // TODO: Remove eventInfo once collector is updated
-      dl.push({ event: 'product-page-view', eventInfo: { ...dl.getState() } });
+    window.magentoStorefrontEvents.context.setProduct({
+      productId: parseInt(product.externalId, 10) || 0,
+      ...product,
     });
+    window.magentoStorefrontEvents.publish.productPageView();
   }, { eager: true });
 
   // Render Containers

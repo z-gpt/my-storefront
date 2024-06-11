@@ -246,7 +246,7 @@ export async function getProduct(sku) {
 }
 
 export async function trackHistory() {
-  if (!getConsent('commerce-recommendations')) {
+  /* if (!getConsent('commerce-recommendations')) {
     return;
   }
   // Store product view history in session storage
@@ -270,7 +270,7 @@ export async function trackHistory() {
       purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
       window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-5)));
     });
-  });
+  }); */
 }
 
 export function setJsonLd(data, name) {
