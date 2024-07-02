@@ -52,7 +52,10 @@ mutation(
 `;
 
 export async function getWishlists() {
-  const token = getSignInToken(redirectToSignin);
+  const token = getSignInToken();
+  if (!token) {
+    redirectToSignin();
+  }
 
   const wishlists = await performMonolithGraphQLQuery(
     getWishlistsQuery,
@@ -75,8 +78,12 @@ export async function getWishlists() {
  * @returns {Promise<void>}
  */
 export async function addToWishlist(product, wishlistId) {
+  const token = getSignInToken();
+  if (!token) {
+    redirectToSignin();
+  }
+
   const toWishlist = wishlistId ?? (await getWishlists())[0].id;
-  const token = getSignInToken(redirectToSignin);
 
   const response = await performMonolithGraphQLQuery(
     addProductToWishlistMutation,
