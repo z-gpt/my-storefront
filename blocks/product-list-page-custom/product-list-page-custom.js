@@ -13,6 +13,14 @@ const html = htm.bind(h);
 export const ALLOWED_FILTER_PARAMETERS = ['page', 'pageSize', 'sort', 'sortDirection', 'q', 'price', 'size', 'color_family'];
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
+const DEFAULT_PARAMS = {
+  basePageSize: isMobile ? 6 : 12,
+  page: 1,
+  pageSize: isMobile ? 6 : 12,
+  sort: 'position',
+  sortDirection: 'asc',
+};
+
 export const productSearchQuery = (addCategory = false) => `query ProductSearch(
   $currentPage: Int = 1
   $pageSize: Int = 20
@@ -217,16 +225,16 @@ function parseQueryParams() {
 export async function preloadCategory(category) {
   const queryParams = parseQueryParams();
   window.loadCategoryPromise = loadCategory({
-    pages: 1,
-    currentPage: 1,
+    pages: DEFAULT_PARAMS.page,
+    currentPage: DEFAULT_PARAMS.page,
     category,
-    basePageSize: isMobile ? 6 : 12,
-    currentPageSize: isMobile ? 6 : 12,
+    basePageSize: DEFAULT_PARAMS.basePageSize,
+    currentPageSize: DEFAULT_PARAMS.pageSize,
     locale: 'en-US',
     currency: 'USD',
     type: 'category',
-    sort: 'position',
-    sortDirection: 'asc',
+    sort: DEFAULT_PARAMS.sort,
+    sortDirection: DEFAULT_PARAMS.sortDirection,
     ...queryParams,
   });
 }
@@ -358,6 +366,11 @@ class ProductListPage extends Component {
         return;
       }
 
+      if (params[key] === DEFAULT_PARAMS[key]
+        && !new URLSearchParams(window.location.search).has(key)) {
+        return;
+      }
+
       if (Array.isArray(params[key]) && params[key].length > 0) {
         newParams.set(key, params[key].join(','));
       } else if (!Array.isArray(params[key]) && params[key]) {
@@ -373,7 +386,9 @@ class ProductListPage extends Component {
       }
     });
 
-    window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`);
+    if (newParams.toString() !== curentParams.toString()) {
+      window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`);
+    }
   };
 
   loadState = async (state) => {
