@@ -23,6 +23,7 @@ export interface ProductProps extends Omit<HTMLAttributes<HTMLDivElement>, 'titl
     actions?: VNode;
     quantity?: VNode;
     carouselConfig?: ProductCarouselConfig;
+    zoomType?: 'zoom' | 'overlay';
 }
 export declare const Product: FunctionComponent<ProductProps>;
 export {};

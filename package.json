@@ -7,7 +7,7 @@
     "lint:js": "eslint .",
     "lint:css": "stylelint blocks/**/*.css styles/*.css",
     "lint": "npm run lint:js && npm run lint:css",
-    "start": "aem up --print-index",
+    "start": "aem up --print-index --port=3006",
     "install:dropins": "node postinstall.js",
     "postinstall": "npm run install:dropins",
     "postupdate": "npm run install:dropins"
@@ -34,7 +34,7 @@
   "dependencies": {
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
-    "@dropins/storefront-pdp": "^0.2.3-alpha7",
+    "@dropins/storefront-pdp": "^0.4.0-beta1",
     "@dropins/tools": "^0.25.0"
   }
 }

@@ -209,14 +209,17 @@ export default async function decorate(block) {
         await productRenderer.render(ProductDetails, {
           sku: getSkuFromUrl(),
           carousel: {
-            controls: 'thumbnailsColumn',
+            controls: {
+              desktop: 'thumbnailsColumn',
+              mobile: 'thumbnailsRow'
+            },
             arrowsOnMainImage: true,
-            mobile: true,
             peak: {
               mobile: true,
               desktop: false,
             },
             gap: 'small',
+            zoomType: 'zoom',
           },
           slots: {
             Actions: (ctx) => {
