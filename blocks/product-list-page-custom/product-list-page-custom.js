@@ -9,8 +9,8 @@ import { priceFieldsFragment, performCatalogServiceQuery } from '../../scripts/c
 
 const html = htm.bind(h);
 
-// You can get this list via attributeMetadata query
-export const ALLOWED_FILTER_PARAMETERS = ['page', 'pageSize', 'sort', 'sortDirection', 'q', 'price', 'size', 'color_family'];
+// You can get this list dynamically via attributeMetadata query
+export const ALLOWED_FILTER_PARAMETERS = ['page', 'pageSize', 'sort', 'sortDirection', 'q', 'price', 'size', 'color_family', 'activity', 'color', 'gender'];
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
 const PAGE_SIZE_DESKTOP = 12;
