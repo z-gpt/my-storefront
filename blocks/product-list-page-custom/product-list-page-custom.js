@@ -13,10 +13,12 @@ const html = htm.bind(h);
 export const ALLOWED_FILTER_PARAMETERS = ['page', 'pageSize', 'sort', 'sortDirection', 'q', 'price', 'size', 'color_family'];
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
+const PAGE_SIZE_DESKTOP = 12;
+const PAGE_SIZE_MOBILE = 6;
 const DEFAULT_PARAMS = {
-  basePageSize: isMobile ? 6 : 12,
+  basePageSize: isMobile ? PAGE_SIZE_MOBILE : PAGE_SIZE_DESKTOP,
   page: 1,
-  pageSize: isMobile ? 6 : 12,
+  pageSize: isMobile ? PAGE_SIZE_MOBILE : PAGE_SIZE_DESKTOP,
   sort: 'position',
   sortDirection: 'asc',
 };
@@ -314,7 +316,6 @@ class ProductListPage extends Component {
     let headline = 'Search Results';
     let sort = 'relevance';
     let sortDirection = 'desc';
-    const defaultPageSize = 12;
     if (type === 'category') {
       // Get from H1
       headline = document.querySelector('.default-content-wrapper > h1')?.innerText;
@@ -328,10 +329,10 @@ class ProductListPage extends Component {
 
     this.state = {
       loading: true,
-      pages: 1,
-      currentPage: 1,
-      basePageSize: defaultPageSize,
-      currentPageSize: defaultPageSize,
+      pages: DEFAULT_PARAMS.page,
+      currentPage: DEFAULT_PARAMS.page,
+      basePageSize: DEFAULT_PARAMS.basePageSize,
+      currentPageSize: DEFAULT_PARAMS.pageSize,
       type,
       category: {
         name: headline,
@@ -469,7 +470,7 @@ class ProductListPage extends Component {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             // Load products with real page size
-            this.loadProducts();
+            this.setState({ currentPageSize: PAGE_SIZE_DESKTOP, basePageSize: PAGE_SIZE_DESKTOP });
             scrollToBottomObserver.unobserve(entry.target);
           }
         });
@@ -513,8 +514,22 @@ class ProductListPage extends Component {
   }
 
   handleFilterChange(filters) {
-    this.setState({ filters, currentPage: 1 });
+    const newState = { filters, currentPage: 1 };
+    if (this.state.currentPageSize === PAGE_SIZE_MOBILE) {
+      newState.basePageSize = PAGE_SIZE_DESKTOP;
+      newState.currentPageSize = PAGE_SIZE_DESKTOP;
+    }
+    this.setState(newState);
     this.filterChange = true;
+  }
+
+  handleSortChange(sort, direction) {
+    const newState = { sort, sortDirection: direction };
+    if (this.state.currentPageSize === PAGE_SIZE_MOBILE) {
+      newState.basePageSize = PAGE_SIZE_DESKTOP;
+      newState.currentPageSize = PAGE_SIZE_DESKTOP;
+    }
+    this.setState(newState);
   }
 
   render(props, state) {
@@ -536,7 +551,7 @@ class ProductListPage extends Component {
           currentSort=${state.sort}
           sortDirection=${state.sortDirection}
           type=${type}
-          onSort=${(sort, direction) => this.setState({ sort, sortDirection: direction })}
+          onSort=${this.handleSortChange.bind(this)}
           sortMenuRef=${this.sortMenuRef} />
       </div>
       <div class="mobile-menu">
