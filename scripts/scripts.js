@@ -235,12 +235,14 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
+  const acdlPromise = window.structuredClone ? import('./acdl/adobe-client-data-layer.min.js') : import('./acdl/adobe-client-data-layer-legacy.min.js');
+
   await Promise.all([
     loadHeader(doc.querySelector('header')),
     loadFooter(doc.querySelector('footer')),
     loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`),
     loadFonts(),
-    import('./acdl/adobe-client-data-layer.min.js'),
+    acdlPromise,
   ]);
 
   if (sessionStorage.getItem('acdl:debug')) {
