@@ -1,9 +1,9 @@
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps, SlotMethod, ResolveImageUrlOptions } from '@dropins/tools/types/elsie/src/lib';
-import { ButtonProps } from '@dropins/tools/types/elsie/src/components';
+import { Container, SlotProps, SlotMethod, ResolveImageUrlOptions } from '/scripts/__dropins__/tools/types/elsie/src/lib';
+import { ButtonProps } from '/scripts/__dropins__/tools/types/elsie/src/components';
 import { ProductModel } from '../../data/models';
 
-type IconType = keyof typeof import('@dropins/tools/types/elsie/src/icons');
+type IconType = keyof typeof import('/scripts/__dropins__/tools/types/elsie/src/icons');
 type Values = {
     sku: string;
     quantity: number;

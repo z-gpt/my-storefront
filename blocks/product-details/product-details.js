@@ -1,10 +1,10 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
-import { events } from '@dropins/tools/event-bus.js';
-import { initializers } from '@dropins/tools/initializer.js';
-import * as productApi from '@dropins/storefront-pdp/api.js';
-import { render as productRenderer } from '@dropins/storefront-pdp/render.js';
-import ProductDetails from '@dropins/storefront-pdp/containers/ProductDetails.js';
+import { events } from '/scripts/__dropins__/tools/event-bus.js';
+import { initializers } from '/scripts/__dropins__/tools/initializer.js';
+import * as productApi from '/scripts/__dropins__/storefront-pdp/api.js';
+import { render as productRenderer } from '/scripts/__dropins__/storefront-pdp/render.js';
+import ProductDetails from '/scripts/__dropins__/storefront-pdp/containers/ProductDetails.js';
 
 // Libs
 import {

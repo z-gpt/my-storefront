@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { events } from '@dropins/tools/event-bus.js';
+import { events } from '/scripts/__dropins__/tools/event-bus.js';
 import {
   buildBlock,
   loadHeader,

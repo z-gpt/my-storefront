@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 // Dropin Tools
-import { events } from '@dropins/tools/event-bus.js';
-import { setEndpoint } from '@dropins/tools/fetch-graphql.js';
-import { initializers } from '@dropins/tools/initializer.js';
+import { events } from '/scripts/__dropins__/tools/event-bus.js';
+import { setEndpoint } from '/scripts/__dropins__/tools/fetch-graphql.js';
+import { initializers } from '/scripts/__dropins__/tools/initializer.js';
 
 // Libs
 import { getConfigValue } from './configs.js';
