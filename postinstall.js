@@ -24,6 +24,25 @@ fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) 
   });
 });
 
+function updateImports(dir) {
+  fs.readdirSync(dir, { withFileTypes: true }).forEach((file) => {
+    const filePath = path.join(dir, file.name);
+    if (file.isDirectory()) {
+      updateImports(filePath);
+    }
+    if (file.isFile() && file.name.endsWith('.js')) {
+      let content = fs.readFileSync(filePath, 'utf8');
+
+      // In content replace all occurences of @dropins with /scripts/__dropins__
+      content = content.replaceAll('@dropins/', '/scripts/__dropins__/');
+      fs.writeFileSync(filePath, content);
+    }
+  });
+}
+
+// Update imports in dropins
+updateImports(dropinsDir);
+
 fs.copyFileSync(path.resolve(__dirname, './node_modules/@adobe/magento-storefront-event-collector/dist/index.js'), path.resolve(__dirname, './scripts/commerce-events-collector.js'));
 fs.copyFileSync(path.resolve(__dirname, './node_modules/@adobe/magento-storefront-events-sdk/dist/index.js'), path.resolve(__dirname, './scripts/commerce-events-sdk.js'));
 
