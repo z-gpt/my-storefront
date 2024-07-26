@@ -219,7 +219,6 @@ export default async function decorate(block) {
               desktop: false,
             },
             gap: 'small',
-            zoomType: 'zoom',
           },
           slots: {
             Actions: (ctx) => {
@@ -252,6 +251,7 @@ export default async function decorate(block) {
               });
             },
           },
+          zoomType: 'zoom',
           useACDL: true,
         })(block);
       } catch (e) {
