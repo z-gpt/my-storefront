@@ -18,5 +18,6 @@ describe('Verify stock notification message', () => {
         cy.wait(1000);
         cy.contains('Add to Cart').click();
         cy.contains('The requested qty exceeds the maximum qty allowed in shopping cart').should('be.visible');
+        cy.percySnapshot('PDP page with Notifiction');
     });
 });
