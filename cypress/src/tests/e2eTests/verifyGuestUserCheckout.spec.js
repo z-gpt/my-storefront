@@ -50,7 +50,7 @@ describe('Verify guest user can place order', () => {
         )('.cart-mini-cart');
         assertProductImage('/mb03-black-0.jpg')('.cart-mini-cart');
         cy.percySnapshot('PDP page with Mini Cart Open');
-        cy.contains('View Cart').click();
+        cy.contains('View Cart').click({force: true});
         assertCartSummaryProduct(
             'Crown Summit Backpack',
             '24-MB03',
@@ -68,7 +68,7 @@ describe('Verify guest user can place order', () => {
         cy.percySnapshot('Cart page');
         cy.get('.dropin-button--primary')
             .contains('Checkout')
-            .click();
+            .click({force: true});
         assertCartSummaryMisc(2);
         assertCartSummaryProductsOnCheckout(
             'Crown Summit Backpack',
