@@ -49,6 +49,7 @@ describe('Verify guest user can place order', () => {
             '/products/crown-summit-backpack/24-MB03'
         )('.cart-mini-cart');
         assertProductImage('/mb03-black-0.jpg')('.cart-mini-cart');
+        cy.percySnapshot('PDP page with Mini Cart Open');
         cy.contains('View Cart').click();
         assertCartSummaryProduct(
             'Crown Summit Backpack',
@@ -64,6 +65,7 @@ describe('Verify guest user can place order', () => {
         )('.commerce-cart-summary-wrapper');
         assertProductImage('/mb03-black-0.jpg')('.commerce-cart-summary-wrapper');
         cy.contains('Estimated Shipping').should('be.visible');
+        cy.percySnapshot('Cart page');
         cy.get('.dropin-button--primary')
             .contains('Checkout')
             .click();
@@ -77,6 +79,7 @@ describe('Verify guest user can place order', () => {
             '0'
         );
         cy.contains('Estimated Shipping').should('be.visible')
+        cy.percySnapshot('Checkout Page');
         const apiMethod = 'setGuestEmailOnCart';
         const urlTest = Cypress.env('graphqlEndPoint');
         cy.intercept('POST', urlTest, (req) => {
@@ -98,5 +101,6 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationShippingDetails(customerShippingAddress);
         assertOrderConfirmationBillingDetails(customerShippingAddress);
         assertOrderConfirmationShippingMethod(customerShippingAddress);
+        cy.percySnapshot('Order Confirmation');
     });
 });
