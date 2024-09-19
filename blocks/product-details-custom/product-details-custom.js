@@ -2,6 +2,7 @@
 import {
   Component, Fragment, h, render,
 } from '../../scripts/preact.js';
+import { useState } from '../../scripts/hooks.js';
 
 import htm from '../../scripts/htm.js';
 import Carousel from './ProductDetailsCarousel.js';
