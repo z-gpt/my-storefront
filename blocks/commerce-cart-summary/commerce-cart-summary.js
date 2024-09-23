@@ -36,6 +36,7 @@ export default async function decorate(block) {
             ctx.appendChild(discount);
           });
         }
+        return ctx;
       },
     },
   })(block);
