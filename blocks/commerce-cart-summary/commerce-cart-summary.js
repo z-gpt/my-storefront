@@ -33,10 +33,9 @@ export default async function decorate(block) {
             const discount = document.createElement('div');
             discount.style.color = '#3d3d3d';
             discount.innerText = label;
-            ctx.appendChild(discount);
+            return ctx.appendChild(discount);
           });
         }
-        return ctx;
       },
     },
   })(block);
