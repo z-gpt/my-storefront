@@ -34,7 +34,7 @@ export default async function decorate(block) {
     enableRemoveItem: enableRemoveItem === 'true',
     showDiscount: showDiscount === 'true',
     showSavings: showSavings === 'true',
-    quantityType: quantityType,
-    dropdownOptions: dropdownOptions,
+    quantityType,
+    dropdownOptions,
   })(block);
 }
