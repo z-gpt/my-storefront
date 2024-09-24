@@ -230,8 +230,6 @@ export function getSkuFromUrl() {
 
 const productsCache = {};
 export async function getProduct(sku) {
-  // eslint-disable-next-line no-param-reassign
-  sku = sku.toUpperCase();
   if (productsCache[sku]) {
     return productsCache[sku];
   }
@@ -305,6 +303,15 @@ export async function loadErrorPage(code = 404) {
   const doc = parser.parseFromString(htmlText, 'text/html');
   document.body.innerHTML = doc.body.innerHTML;
   document.head.innerHTML = doc.head.innerHTML;
+
+  // https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript
+  // Point 2. prevent soft 404 errors
+  if (code === 404) {
+    const metaRobots = document.createElement('meta');
+    metaRobots.name = 'robots';
+    metaRobots.content = 'noindex';
+    document.head.appendChild(metaRobots);
+  }
 
   // When moving script tags via innerHTML, they are not executed. They need to be re-created.
   const notImportMap = (c) => c.textContent && c.type !== 'importmap';
