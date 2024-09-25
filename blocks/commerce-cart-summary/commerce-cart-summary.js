@@ -10,17 +10,20 @@ export default async function decorate(block) {
     'hide-attributes': hideAttributes = '',
     'enable-item-quantity-update': enableUpdateItemQuantity = 'false',
     'enable-item-remove': enableRemoveItem = 'true',
-    'show-discount': showDiscount = 'true',
-    'show-savings': showSavings = 'true',
-    'quantity-type': quantityType = 'dropdown',
-    'dropdown-options': dropdownOptions = [
-      { value: '1', text: '1' },
-      { value: '2', text: '2' },
-      { value: '3', text: '3' },
-      { value: '4', text: '4' },
-      { value: '5', text: '5' },
-    ],
+    'show-discount': showDiscount = 'false',
+    'show-savings': showSavings = 'false',
+    'quantity-type': quantityType = 'stepper',
   } = readBlockConfig(block);
+
+  const DROPDOWN_MAX_QUANTITY = 20;
+
+  const dropdownOptions = Array.from(
+    { length: parseInt(DROPDOWN_MAX_QUANTITY, 10) },
+    (_, i) => ({
+      value: `${i + 1}`,
+      text: `${i + 1}`,
+    }),
+  );
 
   block.innerHTML = '';
 
