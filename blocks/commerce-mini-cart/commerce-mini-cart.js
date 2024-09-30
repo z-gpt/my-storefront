@@ -7,8 +7,8 @@ export default async function decorate(block) {
     'start-shopping-url': startShoppingURL = '',
     'cart-url': cartURL = '',
     'checkout-url': checkoutURL = '',
-    'show-discount': showDiscount = 'true',
-    'show-savings': showSavings = 'true',
+    'show-discount': showDiscount = 'false',
+    'show-savings': showSavings = 'false',
   } = readBlockConfig(block);
 
   block.innerHTML = '';
