@@ -19,10 +19,13 @@ export default async function decorate(block) {
 
   const dropdownOptions = Array.from(
     { length: parseInt(DROPDOWN_MAX_QUANTITY, 10) },
-    (_, i) => ({
-      value: `${i + 1}`,
-      text: `${i + 1}`,
-    }),
+    (_, i) => {
+      const quantityOption = i + 1;
+      return {
+        value: `${quantityOption}`,
+        text: `${quantityOption}`,
+      };
+    },
   );
 
   block.innerHTML = '';
