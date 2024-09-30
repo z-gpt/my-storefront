@@ -19,7 +19,9 @@ export default async function decorate(block) {
     routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
     routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
     maxItems: parseInt(maxItems, 10) || undefined,
-    attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
+    attributesToHide: hideAttributes
+      .split(',')
+      .map((attr) => attr.trim().toLowerCase()),
     enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
     enableRemoveItem: enableRemoveItem === 'true',
     slots: {
@@ -28,14 +30,14 @@ export default async function decorate(block) {
         const ProductAttributes = ctx.item?.productAttributes;
 
         ProductAttributes?.forEach((attr) => {
-          if(attr.code === "Activity" | attr.code === "Style Bags") {
-            if(attr.selected_options) {
+          if ((attr.code === 'Activity') || (attr.code === 'Style Bags')) {
+            if (attr.selected_options) {
               const selectedOptions = attr.selected_options
-              .filter((option) => option.label.trim() !== '')
-              .map((option) => option.label)
-              .join(', ');
-              
-              if(selectedOptions) {
+                .filter((option) => option.label.trim() !== '')
+                .map((option) => option.label)
+                .join(', ');
+
+              if (selectedOptions) {
                 const productAttribute = document.createElement('div');
                 productAttribute.innerText = `${attr.code}: ${selectedOptions}`;
                 return ctx.appendChild(productAttribute);
@@ -46,7 +48,8 @@ export default async function decorate(block) {
               return ctx.appendChild(productAttribute);
             }
           }
-        })
+          return null;
+        });
       },
     },
   })(block);
