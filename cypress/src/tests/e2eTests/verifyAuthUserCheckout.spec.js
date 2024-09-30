@@ -16,7 +16,7 @@ import {
     assertOrderConfirmationShippingDetails,
     assertOrderConfirmationBillingDetails,
     assertOrderConfirmationShippingMethod,
-    assertAuthUser,
+    assertAuthUser
 } from '../../assertions';
 import {
 
@@ -30,10 +30,10 @@ import {
 describe('Verify auth user can place order', () => {
     it('Verify auth user can place order', () => {
         cy.visit('/products/hollister-backyard-sweatshirt/MH05');
-        cy.get('[id="Y29uZmlndXJhYmxlLzE4Ni8xNzY="]').click({
+        cy.get('[id="Y29uZmlndXJhYmxlLzI3Ny8yMDI="]').click({
             force: true,
           });
-          cy.get('[id="Y29uZmlndXJhYmxlLzkzLzYy"]').click({
+          cy.get('[id="Y29uZmlndXJhYmxlLzU1Ni81MjM="]').click({
             force: true,
           });
         cy.wait(5000);
@@ -69,6 +69,7 @@ describe('Verify auth user can place order', () => {
         cy.get('.minicart-wrapper').should('be.visible')
         cy.fixture('userInfo').then(({ sign_up }) => {
             signUpUser(sign_up);
+            // TODO - Uncomment when https://jira.corp.adobe.com/browse/USF-1254 will be delivered to boilerplate
             assertAuthUser(sign_up);
         });
         cy.get('.minicart-wrapper').click();

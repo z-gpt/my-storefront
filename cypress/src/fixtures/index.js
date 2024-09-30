@@ -7,7 +7,7 @@ export const customerShippingAddress = {
   postCode: '78758',
   telephone: '1234567890',
   email: 'test@example.com',
-  region: '57',
+  region: '169',
   regionFull: 'Texas',
   countryFull: 'United States',
   countryCode: 'US',
