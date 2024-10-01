@@ -18,7 +18,7 @@ module.exports = defineConfig({
     runMode: 2,
   },
   e2e: {
-    baseUrl: 'https://test-cypress--aem-boilerplate-commerce--hlxsites.aem.page/',
+    baseUrl: 'http://localhost:3000/',
     supportFile: 'src/support/index.js',
     specPattern: 'src/tests/**/*.spec.js',
   },
