@@ -35,6 +35,6 @@ export const customerBillingAddress = {
 export const products = {
   configurable: {
     urlPath: "/products/frankie-sweatshirt/MH04",
-    urlPathWithOptions: "/products/hollister-backyard-sweatshirt/MH04?optionsUIDs=Y29uZmlndXJhYmxlLzU1Ni81MjM%3D%2CY29uZmlndXJhYmxlLzI3Ny8xODQ%3D"
+    urlPathWithOptions: "/products/frankie-sweatshirt/MH04?optionsUIDs=Y29uZmlndXJhYmxlLzU1Ni81Mjk%3D%2CY29uZmlndXJhYmxlLzI3Ny8yMDI%3D"
   },
 }

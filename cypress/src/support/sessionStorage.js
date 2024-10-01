@@ -4,8 +4,7 @@ Cypress.Commands.add('setSessionStorage', (key, value) => {
   });
 });
 
-// Set session storage before all tests
-before(() => {
-  // cy.visit('/');
+// Set session storage before each tests
+beforeEach(() => {
   cy.setSessionStorage('environment', 'stage');
 });
