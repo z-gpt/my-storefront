@@ -14,8 +14,8 @@ jobs:
         with:
           working-directory: cypress
           browser: chrome
-          wait-on: "https://${{BRANCH}}--aem-boilerplate-commerce--hlxsites.aem.page/"
-          config: baseUrl="https://${{BRANCH}}--aem-boilerplate-commerce--hlxsites.aem.page/"
+          wait-on: "https://${{env.github.event.pull_request.head.ref}}--aem-boilerplate-commerce--hlxsites.aem.page/"
+          config: baseUrl="https://${{env.github.event.pull_request.head.ref}}--aem-boilerplate-commerce--hlxsites.aem.page/"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
