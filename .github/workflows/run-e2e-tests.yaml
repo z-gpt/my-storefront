@@ -4,19 +4,16 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Install root dependencies
-        run: npm ci
-      - name: Start server in the background
-        run: npm start &
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install Cypress and run tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: cypress
           browser: chrome
-          wait-on: 'http://localhost:3000'
-          config: baseUrl=http://localhost:3000
+          wait-on: 'https://${github.head_ref}--aem-boilerplate-commerce--hlxsites.aem.page/'
+          config: baseUrl=https://${github.head_ref}--aem-boilerplate-commerce--hlxsites.aem.page/
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
