@@ -70,7 +70,8 @@ describe('Verify auth user can place order', () => {
         cy.fixture('userInfo').then(({ sign_up }) => {
             signUpUser(sign_up);
             // TODO - Uncomment when https://jira.corp.adobe.com/browse/USF-1254 will be delivered to boilerplate
-            assertAuthUser(sign_up);
+            //  assertAuthUser(sign_up);
+            cy.wait(5000);
         });
         cy.get('.minicart-wrapper').click();
         assertCartSummaryProduct(
