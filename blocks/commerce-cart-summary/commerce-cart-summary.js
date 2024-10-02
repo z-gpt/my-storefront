@@ -27,9 +27,9 @@ export default async function decorate(block) {
     slots: {
       ProductAttributes: (ctx) => {
         // Prepend Product Attributes
-        const ProductAttributes = ctx.item?.productAttributes;
+        const productAttributes = ctx.item?.productAttributes;
 
-        ProductAttributes?.forEach((attr) => {
+        productAttributes?.forEach((attr) => {
           if ((attr.code === 'Activity') || (attr.code === 'Style Bags')) {
             if (attr.selected_options) {
               const selectedOptions = attr.selected_options
