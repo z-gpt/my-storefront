@@ -26,16 +26,21 @@ export default async function decorate(block) {
     enableRemoveItem: enableRemoveItem === 'true',
     slots: {
       Footer: (ctx) => {
-        // Prepend Product Promotions
-        const discountLabel = ctx.item?.discount?.label;
-        if (discountLabel) {
-          discountLabel.map((label) => {
+        // Runs on mount
+        const wrapper = document.createElement('div');
+        ctx.appendChild(wrapper);
+
+        // Append Product Promotions on every update
+        ctx.onChange((next) => {
+          wrapper.innerHTML = '';
+
+          next.item?.discount?.label?.forEach((label) => {
             const discount = document.createElement('div');
             discount.style.color = '#3d3d3d';
             discount.innerText = label;
-            return ctx.appendChild(discount);
+            wrapper.appendChild(discount);
           });
-        }
+        });
       },
     },
   })(block);
