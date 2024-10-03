@@ -2,20 +2,13 @@
 import BillToShippingAddress from '@dropins/storefront-checkout/containers/BillToShippingAddress.js';
 import { render as provider } from '@dropins/storefront-checkout/render.js';
 
-import { createElementWithClass } from '../commerce-checkout-heading/commerce-checkout-heading.js';
-
 /*
- * Layout DOM elements
+ * Render Container
  */
-const billToShippingAddress = createElementWithClass(
-  'div',
-  'checkout__bill-to-shipping-address',
-);
-
 export default async function decorate(block) {
-  provider.render(BillToShippingAddress, { hideOnVirtualCart: true })(
-    billToShippingAddress,
-  );
+  block.classList.add('checkout__bill-to-shipping-address');
 
-  return block.appendChild(billToShippingAddress);
+  return provider.render(BillToShippingAddress, {
+    hideOnVirtualCart: true,
+  })(block);
 }

@@ -3,6 +3,24 @@
 
 /* https://cssguidelin.es/#bem-like-naming */
 
+/* .checkout__overlay-spinner {
+    align-items: center;
+    background: var(--color-neutral-50);
+    display: none;
+    height: 100vh;
+    justify-content: center;
+    left: 0;
+    opacity: 0.5;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+.checkout__overlay-spinner--shown {
+    display: flex;
+} */
+
 .checkout__place-order {
     display: grid;
     grid-column: 1 / span 12;

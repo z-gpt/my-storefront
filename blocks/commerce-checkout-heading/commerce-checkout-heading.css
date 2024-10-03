@@ -3,11 +3,16 @@
 
 /* https://cssguidelin.es/#bem-like-naming */
 
-.checkout__content {
+/* .checkout__content {
     display: grid;
     align-items: start;
     grid-template-columns: repeat(var(--grid-4-columns), 1fr);
     gap: var(--spacing-big) var(--grid-4-gutters);
+} */
+
+.checkout__content {
+    display: grid;
+    align-items: start;
 }
 
 .checkout__heading-title {
@@ -34,25 +39,7 @@
     display: flex;
 }
 
-.checkout__error-banner {
-    display: grid;
-    grid-column: 1 / span 12;
-}
-
-.checkout__error-banner:has(> div:empty) {
-    display: none;
-}
-
-.checkout__merged-cart-banner {
-    display: grid;
-    grid-column: 1 / span 12;
-}
-
-.checkout__merged-cart-banner:has(> div:empty) {
-    display: none;
-}
-
-.checkout__main {
+/* .checkout__main {
     display: grid;
     grid-column: 1 / span 7;
     row-gap: var(--spacing-xbig);
@@ -62,20 +49,11 @@
     display: grid;
     grid-column: 9 / span 4;
     gap: var(--spacing-xbig);
-}
+} */
 
 .checkout-empty-cart {
     display: grid;
     grid-template-columns: 1fr;
-}
-
-/* Out of stock */
-.checkout__out-of-stock:has(> div:empty) {
-    display: none;
-}
-
-.checkout__banner {
-    margin-bottom: var(--spacing-xsmall);
 }
 
 /* hide all the consecutive dividers because of missing blocks  */
@@ -87,69 +65,19 @@
     margin: 0;
 }
 
-/* To add into the cart dropin */
-/* .cart-order-summary__taxes.dropin-accordion .dropin-divider {
-    margin: var(--spacing-medium) auto;
-} */
-
 @media only screen and (width >=320px) and (width <=768px) {
     .checkout__content {
         grid-template-columns: 1fr;
         gap: var(--spacing-big) 0;
     }
 
-    .checkout__heading,
-    .checkout__error-banner,
-    .checkout__merged-cart-banner {
+    .checkout__heading {
         grid-column: 1;
     }
 }
 
-/* CartSummaryList */
-
-/* .cart-summary-list {
-    padding: var(--spacing-medium);
-    background-color: var(--color-neutral-200);
-}
-
-.cart-summary-list__heading {
-    display: flex;
-    justify-content: space-between;
-}
-
-.cart-summary-list__heading-text {
-    font: var(--type-headline-2-strong-font);
-    letter-spacing: var(--type-headline-2-strong-letter-spacing);
-    color: var(--color-neutral-800);
-}
-
-.cart-cart-summary-list__heading {
-    row-gap: var(--spacing-small);
-    padding-top: 0;
-}
-
-.cart-cart-summary-list__heading-text {
-    font: var(--type-headline-2-strong-font);
-    letter-spacing: var(--type-headline-2-strong-letter-spacing);
-    color: var(--color-neutral-800);
-}
-
-.cart-summary-list__edit {
-    font: var(--type-body-2-strong-font);
-    letter-spacing: var(--type-body-2-strong-letter-spacing);
-}
-
-.cart-cart-summary-list__content {
-    margin-top: var(--spacing-small);
-} */
-
-/* temporary fix to hide the default cart heading */
-/* [data-testid='default-cart-heading'] {
-    display: none;
-} */
-
 /* Sign-in modal */
-#modal {
+/* #modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -164,7 +92,7 @@
 
 #modal-form {
     width: 800px;
-}
+} */
 
 /* Extra small devices (phones, 600px and down) */
 

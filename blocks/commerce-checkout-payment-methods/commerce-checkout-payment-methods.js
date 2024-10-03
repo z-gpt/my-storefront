@@ -2,18 +2,13 @@
 import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
 import { render as provider } from '@dropins/storefront-checkout/render.js';
 
-import { createElementWithClass } from '../commerce-checkout-heading/commerce-checkout-heading.js';
-
 /*
- * Layout DOM elements
+ * Render Container
  */
-const paymentMethods = createElementWithClass(
-  'div',
-  'checkout__payment-methods',
-);
-
 export default async function decorate(block) {
-  provider.render(PaymentMethods, {
+  block.classList.add('checkout__payment-methods');
+
+  return provider.render(PaymentMethods, {
     // slots: {
     //   Handlers: {
     //     checkmo: (_ctx) => {
@@ -23,7 +18,5 @@ export default async function decorate(block) {
     //     },
     //   },
     // },
-  })(paymentMethods);
-
-  return block.appendChild(paymentMethods);
+  })(block);
 }
