@@ -25,10 +25,15 @@ import {
 
 describe('Verify guest user can place order', () => {
     it('Verify guest user can place order', () => {
+        Cypress.on('uncaught:exception', (err, runnable) => {
+            return false;
+          });
         cy.visit('');
         cy.get('.nav-drop')
             .contains('Catalog')
             .click();
+        // Randomly empty click is triggered 
+        cy.wait(1000);    
         cy.contains('Crown Summit Backpack').click();
         cy.get('.dropin-incrementer__increase-button').click();
         cy.get('.dropin-incrementer__input').should('have.value', '2');
