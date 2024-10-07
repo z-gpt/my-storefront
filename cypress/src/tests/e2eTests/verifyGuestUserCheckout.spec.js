@@ -27,13 +27,13 @@ describe('Verify guest user can place order', () => {
     it('Verify guest user can place order', () => {
         Cypress.on('uncaught:exception', (err, runnable) => {
             return false;
-          });
+        });
         cy.visit('');
         cy.get('.nav-drop')
             .contains('Catalog')
             .click();
         // Randomly empty click is triggered 
-        cy.wait(1000);    
+        cy.wait(1000);
         cy.contains('Crown Summit Backpack').click();
         cy.get('.dropin-incrementer__increase-button').click();
         cy.get('.dropin-incrementer__input').should('have.value', '2');
@@ -55,8 +55,12 @@ describe('Verify guest user can place order', () => {
         )('.cart-mini-cart');
         assertProductImage('/mb03-black-0.jpg')('.cart-mini-cart');
         cy.wait(1000);
-        cy.percySnapshot('PDP page with Mini Cart Open');
-        cy.contains('View Cart').click({force: true});
+        cy
+            .viewport('iphone-x')
+            .percySnapshot('PDP page with Mini Cart Open', { width: 375 })
+            .viewport(1280, 1024)
+            .percySnapshot('PDP page with Mini Cart Open', { width: 1280 });
+        cy.contains('View Cart').click({ force: true });
         assertCartSummaryProduct(
             'Crown Summit Backpack',
             '24-MB03',
@@ -71,10 +75,14 @@ describe('Verify guest user can place order', () => {
         )('.commerce-cart-summary-wrapper');
         assertProductImage('/mb03-black-0.jpg')('.commerce-cart-summary-wrapper');
         cy.contains('Estimated Shipping').should('be.visible');
-        cy.percySnapshot('Cart page');
+        cy
+            .viewport('iphone-x')
+            .percySnapshot('Cart page', { width: 375 })
+            .viewport(1280, 1024)
+            .percySnapshot('Cart page', { width: 1280 });
         cy.get('.dropin-button--primary')
             .contains('Checkout')
-            .click({force: true});
+            .click({ force: true });
         assertCartSummaryMisc(2);
         assertCartSummaryProductsOnCheckout(
             'Crown Summit Backpack',
@@ -85,7 +93,11 @@ describe('Verify guest user can place order', () => {
             '0'
         );
         cy.contains('Estimated Shipping').should('be.visible')
-        cy.percySnapshot('Checkout Page');
+        cy
+            .viewport('iphone-x')
+            .percySnapshot('Checkout Page', { width: 375 })
+            .viewport(1280, 1024)
+            .percySnapshot('Checkout Page', { width: 1280 });
         const apiMethod = 'setGuestEmailOnCart';
         const urlTest = Cypress.env('graphqlEndPoint');
         cy.intercept('POST', urlTest, (req) => {
@@ -107,7 +119,11 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationShippingDetails(customerShippingAddress);
         assertOrderConfirmationBillingDetails(customerShippingAddress);
         assertOrderConfirmationShippingMethod(customerShippingAddress);
-        cy.percySnapshot('Order Confirmation');
+        cy
+            .viewport('iphone-x')
+            .percySnapshot('Order Confirmation', { width: 375 })
+            .viewport(1280, 1024)
+            .percySnapshot('Order Confirmation', { width: 1280 });
         /**
          * TODO - when /order-details page will be ready
          * Redirect to /order-details?orderRef={ORDER_TOKEN}
