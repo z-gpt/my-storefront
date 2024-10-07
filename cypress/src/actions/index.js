@@ -66,6 +66,6 @@ export const signUpUser = (sign_up, isValid = true) => {
   } else {
     cy.get(fields.authFormUserPassword).eq(1).clear().type(sign_up.shortPassword);
   }
-
+  cy.percySnapshot('Auth Create Account');
   createAccount();
 };
