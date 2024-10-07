@@ -1,8 +1,5 @@
 describe('Verify stock notification message', () => {
     it('Verify low stock and max qty allowed notification message', () => {
-        Cypress.on('uncaught:exception', (err, runnable) => {
-            return false;
-          });
         cy.visit('/products/compete-track-tote/24-WB02');
         cy.get('.dropin-incrementer__input').clear().type('1000');
         cy.wait(1000)
