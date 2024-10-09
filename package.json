@@ -35,6 +35,6 @@
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
     "@dropins/storefront-pdp": "^0.4.0-alpha9",
-    "@dropins/tools": "^0.29.0"
+    "@dropins/tools": "^0.30.1-alpha913201"
   }
 }

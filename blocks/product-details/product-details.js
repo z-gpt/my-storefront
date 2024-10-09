@@ -254,9 +254,12 @@ export default async function decorate(block) {
                   },
                 });
               });
+              ctx.onChange(() => {
+                console.log("ONCHANGE")
+              })
             },
           },
-          useACDL: true,
+          // useACDL: true,
         })(block);
       } catch (e) {
         console.error(e);
