@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from '@dropins/storefront-pdp/data/transforms/product-transform';
+export * from './product-transform';
 //# sourceMappingURL=index.d.ts.map
