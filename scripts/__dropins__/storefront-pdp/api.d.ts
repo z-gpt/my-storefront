@@ -1,1 +1,1 @@
-export * from './api/index'
+export * from '@dropins/storefront-pdp/api/index'
