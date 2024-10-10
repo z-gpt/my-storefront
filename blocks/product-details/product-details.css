@@ -40,6 +40,13 @@
   max-height: 80vh;
 }
 
+.product-details__gallery .pdp-overlay__content .pdp-carousel,
+.product-details__gallery .pdp-overlay__content .pdp-carousel--thumbnailsRow
+{
+  max-height: unset;;
+}
+
+
 .product-details__configuration {
   grid-column: 1 / span 4;
   display: grid;
