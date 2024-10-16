@@ -19,10 +19,10 @@ describe('Verify stock notification message', () => {
         cy.contains('Add to Cart').click();
         cy.contains('The requested qty exceeds the maximum qty allowed in shopping cart').should('be.visible');
         cy.get('.nav-search-button').should('be.visible');
-        let domTransformation = 'document.getElementById("nav").setAttribute("aria-expanded", false)';
+        cy.get('[aria-label="Close navigation"]').click({force: true});
         cy
             .viewport('iphone-x')
-            .percySnapshot('PDP page with Low Stock Notifiction Updated', { width: 375, domTransformation })
+            .percySnapshot('PDP page with Low Stock Notifiction Updated', { width: 375 })
             .viewport(1280, 1024)
             .percySnapshot('PDP page with Low Stock Notifiction Updated', { width: 1280 });
     });
