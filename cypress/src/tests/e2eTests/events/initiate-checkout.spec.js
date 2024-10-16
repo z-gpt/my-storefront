@@ -80,11 +80,9 @@ it("is sent on cart page Checkout button click", () => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       // click the checkout button
-      cy.get(
-        "body > main:nth-child(2) > div.section.commerce-cart-order-summary-container > div > div > div > div.cart-order-summary__content > div.cart-order-summary__entry.cart-order-summary__primaryAction > a"
-      )
-        .should("be.visible")
-        .click()
+      cy.get('.dropin-button--primary')
+        .contains('Checkout')
+        .click({ force: true })
         .then(() => {
           cy.get("@adl", { timeout: 1000 }).should((adobeDataLayerPush) => {
             const targetEventIndex = adobeDataLayerPush.args.findIndex(

@@ -7,7 +7,7 @@ export const assertCartSummaryProduct =
     totalPrice,
     productPosition
   ) =>
-    (elem = '.commerce-cart-summary-wrapper') => {
+    (elem = '.dropin-cart-item__wrapper') => {
       cy.get(`${elem} .dropin-cart-item__title`)
         .eq(productPosition)
         .should('contain', productName);
@@ -15,7 +15,7 @@ export const assertCartSummaryProduct =
         .eq(productPosition)
         .should('contain', productSku);
 
-      if (elem === '.commerce-cart-summary-wrapper') {
+      if (elem === '.dropin-cart-item__wrapper') {
         cy.get(`${elem} .dropin-incrementer__input`)
           .eq(productPosition)
           .should('have.value', productQty);
@@ -85,7 +85,7 @@ export const assertOrderSummaryMisc = (subtotal, shipping, total) => {
 export const assertTitleHasLink =
   (productName, productHref) =>
     (elem = '.cart-cart') => {
-      cy.get(`${elem} .dropin-cart-item`)
+      cy.get(`${elem} .dropin-cart-item__title`)
         .contains(productName)
         .should('have.attr', 'href', productHref);
     };

@@ -62,11 +62,11 @@ describe('Verify auth user can place order', () => {
             '$52.00',
             '$52.00',
             '0'
-        )('.commerce-cart-summary-wrapper');
+        )('.dropin-cart-item__wrapper');
         assertTitleHasLink(
             'Hollister Backyard Sweatshirt',
             '/products/hollister-backyard-sweatshirt/MH05'
-        )('.commerce-cart-summary-wrapper');
+        )('.dropin-cart-item__wrapper');
         cy.visit("/customer/create");
         cy.get('.minicart-wrapper').should('be.visible')
         cy.fixture('userInfo').then(({ sign_up }) => {
@@ -125,12 +125,12 @@ describe('Verify auth user can place order', () => {
             '$38.00',
             '$38.00',
             '0'
-        )('.commerce-cart-summary-wrapper');
+        )('.dropin-cart-item__wrapper');
         assertTitleHasLink(
             'Crown Summit Backpack',
             '/products/crown-summit-backpack/24-MB03'
-        )('.commerce-cart-summary-wrapper');
-        assertProductImage('/mb03-black-0.jpg')('.commerce-cart-summary-wrapper');
+        )('.dropin-cart-item__wrapper');
+        assertProductImage('/mb03-black-0.jpg')('.dropin-cart-item__wrapper');
 
         assertCartSummaryProduct(
             'Hollister Backyard Sweatshirt',
@@ -139,12 +139,12 @@ describe('Verify auth user can place order', () => {
             '$52.00',
             '$52.00',
             '1'
-        )('.commerce-cart-summary-wrapper');
+        )('.dropin-cart-item__wrapper');
         assertTitleHasLink(
             'Hollister Backyard Sweatshirt',
             '/products/hollister-backyard-sweatshirt/MH05'
-        )('.commerce-cart-summary-wrapper');
-        assertProductImage('/mh05-white_main_1.jpg')('.commerce-cart-summary-wrapper');
+        )('.dropin-cart-item__wrapper');
+        assertProductImage('/mh05-white_main_1.jpg')('.dropin-cart-item__wrapper');
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.dropin-button--primary')
             .contains('Checkout')

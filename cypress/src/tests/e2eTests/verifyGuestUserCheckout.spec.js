@@ -61,18 +61,19 @@ describe('Verify guest user can place order', () => {
             '$38.00',
             '$76.00',
             '0'
-        )('.commerce-cart-summary-wrapper');
+        )('.dropin-cart-item__wrapper');
         assertTitleHasLink(
             'Crown Summit Backpack',
             '/products/crown-summit-backpack/24-MB03'
-        )('.commerce-cart-summary-wrapper');
-        assertProductImage('/mb03-black-0.jpg')('.commerce-cart-summary-wrapper');
+        )('.dropin-cart-item__wrapper');
+        assertProductImage('/mb03-black-0.jpg')('.dropin-cart-item__wrapper');
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.cart-order-summary--loading').should('not.exist');
         cy.get('.nav-search-button').should('be.visible');
+        cy.get('[aria-label="Close navigation"]').click({force: true});
         cy
-            // .viewport('iphone-x')
-            // .percySnapshot('Cart page', { width: 375 })
+            .viewport('iphone-x')
+            .percySnapshot('Cart page', { width: 375 })
             .viewport(1280, 1024)
             .percySnapshot('Cart page Updated', { width: 1280 });
         cy.get('.dropin-button--primary')
@@ -89,9 +90,10 @@ describe('Verify guest user can place order', () => {
         );
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.nav-search-button').should('be.visible');
+        cy.get('[aria-label="Close navigation"]').click({force: true});
         cy
-            // .viewport('iphone-x')
-            // .percySnapshot('Checkout Page', { width: 375 })
+            .viewport('iphone-x')
+            .percySnapshot('Checkout Page', { width: 375 })
             .viewport(1280, 1024)
             .percySnapshot('Checkout Page Updated', { width: 1280 });
         const apiMethod = 'setGuestEmailOnCart';
@@ -117,8 +119,8 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationShippingMethod(customerShippingAddress);
         cy.get('.nav-search-button').should('be.visible');
         cy
-            // .viewport('iphone-x')
-            // .percySnapshot('Order Confirmation', { width: 375 })
+            .viewport('iphone-x')
+            .percySnapshot('Order Confirmation', { width: 375 })
             .viewport(1280, 1024)
             .percySnapshot('Order Confirmation Updated', { width: 1280 });
         /**
