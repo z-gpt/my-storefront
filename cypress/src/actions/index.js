@@ -20,6 +20,7 @@ export const setGuestShippingAddress = (customerAddress, isSelectableState) => {
 };
 
 export const setGuestBillingAddress = (customerAddress, isSelectableState) => {
+  cy.scrollTo('bottom');
   cy.get(fields.billingFormFirstName).should("not.be.disabled").clear().type(customerAddress.firstName, { force: true });
   cy.get(fields.billingFormLastName).should("not.be.disabled").clear().type(customerAddress.lastName, { force: true });
   cy.get(fields.billingFormStreet).should("not.be.disabled").clear().type(customerAddress.street, { force: true });
