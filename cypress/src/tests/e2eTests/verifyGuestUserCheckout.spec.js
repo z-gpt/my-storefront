@@ -30,7 +30,7 @@ describe('Verify guest user can place order', () => {
             .contains('Catalog')
             .click();
         cy.contains('Crown Summit Backpack')
-            .find("a")
+            .should('be.visible')
             .should("have.attr", "href", "/products/crown-summit-backpack/24-MB03")
             .should("have.text", "Crown Summit Backpack");
         cy.contains('Crown Summit Backpack').click();
