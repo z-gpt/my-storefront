@@ -22,7 +22,7 @@ describe('Verify stock notification message', () => {
         let domTransformation = "(documentElement) => documentElement.querySelector('#nav').aria-expanded = 'false'";
         cy
             .viewport('iphone-x')
-            .percySnapshot('PDP page with Low Stock Notifiction', { width: 375, domTransformation })
+            .percySnapshot('PDP page with Low Stock Notifiction Updated', { width: 375, domTransformation })
             .viewport(1280, 1024)
             .percySnapshot('PDP page with Low Stock Notifiction Updated', { width: 1280 });
     });
