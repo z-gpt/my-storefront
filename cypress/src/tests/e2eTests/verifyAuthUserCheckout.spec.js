@@ -71,7 +71,6 @@ describe('Verify auth user can place order', () => {
         cy.fixture('userInfo').then(({ sign_up }) => {
             signUpUser(sign_up);
             assertAuthUser(sign_up);
-            cy.wait(5000);
         });
         cy.get('.minicart-wrapper').click();
         assertCartSummaryProduct(
@@ -166,12 +165,12 @@ describe('Verify auth user can place order', () => {
             '$52.00',
             '1'
         );
-        setGuestShippingAddress(customerShippingAddress, true);
         uncheckBillToShippingAddress();
-        cy.wait(2000);
+        setGuestShippingAddress(customerShippingAddress, true);
         setGuestBillingAddress(customerBillingAddress, true);
         assertOrderSummaryMisc('$90.00', '$10.00', '$86.50');
         assertSelectedPaymentMethod('checkmo', 0);
+        // 
         cy.wait(5000);
         placeOrder();
         assertOrderConfirmationCommonDetails(customerBillingAddress);

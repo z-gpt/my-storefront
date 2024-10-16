@@ -66,6 +66,7 @@ describe('Verify guest user can place order', () => {
         )('.commerce-cart-summary-wrapper');
         assertProductImage('/mb03-black-0.jpg')('.commerce-cart-summary-wrapper');
         cy.contains('Estimated Shipping').should('be.visible');
+        cy.get('.cart-order-summary--loading').should('not.exist');
         cy
             .viewport('iphone-x')
             .percySnapshot('Cart page', { width: 375 })

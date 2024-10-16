@@ -20,32 +20,22 @@ export const setGuestShippingAddress = (customerAddress, isSelectableState) => {
 };
 
 export const setGuestBillingAddress = (customerAddress, isSelectableState) => {
-  cy.wait(1000);
   cy.get(fields.billingFormFirstName).should("not.be.disabled").clear().type(customerAddress.firstName, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormLastName).should("not.be.disabled").clear().type(customerAddress.lastName, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormStreet).should("not.be.disabled").clear().type(customerAddress.street, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormStreet1).should("not.be.disabled").clear().type(customerAddress.street1, { force: true });
   if (isSelectableState) {
-    cy.wait(1000);
     cy.get(fields.billingFormState).should("not.be.disabled").select(customerAddress.region, { force: true });
   } else {
-    cy.wait(1000);
     cy.get(fields.billingFormInputState).should("not.be.disabled").type(customerAddress.region, { force: true });
   }
-  cy.wait(1000);
   cy.get(fields.billingFormCity).should("not.be.disabled").clear().type(customerAddress.city, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormPostCode).should("not.be.disabled").clear().type(customerAddress.postCode, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormTelephone).should("not.be.disabled").clear().type(customerAddress.telephone, { force: true });
 };
 
 export const uncheckBillToShippingAddress = () => {
-  cy.wait(1000);
-  cy.get(fields.billToShippingAddress).uncheck({ force: true });
+  cy.get(fields.billToShippingAddress).should("not.be.disabled").uncheck({ force: true });
 };
 
 export const placeOrder = () => {
@@ -78,7 +68,6 @@ export const signUpUser = (sign_up, isValid = true) => {
   }
   cy.get('.dropin-picker__select').select('Male');
   // cy.contains('Male').click();
-  cy.wait(2000);
   cy
     .viewport('iphone-x')
     .percySnapshot('Auth Create Account', { width: 375 })
