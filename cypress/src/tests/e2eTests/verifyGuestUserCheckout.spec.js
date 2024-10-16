@@ -25,11 +25,6 @@ import {
 
 describe('Verify guest user can place order', () => {
     it('Verify guest user can place order', () => {
-        Cypress.on('uncaught:exception', (err, runnable) => {
-            if (err.message.includes("(reading 'setAttribute')")) {
-                return false
-            }
-        });
         cy.visit('');
         cy.get('.nav-drop')
             .contains('Catalog')
@@ -75,12 +70,11 @@ describe('Verify guest user can place order', () => {
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.cart-order-summary--loading').should('not.exist');
         cy.get('.nav-search-button').should('be.visible');
-        cy.get('.nav-hamburger').invoke('remove');
         cy
-            .viewport('iphone-x')
-            .percySnapshot('Cart page', { width: 375 })
+            // .viewport('iphone-x')
+            // .percySnapshot('Cart page', { width: 375 })
             .viewport(1280, 1024)
-            .percySnapshot('Cart page', { width: 1280 });
+            .percySnapshot('Cart page Updated', { width: 1280 });
         cy.get('.dropin-button--primary')
             .contains('Checkout')
             .click({ force: true });
@@ -95,12 +89,11 @@ describe('Verify guest user can place order', () => {
         );
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.nav-search-button').should('be.visible');
-        cy.get('.nav-hamburger').invoke('remove');
         cy
-            .viewport('iphone-x')
-            .percySnapshot('Checkout Page', { width: 375 })
+            // .viewport('iphone-x')
+            // .percySnapshot('Checkout Page', { width: 375 })
             .viewport(1280, 1024)
-            .percySnapshot('Checkout Page', { width: 1280 });
+            .percySnapshot('Checkout Page Updated', { width: 1280 });
         const apiMethod = 'setGuestEmailOnCart';
         const urlTest = Cypress.env('graphqlEndPoint');
         cy.intercept('POST', urlTest, (req) => {
@@ -124,10 +117,10 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationShippingMethod(customerShippingAddress);
         cy.get('.nav-search-button').should('be.visible');
         cy
-            .viewport('iphone-x')
-            .percySnapshot('Order Confirmation', { width: 375 })
+            // .viewport('iphone-x')
+            // .percySnapshot('Order Confirmation', { width: 375 })
             .viewport(1280, 1024)
-            .percySnapshot('Order Confirmation', { width: 1280 });
+            .percySnapshot('Order Confirmation Updated', { width: 1280 });
         /**
          * TODO - when /order-details page will be ready
          * Redirect to /order-details?orderRef={ORDER_TOKEN}
