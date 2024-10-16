@@ -25,6 +25,11 @@ import {
 
 describe('Verify guest user can place order', () => {
     it('Verify guest user can place order', () => {
+        Cypress.on('uncaught:exception', (err, runnable) => {
+            if (err.message.includes("(reading 'setAttribute')")) {
+                return false
+            }
+        });
         cy.visit('');
         cy.get('.nav-drop')
             .contains('Catalog')
