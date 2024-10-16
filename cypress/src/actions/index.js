@@ -68,6 +68,8 @@ export const signUpUser = (sign_up, isValid = true) => {
   }
   cy.get('.dropin-picker__select').select('Male');
   // cy.contains('Male').click();
+  cy.get('.nav-search-button').should('be.visible');
+  cy.get('[aria-label="Open navigation]').should('be.visible')
   cy
     .viewport('iphone-x')
     .percySnapshot('Auth Create Account', { width: 375 })

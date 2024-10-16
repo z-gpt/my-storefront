@@ -31,13 +31,14 @@ describe('Verify auth user can place order', () => {
     it('Verify auth user can place order', () => {
         // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
         cy.visit('/products/hollister-backyard-sweatshirt/MH05');
-        cy.get('[id="Y29uZmlndXJhYmxlLzI3Ny8yMDI="]').click({
+        cy.get('[aria-label="Color: White swatch"]').click({
             force: true,
-          });
-          cy.get('[id="Y29uZmlndXJhYmxlLzU1Ni81MjM="]').click({
+        });
+        cy.get('[aria-label="Size: XS swatch"]').click({
             force: true,
-          });
-        cy.wait(5000);
+        });
+        cy.get('[aria-label="Color: White swatch selected"]').should('be.visible');
+        cy.get('[aria-label="Size: XS swatch selected"]').should('be.visible');
         cy.contains('Add to Cart').click();
         cy.get('.minicart-wrapper').click();
         assertCartSummaryProduct(

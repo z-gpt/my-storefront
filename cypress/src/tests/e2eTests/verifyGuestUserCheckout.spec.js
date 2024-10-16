@@ -29,8 +29,10 @@ describe('Verify guest user can place order', () => {
         cy.get('.nav-drop')
             .contains('Catalog')
             .click();
-        // Randomly empty click is triggered 
-        cy.wait(1000);
+        cy.contains('Crown Summit Backpack')
+            .find("a")
+            .should("have.attr", "href", "/products/crown-summit-backpack/24-MB03")
+            .should("have.text", "Crown Summit Backpack");
         cy.contains('Crown Summit Backpack').click();
         cy.get('.dropin-incrementer__increase-button').click();
         cy.get('.dropin-incrementer__input').should('have.value', '2');
@@ -67,6 +69,8 @@ describe('Verify guest user can place order', () => {
         assertProductImage('/mb03-black-0.jpg')('.commerce-cart-summary-wrapper');
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.cart-order-summary--loading').should('not.exist');
+        cy.get('.nav-search-button').should('be.visible');
+        cy.get('[aria-label="Open navigation]').should('be.visible')
         cy
             .viewport('iphone-x')
             .percySnapshot('Cart page', { width: 375 })
@@ -84,7 +88,9 @@ describe('Verify guest user can place order', () => {
             '$76.00',
             '0'
         );
-        cy.contains('Estimated Shipping').should('be.visible')
+        cy.contains('Estimated Shipping').should('be.visible');
+        cy.get('.nav-search-button').should('be.visible');
+        cy.get('[aria-label="Open navigation]').should('be.visible')
         cy
             .viewport('iphone-x')
             .percySnapshot('Checkout Page', { width: 375 })
@@ -111,6 +117,8 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationShippingDetails(customerShippingAddress);
         assertOrderConfirmationBillingDetails(customerShippingAddress);
         assertOrderConfirmationShippingMethod(customerShippingAddress);
+        cy.get('.nav-search-button').should('be.visible');
+        cy.get('[aria-label="Open navigation]').should('be.visible')
         cy
             .viewport('iphone-x')
             .percySnapshot('Order Confirmation', { width: 375 })
