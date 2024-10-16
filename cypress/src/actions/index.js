@@ -75,6 +75,6 @@ export const signUpUser = (sign_up, isValid = true) => {
     .viewport('iphone-x')
     .percySnapshot('Auth Create Account', { width: 375})
     .viewport(1280, 1024)
-    .percySnapshot('Auth Create Account Updated', { width: 1280 });
+    .percySnapshot('Auth Create Account', { width: 1280 });
   createAccount();
 };

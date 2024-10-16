@@ -22,8 +22,8 @@ describe('Verify stock notification message', () => {
         cy.get('[aria-label="Close navigation"]').click({force: true});
         cy
             .viewport('iphone-x')
-            .percySnapshot('PDP page with Low Stock Notifiction Updated', { width: 375 })
+            .percySnapshot('PDP page with Low Stock Notifiction', { width: 375 })
             .viewport(1280, 1024)
-            .percySnapshot('PDP page with Low Stock Notifiction Updated', { width: 1280 });
+            .percySnapshot('PDP page with Low Stock Notifiction', { width: 1280 });
     });
 });
