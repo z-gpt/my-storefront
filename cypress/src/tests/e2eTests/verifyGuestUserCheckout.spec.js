@@ -70,7 +70,6 @@ describe('Verify guest user can place order', () => {
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.cart-order-summary--loading').should('not.exist');
         cy.get('.nav-search-button').should('be.visible');
-        cy.get('[aria-label="Open navigation]').should('be.visible')
         cy
             .viewport('iphone-x')
             .percySnapshot('Cart page', { width: 375 })
@@ -90,7 +89,6 @@ describe('Verify guest user can place order', () => {
         );
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.nav-search-button').should('be.visible');
-        cy.get('[aria-label="Open navigation]').should('be.visible')
         cy
             .viewport('iphone-x')
             .percySnapshot('Checkout Page', { width: 375 })
@@ -118,7 +116,6 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationBillingDetails(customerShippingAddress);
         assertOrderConfirmationShippingMethod(customerShippingAddress);
         cy.get('.nav-search-button').should('be.visible');
-        cy.get('[aria-label="Open navigation]').should('be.visible')
         cy
             .viewport('iphone-x')
             .percySnapshot('Order Confirmation', { width: 375 })

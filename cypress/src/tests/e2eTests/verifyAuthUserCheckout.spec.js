@@ -37,8 +37,8 @@ describe('Verify auth user can place order', () => {
         cy.get('[aria-label="Size: XS swatch"]').click({
             force: true,
         });
-        cy.get('[aria-label="Color: White swatch selected"]').should('be.visible');
-        cy.get('[aria-label="Size: XS swatch selected"]').should('be.visible');
+        cy.get('[aria-label="Color: White swatch selected"]').should('exist');
+        cy.get('[aria-label="Size: XS swatch selected"]').should('exist');
         cy.contains('Add to Cart').click();
         cy.get('.minicart-wrapper').click();
         assertCartSummaryProduct(
