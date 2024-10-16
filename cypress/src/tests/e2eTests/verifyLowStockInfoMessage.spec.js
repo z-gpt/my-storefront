@@ -19,6 +19,7 @@ describe('Verify stock notification message', () => {
         cy.contains('Add to Cart').click();
         cy.contains('The requested qty exceeds the maximum qty allowed in shopping cart').should('be.visible');
         cy.get('.nav-search-button').should('be.visible');
+        cy.get('.nav-hamburger').invoke('remove');
         cy
             .viewport('iphone-x')
             .percySnapshot('PDP page with Low Stock Notifiction', { width: 375 })

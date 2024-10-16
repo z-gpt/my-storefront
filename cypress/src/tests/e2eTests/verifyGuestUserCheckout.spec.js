@@ -70,6 +70,7 @@ describe('Verify guest user can place order', () => {
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.cart-order-summary--loading').should('not.exist');
         cy.get('.nav-search-button').should('be.visible');
+        cy.get('.nav-hamburger').invoke('remove');
         cy
             .viewport('iphone-x')
             .percySnapshot('Cart page', { width: 375 })
@@ -89,6 +90,7 @@ describe('Verify guest user can place order', () => {
         );
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.nav-search-button').should('be.visible');
+        cy.get('.nav-hamburger').invoke('remove');
         cy
             .viewport('iphone-x')
             .percySnapshot('Checkout Page', { width: 375 })
