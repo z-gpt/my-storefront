@@ -27,7 +27,7 @@ it("is sent on mini cart Checkout button click", () => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       // add to cart
-      cy.get("span:contains('Add to Cart')").should("be.visible").click();
+      cy.get(".pdp-product__buttons span:contains('Add to Cart')").should("be.visible").click();
       // click the minicart toggle
       cy.get('button[data-count="1"]').should("be.visible").click();
       // click the checkout button
@@ -56,7 +56,7 @@ it("is sent on cart page Checkout button click", () => {
     products.configurable.urlPathWithOptions
   );
   // add to cart
-  cy.get("span:contains('Add to Cart')").should("be.visible").click();
+  cy.get(".pdp-product__buttons span:contains('Add to Cart')").should("be.visible").click();
   // after mini cart count updates, go to /cart page
   cy.get('button[data-count="1"]').should("be.visible");
   cy.visit("/cart");
@@ -80,9 +80,15 @@ it("is sent on cart page Checkout button click", () => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       // click the checkout button
+<<<<<<< HEAD
       cy.get('.dropin-button--primary')
         .contains('Checkout')
         .click({ force: true })
+=======
+      cy.get(".cart-order-summary__primaryAction > a")
+        .should("be.visible")
+        .click()
+>>>>>>> develop
         .then(() => {
           cy.get("@adl", { timeout: 1000 }).should((adobeDataLayerPush) => {
             const targetEventIndex = adobeDataLayerPush.args.findIndex(
