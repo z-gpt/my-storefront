@@ -24,6 +24,9 @@ import {
 import {
     customerShippingAddress,
 } from '../../fixtures/index';
+import {
+    estimatedShippingCountrySelector,
+  } from '../../fields';
 
 describe('Verify guest user can place order', () => {
     it('Verify guest user can place order', () => {
@@ -71,8 +74,10 @@ describe('Verify guest user can place order', () => {
         assertProductImage('/mb03-black-0.jpg')('.commerce-cart-wrapper');
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.cart-order-summary--loading').should('not.exist');
+        cy.get('.dropin-picker__placeholder').should('not.be.visible');
+        cy.get(estimatedShippingCountrySelector).should('have.value', 'US');
         assertSearchIconVisible();
-        cy.get('[aria-label="Close navigation"]').click({ force: true });
+        closeHamburgerMenu();
         cy.percyTakeSnapshot('Cart page', 1280);
         cy.get('.dropin-button--primary')
             .contains('Checkout')
@@ -89,7 +94,7 @@ describe('Verify guest user can place order', () => {
         cy.contains('Estimated Shipping').should('be.visible');
         assertSearchIconVisible();
         cy.get('.cart-order-summary--loading').should('not.exist');
-        cy.get('[aria-label="Close navigation"]').click({ force: true });
+        closeHamburgerMenu();
         cy.percyTakeSnapshot('Checkout Page', 1280);
         const apiMethod = 'setGuestEmailOnCart';
         const urlTest = Cypress.env('graphqlEndPoint');
