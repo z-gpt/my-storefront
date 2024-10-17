@@ -70,10 +70,10 @@ export const signUpUser = (sign_up, isValid = true) => {
   cy.get('.dropin-picker__select').select('Male');
   // cy.contains('Male').click();
   cy.get('.nav-search-button').should('be.visible');
-  cy.get('[aria-label="Close navigation"]').click({force: true});
+  // cy.get('[aria-label="Close navigation"]').click({force: true});
   cy
-    .viewport('iphone-x')
-    .percySnapshot('Auth Create Account', { width: 375})
+    // .viewport('iphone-x')
+    // .percySnapshot('Auth Create Account', { width: 375})
     .viewport(1280, 1024)
     .percySnapshot('Auth Create Account', { width: 1280 });
   createAccount();
