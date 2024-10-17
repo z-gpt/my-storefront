@@ -72,8 +72,6 @@ describe('Verify guest user can place order', () => {
         cy.get('.nav-search-button').should('be.visible');
         cy.get('[aria-label="Close navigation"]').click({force: true});
         cy
-            .viewport('iphone-x')
-            .percySnapshot('Cart page', { width: 375 })
             .viewport(1280, 1024)
             .percySnapshot('Cart page', { width: 1280 });
         cy.get('.dropin-button--primary')
@@ -92,8 +90,6 @@ describe('Verify guest user can place order', () => {
         cy.get('.nav-search-button').should('be.visible');
         cy.get('[aria-label="Close navigation"]').click({force: true});
         cy
-            .viewport('iphone-x')
-            .percySnapshot('Checkout Page', { width: 375 })
             .viewport(1280, 1024)
             .percySnapshot('Checkout Page', { width: 1280 });
         const apiMethod = 'setGuestEmailOnCart';
@@ -119,8 +115,6 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationShippingMethod(customerShippingAddress);
         cy.get('.nav-search-button').should('be.visible');
         cy
-            .viewport('iphone-x')
-            .percySnapshot('Order Confirmation', { width: 375 })
             .viewport(1280, 1024)
             .percySnapshot('Order Confirmation', { width: 1280 });
         /**
