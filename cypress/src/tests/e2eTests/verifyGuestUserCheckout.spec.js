@@ -70,7 +70,7 @@ describe('Verify guest user can place order', () => {
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.cart-order-summary--loading').should('not.exist');
         cy.get('.nav-search-button').should('be.visible');
-        cy.get('[aria-label="Close navigation"]').click({force: true});
+        cy.get('[aria-label="Close navigation"]').click({ force: true });
         cy
             .viewport(1280, 1024)
             .percySnapshot('Cart page', { width: 1280 });
@@ -88,7 +88,8 @@ describe('Verify guest user can place order', () => {
         );
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.nav-search-button').should('be.visible');
-        cy.get('[aria-label="Close navigation"]').click({force: true});
+        cy.get('.cart-order-summary--loading').should('not.exist');
+        cy.get('[aria-label="Close navigation"]').click({ force: true });
         cy
             .viewport(1280, 1024)
             .percySnapshot('Checkout Page', { width: 1280 });
@@ -114,6 +115,7 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationBillingDetails(customerShippingAddress);
         assertOrderConfirmationShippingMethod(customerShippingAddress);
         cy.get('.nav-search-button').should('be.visible');
+        cy.get('[aria-label="Open navigation"]').should('exist')
         cy
             .viewport(1280, 1024)
             .percySnapshot('Order Confirmation', { width: 1280 });
