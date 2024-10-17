@@ -171,7 +171,6 @@ describe('Verify auth user can place order', () => {
         setGuestBillingAddress(customerBillingAddress, true);
         assertOrderSummaryMisc('$90.00', '$10.00', '$86.50');
         assertSelectedPaymentMethod('checkmo', 0);
-        // 
         cy.wait(5000);
         placeOrder();
         assertOrderConfirmationCommonDetails(customerBillingAddress);

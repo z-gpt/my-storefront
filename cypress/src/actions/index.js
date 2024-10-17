@@ -1,4 +1,7 @@
 import * as fields from '../fields/index';
+import {
+  assertSearchIconVisible,
+} from '../assertions';
 
 export const setGuestEmail = (customerEmail) => {
   cy.get(fields.shippingFormGuestEmail).clear().type(customerEmail);
@@ -68,11 +71,13 @@ export const signUpUser = (sign_up, isValid = true) => {
     cy.get(fields.authFormUserPassword).eq(1).clear().type(sign_up.shortPassword);
   }
   cy.get('.dropin-picker__select').select('Male');
-  // cy.contains('Male').click();
-  cy.get('.nav-search-button').should('be.visible');
-  cy.get('[aria-label="Close navigation"]').click({force: true});
-  cy
-    .viewport(1280, 1024)
-    .percySnapshot('Auth Create Account', { width: 1280 });
+  assertSearchIconVisible();
+  closeHamburgerMenu();
+  cy.percyTakeSnapshot('Auth Create Account', 1280)
   createAccount();
+};
+
+
+export const closeHamburgerMenu = () => {
+  cy.get('[aria-label="Close navigation"]').click({ force: true });
 };

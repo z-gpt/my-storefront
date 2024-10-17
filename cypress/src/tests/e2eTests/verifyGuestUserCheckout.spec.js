@@ -2,6 +2,7 @@ import {
     setGuestEmail,
     setGuestShippingAddress,
     placeOrder,
+    closeHamburgerMenu,
 } from '../../actions';
 import {
     assertCartSummaryProduct,
@@ -14,6 +15,7 @@ import {
     assertOrderConfirmationShippingDetails,
     assertOrderConfirmationBillingDetails,
     assertOrderConfirmationShippingMethod,
+    assertSearchIconVisible,
 } from '../../assertions';
 import {
 
@@ -69,11 +71,9 @@ describe('Verify guest user can place order', () => {
         assertProductImage('/mb03-black-0.jpg')('.dropin-cart-item__wrapper');
         cy.contains('Estimated Shipping').should('be.visible');
         cy.get('.cart-order-summary--loading').should('not.exist');
-        cy.get('.nav-search-button').should('be.visible');
+        assertSearchIconVisible();
         cy.get('[aria-label="Close navigation"]').click({ force: true });
-        cy
-            .viewport(1280, 1024)
-            .percySnapshot('Cart page', { width: 1280 });
+        cy.percyTakeSnapshot('Cart page', 1280);
         cy.get('.dropin-button--primary')
             .contains('Checkout')
             .click({ force: true });
@@ -87,12 +87,10 @@ describe('Verify guest user can place order', () => {
             '0'
         );
         cy.contains('Estimated Shipping').should('be.visible');
-        cy.get('.nav-search-button').should('be.visible');
+        assertSearchIconVisible();
         cy.get('.cart-order-summary--loading').should('not.exist');
         cy.get('[aria-label="Close navigation"]').click({ force: true });
-        cy
-            .viewport(1280, 1024)
-            .percySnapshot('Checkout Page', { width: 1280 });
+        cy.percyTakeSnapshot('Checkout Page', 1280);
         const apiMethod = 'setGuestEmailOnCart';
         const urlTest = Cypress.env('graphqlEndPoint');
         cy.intercept('POST', urlTest, (req) => {
@@ -114,11 +112,9 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationShippingDetails(customerShippingAddress);
         assertOrderConfirmationBillingDetails(customerShippingAddress);
         assertOrderConfirmationShippingMethod(customerShippingAddress);
-        cy.get('.nav-search-button').should('be.visible');
-        cy.get('[aria-label="Open navigation"]').should('exist')
-        cy
-            .viewport(1280, 1024)
-            .percySnapshot('Order Confirmation', { width: 1280 });
+        assertSearchIconVisible();
+        cy.get('[aria-label="Open navigation"]').should('exist');
+        cy.percyTakeSnapshot('Order Confirmation', 1280);
         /**
          * TODO - when /order-details page will be ready
          * Redirect to /order-details?orderRef={ORDER_TOKEN}
