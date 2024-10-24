@@ -119,7 +119,18 @@ export default async function initializeDropins() {
   // Register Initializers (Global)
   initializers.register(initialize, {});
   initializers.register(authApi.initialize, {});
-  initializers.register(cartApi.initialize, {});
+  initializers.register(cartApi.initialize, {
+    models: {
+      CartModel: {
+        transformer: (data) => {
+          const { gift_message: giftMessage } = data;
+          return {
+            giftMessage,
+          }
+        }
+      }
+    }
+  });
 
   // Get current page template metadata
   const templateMeta = getMetadata('template');
