@@ -43,6 +43,11 @@ import { getUserTokenCookie } from '../../scripts/dropins.js';
 import { createModal } from '../modal/modal.js';
 import { CUSTOMER_ACCOUNT_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/constants.js';
 
+import './gift-options-field.js';
+
+import { fetchGraphQl } from '@dropins/storefront-cart/api.js';
+import { refreshCart } from '@dropins/storefront-cart/api.js';
+
 function createElementWithClass(tag, className) {
   const element = document.createElement(tag);
   element.classList.add(className);
@@ -95,6 +100,70 @@ const cartSummaryList = createElementWithClass('div', 'cart-summary-list');
 headingTitle.textContent = 'Checkout';
 heading.replaceChildren(headingTitle, headingDivider);
 
+/**
+ * Extended field - Gift Options
+ */
+const giftOptionsField = document.createElement('gift-options-field');
+
+// Add event listener for cart data events
+events.on('cart/data', (e) => {
+  const { id, giftMessage } = e;
+
+  id && giftOptionsField.setAttribute('cartId', id);
+  giftMessage && giftOptionsField.setAttribute('giftMessage', giftMessage.message);
+  giftMessage && giftOptionsField.setAttribute('fromName', giftMessage.from);
+  giftMessage && giftOptionsField.setAttribute('toName', giftMessage.to);
+}, { eager: true });
+
+// Add submit handler for gift message form
+giftOptionsField.submitGiftMessageHandler = async (event) => {
+  event.preventDefault();
+
+  giftOptionsField.setAttribute('loading', '');
+
+  const form = event.target;
+  const formData = new FormData(form);
+  const cartId = formData.get('cartId');
+  const fromName = formData.get('fromName');
+  const toName = formData.get('toName');
+  const giftMessage = formData.get('giftMessage');
+
+  const giftMessageInput = {
+    from: fromName,
+    to: toName,
+    message: giftMessage,
+  }
+
+  fetchGraphQl(`
+    mutation SET_GIFT_OPTIONS($cartId: String!, $giftMessage: GiftMessageInput!) {
+        setGiftOptionsOnCart(input: {
+          cart_id: $cartId,
+          gift_message: $giftMessage
+          gift_receipt_included: false
+          printed_card_included: false
+        }) {
+					cart {
+						id
+						gift_message {
+							from
+							to
+							message
+						}
+					}
+        }
+      }
+    `,
+    {
+    variables: {
+      cartId,
+      giftMessage: giftMessageInput,
+    },
+  }).then(() => {
+    refreshCart();
+    giftOptionsField.removeAttribute('loading');
+  });
+};
+
 /*
  * Layout responsive handling
  */
@@ -114,6 +183,7 @@ function renderMobileLayout(block) {
     billingForm,
     shippingMethods,
     paymentMethods,
+    giftOptionsField,
     orderSummary,
     placeOrder,
     overlaySpinner,
@@ -132,6 +202,7 @@ function renderDesktopLayout(block) {
     billingForm,
     shippingMethods,
     paymentMethods,
+    giftOptionsField
   );
 
   aside.replaceChildren(orderSummary, cartSummaryList);
