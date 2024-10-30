@@ -4,5 +4,15 @@ import { initialize } from '@dropins/storefront-cart/api.js';
 import { initializeDropin } from './index.js';
 
 initializeDropin(async () => {
-  await initializers.mountImmediately(initialize, {});
+  await initializers.mountImmediately(initialize, {
+    models: {
+      CartModel: {
+       transformer: (data) => {
+         return {
+           orderAttributes: data.amorder_attributes || [],
+         };
+        } 
+      }
+    }
+  });
 })();

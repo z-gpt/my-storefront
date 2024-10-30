@@ -47,6 +47,9 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order-confirmation.js';
 
+// Amasty Extension
+import AmastyIntegration from './amasty-order-attributes.js';
+
 function createElementWithClass(tag, className) {
   const element = document.createElement(tag);
   element.classList.add(className);
@@ -99,6 +102,21 @@ const cartSummaryList = createElementWithClass('div', 'cart-summary-list');
 headingTitle.textContent = 'Checkout';
 heading.replaceChildren(headingTitle, headingDivider);
 
+// Amasty Order Attributes
+
+const amastyOrderAttributesContainer = createElementWithClass('div', 'amasty-order-attributes__container');
+const amastyOrderAttributeElement = AmastyIntegration.render(amastyOrderAttributesContainer);
+
+events.on('cart/data', data => {
+  if (!data) return;
+
+  const { id, orderAttributes } = data;
+
+  amastyOrderAttributeElement.setAttribute('cartId', id);
+
+  amastyOrderAttributeElement.orderAttributes = orderAttributes;
+}, { eager: true });
+
 /*
  * Layout responsive handling
  */
@@ -117,6 +135,7 @@ function renderMobileLayout(block) {
     billToShippingAddress,
     billingForm,
     shippingMethods,
+    amastyOrderAttributesContainer,
     paymentMethods,
     orderSummary,
     placeOrder,
@@ -135,6 +154,7 @@ function renderDesktopLayout(block) {
     billToShippingAddress,
     billingForm,
     shippingMethods,
+    amastyOrderAttributesContainer,
     paymentMethods,
   );
 
