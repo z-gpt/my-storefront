@@ -91,13 +91,13 @@ export default async function decorate(block) {
             ctx.replaceWith(wrapper);
           }
         },
-        Coupons: (ctx) => {
+        Coupons: async (ctx) => {
           const coupons = document.createElement('div');
 
-          provider.render(Coupons)(coupons);
+          await provider.render(Coupons)(coupons);
 
           ctx.appendChild(coupons);
-        },
+          }
       },
     })($summary),
 
