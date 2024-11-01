@@ -97,7 +97,7 @@ export default async function decorate(block) {
           await provider.render(Coupons)(coupons);
 
           ctx.appendChild(coupons);
-          }
+        },
       },
     })($summary),
 
