@@ -74,7 +74,7 @@
     display: none;
 }
 
-.checkout__billing-form:has(> div > div[style*='display: none;']) {
+.checkout__billing-form:has(> div > div[style*="display: none;"]) {
     display: none;
 }
 
@@ -98,8 +98,13 @@
 }
 
 /* To add into the cart dropin **/
-.cart-order-summary__taxes.dropin-accordion .dropin-divider {
+.cart-order-summary__taxes.dropin-accordion .dropin-divider,
+.dropin-accordion-section__heading {
     margin: var(--spacing-medium) auto;
+}
+
+.cart-coupons__accordion {
+    margin-top: var(--spacing-xsmall);
 }
 
 @media only screen and (width >= 320px) and (width <= 768px) {
@@ -161,7 +166,7 @@
 }
 
 /* temporary fix to hide the default cart heading */
-[data-testid='default-cart-heading'] {
+[data-testid="default-cart-heading"] {
     display: none;
 }
 
