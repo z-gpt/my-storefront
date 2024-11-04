@@ -1,8 +1,8 @@
-import { events } from '@dropins/tools/event-bus.js';
-import { initializers } from '@dropins/tools/initializer.js';
-import { initialize } from '@dropins/storefront-order/api.js';
-import { checkIsAuthenticated } from '../configs.js';
-import { initializeDropin } from './index.js';
+import { events } from "@dropins/tools/event-bus.js";
+import { initializers } from "@dropins/tools/initializer.js";
+import { initialize } from "@dropins/storefront-order/api.js";
+import { checkIsAuthenticated } from "../configs.js";
+import { initializeDropin } from "./index.js";
 
 import {
   CUSTOMER_ORDER_DETAILS_PATH,
@@ -11,29 +11,43 @@ import {
   ORDER_DETAILS_PATH,
   ORDER_STATUS_PATH,
   CUSTOMER_PATH,
-} from '../constants.js';
+} from "../constants.js";
 
 initializeDropin(async () => {
   const { pathname, searchParams } = new URL(window.location.href);
   const isAccountPage = pathname.includes(CUSTOMER_PATH);
-  const orderRef = searchParams.get('orderRef');
+  const orderRef = searchParams.get("orderRef");
+  const returnRef = searchParams.get("returnRef");
   const isTokenProvided = orderRef && orderRef.length > 20;
 
   // Handle redirects for user details pages
-  if (pathname === ORDER_DETAILS_PATH
-    || pathname === CUSTOMER_ORDER_DETAILS_PATH
-    || pathname === CUSTOMER_RETURN_DETAILS_PATH) {
-    await handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided);
+  if (
+    pathname === ORDER_DETAILS_PATH ||
+    pathname === CUSTOMER_ORDER_DETAILS_PATH ||
+    pathname === CUSTOMER_RETURN_DETAILS_PATH
+  ) {
+    await handleUserOrdersRedirects(
+      pathname,
+      isAccountPage,
+      orderRef,
+      returnRef,
+      isTokenProvided
+    );
   }
 })();
 
-async function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided) {
+async function handleUserOrdersRedirects(
+  pathname,
+  isAccountPage,
+  orderRef,
+  isTokenProvided
+) {
   let targetPath = null;
   if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
     return;
   }
 
-  events.on('order/error', () => {
+  events.on("order/error", () => {
     if (checkIsAuthenticated()) {
       window.location.href = CUSTOMER_ORDERS_PATH;
     } else if (isTokenProvided) {
@@ -64,6 +78,7 @@ async function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTo
   } else {
     await initializers.mountImmediately(initialize, {
       orderRef,
+      returnRef,
     });
   }
 }
