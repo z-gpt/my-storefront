@@ -56,6 +56,7 @@ function convertToDatetimeLocal(value) {
 class AmastyOrderAttributes extends HTMLElement {
     
   _orderAttributes = [];
+  _loading = true;
 
   constructor() {
     super();
@@ -95,11 +96,14 @@ class AmastyOrderAttributes extends HTMLElement {
     deliveryDate && deliveryDateInput.setAttribute("value", convertToDatetimeLocal(deliveryDate.value));
 
     deliveryDateInput.addEventListener("change", (event) => {
+      deliveryDateInput.setAttribute('disabled', '');
       console.log("delivery date changed", event.target.value);
       const value = event.target.value;
       const cartId = this.getAttribute("cartId");
 
-      fetchGraphQl(SET_CART_ATTRIBUTE, { variables: { cartId, dateTime: formatDateTime(value) } });
+      fetchGraphQl(SET_CART_ATTRIBUTE, { variables: { cartId, dateTime: formatDateTime(value) } }).then(() => {
+        deliveryDateInput.removeAttribute('disabled');
+      });
     });
   }
 

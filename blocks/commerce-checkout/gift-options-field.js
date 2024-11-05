@@ -4,6 +4,8 @@ const sdkStyle = document.querySelector('style[data-dropin="sdk"]');
 const checkoutStyle = document.querySelector('style[data-dropin="checkout"]');
 
 class GiftOptionsField extends HTMLElement {
+    static observedAttributes = ['cartid', 'giftmessage', 'fromname', 'toname', 'loading'];
+
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
@@ -31,21 +33,40 @@ class GiftOptionsField extends HTMLElement {
             </form>
         `;
 
-
-        this._displayMessageTemplate = document.createElement('template');
-
-        this._displayMessageTemplate.innerHTML = `
-            <p id="gift-message"></p>
-        `;
         this.render();
-    }
-
-    static get observedAttributes() {
-        return ['cartId', 'giftMessage', 'fromName', 'toName', 'loading'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        this.render();
+        const toName = this.shadowRoot.querySelector('input[name="toName"]');
+        const fromName = this.shadowRoot.querySelector('input[name="fromName"]');
+        const giftMessage = this.shadowRoot.querySelector('textarea[name="giftMessage"]');
+        const cartId = this.shadowRoot.querySelector('input[name="cartId"]');
+
+        switch (name) {
+            case 'cartid':
+                cartId.value = newValue;
+                break;
+            case 'giftmessage':
+                giftMessage.value = newValue;
+                break;
+            case 'fromname':
+                fromName.value = newValue;
+                break;
+            case 'toname':
+                toName.value = newValue;
+                break;
+            case 'loading':
+                if (newValue) {
+                    toName?.setAttribute('disabled', '');
+                    fromName?.setAttribute('disabled', '');
+                    giftMessage?.setAttribute('disabled', '');
+                } else {
+                    toName?.removeAttribute('disabled');
+                    fromName?.removeAttribute('disabled');
+                    giftMessage?.removeAttribute('disabled');
+                }
+                break;
+        }
     }
 
     render() {

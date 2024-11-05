@@ -108,27 +108,16 @@ const cartSummaryList = createElementWithClass('div', 'cart-summary-list');
 headingTitle.textContent = 'Checkout';
 heading.replaceChildren(headingTitle, headingDivider);
 
-<<<<<<< HEAD
 /**
  * Extended field - Gift Options
  */
 const giftOptionsField = document.createElement('gift-options-field');
-
-// Add event listener for cart data events
-events.on('cart/data', (e) => {
-  const { id, giftMessage } = e;
-
-  id && giftOptionsField.setAttribute('cartId', id);
-  giftMessage && giftOptionsField.setAttribute('giftMessage', giftMessage.message);
-  giftMessage && giftOptionsField.setAttribute('fromName', giftMessage.from);
-  giftMessage && giftOptionsField.setAttribute('toName', giftMessage.to);
-}, { eager: true });
+giftOptionsField.setAttribute('loading', 'true');
 
 // Add submit handler for gift message form
 giftOptionsField.submitGiftMessageHandler = async (event) => {
   event.preventDefault();
 
-  giftOptionsField.setAttribute('loading', '');
 
   const form = event.target;
   const formData = new FormData(form);
@@ -136,6 +125,9 @@ giftOptionsField.submitGiftMessageHandler = async (event) => {
   const fromName = formData.get('fromName');
   const toName = formData.get('toName');
   const giftMessage = formData.get('giftMessage');
+
+  giftOptionsField.setAttribute('loading', 'true');
+  console.log('form data', cartId, fromName, toName, giftMessage);
 
   const giftMessageInput = {
     from: fromName,
@@ -173,23 +165,31 @@ giftOptionsField.submitGiftMessageHandler = async (event) => {
   });
 };
 
-=======
 // Amasty Order Attributes
 
 const amastyOrderAttributesContainer = createElementWithClass('div', 'amasty-order-attributes__container');
 const amastyOrderAttributeElement = AmastyIntegration.render(amastyOrderAttributesContainer);
 
+// Event listener to hydrate the new fields with the cart data
 events.on('cart/data', data => {
   if (!data) return;
 
-  const { id, orderAttributes } = data;
+  const { id, orderAttributes, giftMessage } = data;
 
+  // Update amastry order attributes field
   amastyOrderAttributeElement.setAttribute('cartId', id);
-
   amastyOrderAttributeElement.orderAttributes = orderAttributes;
+
+  // Update gift options fields
+  giftOptionsField.setAttribute('cartId', id);
+  if(giftMessage) {
+    giftOptionsField.setAttribute('giftmessage', giftMessage.message);
+    giftOptionsField.setAttribute('fromname', giftMessage.from);
+    giftOptionsField.setAttribute('toname', giftMessage.to);
+  }
+  giftOptionsField.removeAttribute('loading');
 }, { eager: true });
 
->>>>>>> example_amasty-integration
 /*
  * Layout responsive handling
  */
