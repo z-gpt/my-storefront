@@ -115,6 +115,10 @@ class AmastyOrderAttributes extends HTMLElement {
                 letter-spacing: var(--type-headline-2-default-letter-spacing);
                 margin: 0 0 var(--spacing-medium) 0;
             }
+            .amasty-order-attributes__delivery-date-label {
+                display: block;
+                margin: 0 0 var(--spacing-small) 0;
+            }
         `;
 
     if (!this.shadowRoot) return;
@@ -122,8 +126,8 @@ class AmastyOrderAttributes extends HTMLElement {
     this.shadowRoot.innerHTML = `
             <h2 class="amasty-order-attributes__title">Order Attributes</h2>
             <div class="amasty-order-attributes__attribute">
-                <label for="deliveryDate">Delivery Date</label>
-                <input type="datetime-local" name="deliveryDate"/>
+                <label class="amasty-order-attributes__delivery-date-label" for="deliveryDate">Delivery Date</label>
+                <input type="datetime-local" class="dropin-input dropin-input--primary dropin-input--medium" name="deliveryDate"/>
             </div>
         `;
 
