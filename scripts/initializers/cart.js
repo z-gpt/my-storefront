@@ -4,5 +4,16 @@ import { initialize } from '@dropins/storefront-cart/api.js';
 import { initializeDropin } from './index.js';
 
 initializeDropin(async () => {
-  await initializers.mountImmediately(initialize, {});
+  await initializers.mountImmediately(initialize, {
+    models: {
+      CartModel: {
+        transformer: (data) => {
+          const { gift_message: giftMessage } = data;
+          return {
+            giftMessage,
+          }
+        }
+      }
+    }
+  });
 })();
