@@ -262,6 +262,10 @@ ${t}
     to
     message
   }
+  amorder_attributes {
+    attribute_code
+    value
+  }
 }
 ${a}`);
 export {

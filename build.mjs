@@ -11,7 +11,15 @@ overrideGQLOperations([
           to
           message
         }
-      }`
+      }`,
+      `
+        fragment CART_FRAGMENT on Cart {
+          amorder_attributes {
+            attribute_code
+            value
+          }
+        }
+      `
     ],
   },
 ]);

@@ -8,9 +8,10 @@ initializeDropin(async () => {
     models: {
       CartModel: {
         transformer: (data) => {
-          const { gift_message: giftMessage } = data;
+          const { gift_message: giftMessage, amorder_attributes: orderAttributes } = data;
           return {
             giftMessage,
+            orderAttributes,
           }
         }
       }

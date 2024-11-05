@@ -47,11 +47,14 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order-confirmation.js';
 
-// Gift Options Field
+// Gift Options Extension
 import './gift-options-field.js';
 
 import { fetchGraphQl } from '@dropins/storefront-cart/api.js';
 import { refreshCart } from '@dropins/storefront-cart/api.js';
+
+// Amasty Extension
+import AmastyIntegration from './amasty-order-attributes.js';
 
 function createElementWithClass(tag, className) {
   const element = document.createElement(tag);
@@ -105,6 +108,7 @@ const cartSummaryList = createElementWithClass('div', 'cart-summary-list');
 headingTitle.textContent = 'Checkout';
 heading.replaceChildren(headingTitle, headingDivider);
 
+<<<<<<< HEAD
 /**
  * Extended field - Gift Options
  */
@@ -169,6 +173,23 @@ giftOptionsField.submitGiftMessageHandler = async (event) => {
   });
 };
 
+=======
+// Amasty Order Attributes
+
+const amastyOrderAttributesContainer = createElementWithClass('div', 'amasty-order-attributes__container');
+const amastyOrderAttributeElement = AmastyIntegration.render(amastyOrderAttributesContainer);
+
+events.on('cart/data', data => {
+  if (!data) return;
+
+  const { id, orderAttributes } = data;
+
+  amastyOrderAttributeElement.setAttribute('cartId', id);
+
+  amastyOrderAttributeElement.orderAttributes = orderAttributes;
+}, { eager: true });
+
+>>>>>>> example_amasty-integration
 /*
  * Layout responsive handling
  */
@@ -187,6 +208,7 @@ function renderMobileLayout(block) {
     billToShippingAddress,
     billingForm,
     shippingMethods,
+    amastyOrderAttributesContainer,
     paymentMethods,
     giftOptionsField,
     orderSummary,
@@ -206,6 +228,7 @@ function renderDesktopLayout(block) {
     billToShippingAddress,
     billingForm,
     shippingMethods,
+    amastyOrderAttributesContainer,
     paymentMethods,
     giftOptionsField
   );
