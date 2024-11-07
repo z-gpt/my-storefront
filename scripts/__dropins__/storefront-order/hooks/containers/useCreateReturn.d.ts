@@ -8,7 +8,6 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
     loading: boolean;
     formsRef: import('preact/hooks').MutableRef<RefObject<HTMLFormElement>[]>;
     taxConfig: TaxTypes;
-    orderReturnInfo: any;
     attributesList: [] | AttributesFormModel[];
     selectedProductList: [] | OrderItemModel[];
     itemsEligibleForReturn: OrderItemModel[];
