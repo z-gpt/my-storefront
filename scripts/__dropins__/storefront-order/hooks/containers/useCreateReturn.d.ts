@@ -16,7 +16,6 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
     selectedProductList: [] | OrderItemModel[];
     itemsEligibleForReturn: OrderItemModel[];
     handleSelectedProductList: (orderItem: OrderItemModel) => void;
-    moveToAttributesStep: () => void;
     handleSetQuantity: (value: number, productSku: string) => void;
     handleChangeStep: (value: StepsTypes) => void;
     onSubmit: (_: SubmitEvent, isValid: boolean) => Promise<void | null>;

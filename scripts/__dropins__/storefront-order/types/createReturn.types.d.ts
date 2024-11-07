@@ -38,7 +38,6 @@ export interface ReturnOrderProductListProps {
     handleSelectedProductList: (product: any) => void;
     showConfigurableOptions?: (options: options | {}) => options;
     handleSetQuantity: (value: number, productSku: string) => void;
-    moveToAttributesStep: () => void;
     handleChangeStep: (value: StepsTypes) => void;
 }
 export interface ReturnReasonFormProps {

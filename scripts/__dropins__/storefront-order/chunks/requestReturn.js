@@ -1,4 +1,4 @@
-import{h as n}from"./network-error.js";import{f as u,h as s}from"./fetch-graphql.js";import{t as c}from"./transform-attributes-form.js";import{a as m}from"./convertCase.js";const l=`
+import{h as i}from"./network-error.js";import{f as s,h as o}from"./fetch-graphql.js";import{t as c}from"./transform-attributes-form.js";import{a as m}from"./convertCase.js";const d=`
   query GET_ATTRIBUTES_LIST($entityType: AttributeEntityTypeEnum!) {
     attributesList(entityType: $entityType) {
       items {
@@ -31,14 +31,15 @@ import{h as n}from"./network-error.js";import{f as u,h as s}from"./fetch-graphql
       }
     }
   }
-`,E=async r=>await u(l,{method:"GET",cache:"force-cache",variables:{entityType:r}}).then(e=>{var t;return(t=e.errors)!=null&&t.length?s(e.errors):c(e.data.attributesList.items??[])}).catch(n),T=`
+`,E=async u=>await s(d,{method:"GET",cache:"force-cache",variables:{entityType:u}}).then(t=>{var e,r,a;return(e=t.errors)!=null&&e.length?o(t.errors):c(((a=(r=t==null?void 0:t.data)==null?void 0:r.attributesList)==null?void 0:a.items)??[])}).catch(i),l=`
 mutation REQUEST_RETURN_ORDER($input: RequestReturnInput!) {
   requestReturn(input: $input) {
     return {
       uid
       status
       number
+      created_at
     }
   }
 }
-`,p=async r=>{const e=m(r,"snakeCase",{});return await u(T,{method:"POST",variables:{input:e}}).then(t=>{var a;if((a=t.errors)!=null&&a.length)return s(t.errors);const{created_at:i,...o}=t.data.requestReturn.return;return{...o,createdAt:i}}).catch(n)};export{E as g,p as r};
+`,f=async u=>{const t=m(u,"snakeCase",{});return await s(l,{method:"POST",variables:{input:t}}).then(e=>{var n;if((n=e.errors)!=null&&n.length)return o(e.errors);const{created_at:r,...a}=e.data.requestReturn.return;return{...a,createdAt:r}}).catch(i)};export{E as g,f as r};

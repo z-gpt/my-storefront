@@ -6,5 +6,6 @@ export * from './containers/useReturnsList';
 export * from './useIsMobile';
 export * from './containers/useOrderProductList';
 export * from './containers/useOrderCostSummary';
+export * from './containers/useCreateReturn';
 export * from './useInLineAlert';
 //# sourceMappingURL=index.d.ts.map
