@@ -24,11 +24,27 @@ export default async function decorate(block) {
     'enable-estimate-shipping': enableEstimateShipping = 'false',
     'start-shopping-url': startShoppingURL = '',
     'checkout-url': checkoutURL = '',
+    'show-discount': showDiscount = 'false',
+    'show-savings': showSavings = 'false',
+    'quantity-type': quantityType = 'stepper',
   } = readBlockConfig(block);
 
   const cart = Cart.getCartDataFromCache();
 
   const isEmptyCart = isCartEmpty(cart);
+
+  const DROPDOWN_MAX_QUANTITY = 20;
+
+  const dropdownOptions = Array.from(
+    { length: parseInt(DROPDOWN_MAX_QUANTITY, 10) },
+    (_, i) => {
+      const quantityOption = i + 1;
+      return {
+        value: `${quantityOption}`,
+        text: `${quantityOption}`,
+      };
+    },
+  );
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -76,6 +92,10 @@ export default async function decorate(block) {
       attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
+      showDiscount: showDiscount === 'true',
+      showSavings: showSavings === 'true',
+      quantityType,
+      dropdownOptions,
     })($list),
 
     // Order Summary
