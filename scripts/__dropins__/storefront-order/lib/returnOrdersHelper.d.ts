@@ -14,6 +14,22 @@ declare const returnStatus: {
 };
 type ReturnStatusKey = keyof typeof returnStatus;
 type ReturnStatusValue = (typeof returnStatus)[ReturnStatusKey];
+type KeyValueObject = {
+    [key: string]: any;
+};
+export declare const cleanObjectKeys: (obj: KeyValueObject) => KeyValueObject;
+export declare const modifyFieldsConfig: (fieldsConfig: any, index: number) => any;
+export declare const replicateEntries: (objects: any[], n: number) => any[];
+export declare const normalizeAttributes: (obj: Record<string, string>) => {
+    selectedCustomAttributes: Array<{
+        attributeCode: string;
+        value: string;
+    }>;
+    enteredCustomAttributes: Array<{
+        attributeCode: string;
+        value: string;
+    }>;
+};
 export declare const formatReturnStatus: (str: string) => ReturnStatusValue | '';
 export {};
 //# sourceMappingURL=returnOrdersHelper.d.ts.map

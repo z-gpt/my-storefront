@@ -1,5 +1,29 @@
 declare const _default: {
   "Order": {
+    "CreateReturn": {
+      "headerText": "Return items",
+      "downloadableCount": "Files",
+      "returnedItems": "Returned items:",
+      "stockStatus": {
+        "inStock": "In stock",
+        "outOfStock": "Out of stock"
+      },
+      "giftCard": {
+        "sender": "Sender",
+        "recipient": "Recipient",
+        "message": "Note"
+      },
+      "success": {
+        "title": "Success message",
+        "message": "Success message text goes here"
+      },
+      "buttons": {
+        "nextStep": "Continue",
+        "backStep": "Back",
+        "submit": "Submit return",
+        "backStore": "Back to store"
+      }
+    },
     "OrderCostSummary": {
       "headerText": "Order summary",
       "headerReturnText": "Return summary",
