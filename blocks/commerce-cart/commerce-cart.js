@@ -1,4 +1,5 @@
 import { events } from '@dropins/tools/event-bus.js';
+import { AlertBanner, Icon, provider as UI } from '@dropins/tools/components.js';
 import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
 
@@ -11,7 +12,8 @@ import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 // Initializers
 import '../../scripts/initializers/cart.js';
 
-import { readBlockConfig } from '../../scripts/aem.js';
+import { getMetadata, readBlockConfig } from '../../scripts/aem.js';
+import { loadFragment } from '../fragment/fragment.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -87,7 +89,27 @@ export default async function decorate(block) {
           if (enableEstimateShipping === 'true') {
             const wrapper = document.createElement('div');
             await provider.render(EstimateShipping, {})(wrapper);
-            ctx.replaceWith(wrapper);
+            ctx.appendChild(wrapper);
+          }
+
+          // Promo Banner
+          const promotion = getMetadata('promotion-banner');
+
+          if (promotion) {
+            await loadFragment(promotion).then(async (promoFragment) => {
+              const $promo = document.createElement('div');
+
+              await UI.render(AlertBanner, {
+                className: 'cart__promo-banner',
+                variant: 'success',
+                icon: Icon({ source: 'CheckWithCircle', size: 32 }),
+              })($promo);
+
+              const content = promoFragment.querySelector('.default-content-wrapper');
+              $promo.querySelector('.dropin-alert-banner__content').appendChild(content);
+
+              ctx.appendSibling($promo);
+            });
           }
         },
       },
