@@ -24,9 +24,6 @@ export default async function decorate(block) {
     'enable-estimate-shipping': enableEstimateShipping = 'false',
     'start-shopping-url': startShoppingURL = '',
     'checkout-url': checkoutURL = '',
-    'show-discount': showDiscount = 'false',
-    'show-savings': showSavings = 'false',
-    'quantity-type': quantityType = 'stepper',
   } = readBlockConfig(block);
 
   const cart = Cart.getCartDataFromCache();
@@ -92,9 +89,9 @@ export default async function decorate(block) {
       attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
-      showDiscount: showDiscount === 'true',
-      showSavings: showSavings === 'true',
-      quantityType,
+      showDiscount: 'true',
+      showSavings: 'true',
+      quantityType: 'dropdown',
       dropdownOptions,
     })($list),
 
