@@ -12,7 +12,7 @@ import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 // Initializers
 import '../../scripts/initializers/cart.js';
 
-import { getMetadata, readBlockConfig } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 export default async function decorate(block) {
@@ -26,6 +26,7 @@ export default async function decorate(block) {
     'enable-estimate-shipping': enableEstimateShipping = 'false',
     'start-shopping-url': startShoppingURL = '',
     'checkout-url': checkoutURL = '',
+    'promo-banner': promotion,
   } = readBlockConfig(block);
 
   const cart = Cart.getCartDataFromCache();
@@ -93,8 +94,6 @@ export default async function decorate(block) {
           }
 
           // Promo Banner
-          const promotion = getMetadata('promotion-banner');
-
           if (promotion) {
             await loadFragment(promotion).then(async (promoFragment) => {
               const $promo = document.createRange().createContextualFragment(`
