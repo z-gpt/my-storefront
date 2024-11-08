@@ -1,5 +1,5 @@
 import { events } from '@dropins/tools/event-bus.js';
-import { AlertBanner, Icon, provider as UI } from '@dropins/tools/components.js';
+import { Icon, provider as UI } from '@dropins/tools/components.js';
 import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
 
@@ -97,16 +97,20 @@ export default async function decorate(block) {
 
           if (promotion) {
             await loadFragment(promotion).then(async (promoFragment) => {
-              const $promo = document.createElement('div');
+              const $promo = document.createRange().createContextualFragment(`
+                <div class="cart__promo-banner">
+                  <div class="cart__promo-banner__icon"></div>
+                  <div class="cart__promo-banner__content"></div>
+                </div>            
+              `);
 
-              await UI.render(AlertBanner, {
-                className: 'cart__promo-banner',
-                variant: 'success',
-                icon: Icon({ source: 'CheckWithCircle', size: 32 }),
-              })($promo);
+              const $icon = $promo.querySelector('.cart__promo-banner__icon');
+
+              await UI.render(Icon, { source: 'CheckWithCircle' })($icon);
 
               const content = promoFragment.querySelector('.default-content-wrapper');
-              $promo.querySelector('.dropin-alert-banner__content').appendChild(content);
+              const $content = $promo.querySelector('.cart__promo-banner__content');
+              $content.appendChild(content);
 
               ctx.appendSibling($promo);
             });

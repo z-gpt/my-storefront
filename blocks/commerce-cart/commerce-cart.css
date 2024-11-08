@@ -16,21 +16,28 @@
 }
 
 /* Promo Banner */
-.cart__promo-banner .dropin-alert-banner__actions {
-  display: none;
+
+.cart__promo-banner {
+  padding: var(--spacing-small);
+  background: var(--color-positive-800);
+  color: var(--color-positive-200);
+  display: flex;
+  gap: var(--spacing-small);
+  align-items: center;
 }
 
-.cart__promo-banner .default-content-wrapper {
-  padding: 0 var(--spacing-small);
+.cart__promo-banner__icon svg {
+  width: 3rem;
+  height: 3rem;
 }
 
-.cart__promo-banner .dropin-alert-banner__content h1 {
+.cart__promo-banner__content h1 {
   font: var(--type-headline-1-font);
   padding: 0;
   margin: 0;
 }
 
-.cart__promo-banner .dropin-alert-banner__content p {
+.cart__promo-banner__content p {
   font: var(--type-body-1-default-font);
   margin: 0;
 }
