@@ -24,7 +24,7 @@ export interface CartSummaryItemProps {
     translations: Record<string, string>;
     product: OrderItemModel;
     taxConfig: TaxTypes;
-    isReturnProductList: boolean;
+    isReturnProductList?: boolean;
     onQuantity?: (value: number) => void;
     showConfigurableOptions?: (options: options | {}) => options;
     routeProductDetails?: (product: any) => string;
