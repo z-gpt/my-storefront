@@ -115,7 +115,7 @@ declare const _default: {
     "OrderProductListContent": {
       "cancelledTitle": "Cancelled",
       "allOrdersTitle": "Your order",
-      "returnedTitle": "Your return",
+      "returnedTitle": "Returned",
       "refundedTitle": "Your refunded",
       "downloadableCount": "Files",
       "stockStatus": {
