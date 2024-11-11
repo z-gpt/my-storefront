@@ -6,9 +6,9 @@ import { fetchPlaceholders } from '../aem.js';
 
 await initializeDropin(async () => {
   // Experiment (Challenger 1)
-  const isVariantPlaceholder = document.body.classList.contains('variant-challenger-1');
+  const isVariantPlaceholder = document.body.classList.contains('experiment-cart001') && document.body.classList.contains('variant-challenger-1');
 
-  const labels = await fetchPlaceholders(isVariantPlaceholder ? '/drafts/marketer' : '');
+  const labels = await fetchPlaceholders(isVariantPlaceholder ? '/drafts/marketer' : undefined);
 
   const langDefinitions = {
     default: {
