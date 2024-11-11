@@ -96,6 +96,23 @@ export default async function decorate(block) {
       quantityType: 'dropdown',
       dropdownOptions,
       slots: {
+        Footer: (ctx) => {
+          // Runs on mount
+          const wrapper = document.createElement('div');
+          ctx.appendChild(wrapper);
+
+          // Append Product Promotions on every update
+          ctx.onChange((next) => {
+            wrapper.innerHTML = '';
+
+            next.item?.discount?.label?.forEach((label) => {
+              const discount = document.createElement('div');
+              discount.style.color = '#3d3d3d';
+              discount.innerText = label;
+              wrapper.appendChild(discount);
+            });
+          });
+        },
         ProductAttributes: (ctx) => {
           // Prepend Product Attributes
           const productAttributes = ctx.item?.productAttributes;
