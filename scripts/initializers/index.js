@@ -72,5 +72,12 @@ export function initializeDropin(cb) {
   // re-initialize on prerendering changes
   document.addEventListener('prerenderingchange', () => init(true));
 
+  // re-initialize if restored from bfcache
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      init(true);
+    }
+  });
+
   return init;
 }

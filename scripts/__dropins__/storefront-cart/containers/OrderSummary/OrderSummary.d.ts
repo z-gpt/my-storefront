@@ -13,6 +13,7 @@ export interface OrderSummaryProps extends HTMLAttributes<HTMLDivElement> {
     };
     enableCoupons?: boolean;
     errors: boolean;
+    showTotalSaved?: boolean;
 }
 export declare const OrderSummary: Container<OrderSummaryProps, CartModel | null>;
 export {};

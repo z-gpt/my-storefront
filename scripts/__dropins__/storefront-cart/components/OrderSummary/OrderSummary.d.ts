@@ -34,6 +34,7 @@ export interface OrderSummaryProps extends Omit<HTMLAttributes<HTMLDivElement>, 
     };
     primaryAction?: VNode<HTMLAttributes<HTMLButtonElement>>;
     coupons?: VNode<HTMLAttributes<HTMLDivElement>>;
+    totalSaved?: VNode<HTMLAttributes<HTMLSpanElement>>;
 }
 export declare const OrderSummary: FunctionComponent<OrderSummaryProps>;
 //# sourceMappingURL=OrderSummary.d.ts.map

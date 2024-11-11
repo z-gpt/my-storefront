@@ -5,6 +5,7 @@ import { initializeDropin } from './index.js';
 import { fetchPlaceholders } from '../aem.js';
 
 await initializeDropin(async () => {
+  console.log('Initializing cart');
   const labels = await fetchPlaceholders();
 
   const langDefinitions = {
