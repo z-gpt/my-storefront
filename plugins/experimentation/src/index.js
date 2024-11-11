@@ -88,12 +88,41 @@ export async function getResolvedAudiences(applicableAudiences, options, context
 }
 
 /**
+ * Apply meta tags from two different `head` elements.
+ * @param {HTMLElement} currentHead
+ * @param {HTMLElement} newHead
+ */
+function mergeMetaTags(currentHead, newHead) {
+  const currentMetaTags = Array.from(currentHead.querySelectorAll('meta'));
+  const newMetaTags = Array.from(newHead.querySelectorAll('meta'));
+
+  newMetaTags.forEach(newMeta => {
+      // Find a matching meta tag in currentHead
+      const match = currentMetaTags.find(currentMeta => {
+          // Check for match by 'name', 'property', or 'http-equiv' attributes
+          return (
+              (newMeta.getAttribute('name') && newMeta.getAttribute('name') === currentMeta.getAttribute('name')) ||
+              (newMeta.getAttribute('property') && newMeta.getAttribute('property') === currentMeta.getAttribute('property')) ||
+              (newMeta.getAttribute('http-equiv') && newMeta.getAttribute('http-equiv') === currentMeta.getAttribute('http-equiv'))
+          );
+      });
+      if (match) {
+          // Update existing meta tag's content if it matches
+          match.setAttribute('content', newMeta.getAttribute('content'));
+      } else {
+          // If no match, append the new meta tag after the last meta tag in currentHead
+          currentHead.appendChild(newMeta.cloneNode(true));
+      }
+  });
+}
+
+/**
  * Replaces element with content from path
  * @param {string} path
  * @param {HTMLElement} main
  * @return Returns the path that was loaded or null if the loading failed
  */
-async function replaceInner(path, main) {
+async function replaceInner(path, document) {
   try {
     const resp = await fetch(path);
     if (!resp.ok) {
@@ -102,11 +131,13 @@ async function replaceInner(path, main) {
       return null;
     }
     const html = await resp.text();
+    const main = document.querySelector('main')
     // parse with DOMParser to guarantee valid HTML, and no script execution(s)
     const dom = new DOMParser().parseFromString(html, 'text/html');
     // do not use replaceWith API here since this would replace the main reference
     // in scripts.js as well and prevent proper decoration of the sections/blocks
     main.innerHTML = dom.querySelector('main').innerHTML;
+    mergeMetaTags(document.head, dom.head);
     return path;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -481,7 +512,7 @@ export async function runExperiment(document, options, context) {
   document.body.classList.add(`experiment-${context.toClassName(experimentConfig.id)}`);
   let result;
   if (pages[index] !== currentPath) {
-    result = await replaceInner(pages[index], document.querySelector('main'));
+    result = await replaceInner(pages[index], document);
   } else {
     result = currentPath;
   }
