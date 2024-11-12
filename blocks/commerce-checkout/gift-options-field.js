@@ -23,7 +23,7 @@ class GiftOptionsField extends HTMLElement {
         this._formTemplate = document.createElement('template');
 
         this._formTemplate.innerHTML = `
-            <h2 class="checkout-payment-methods__title">Gift Options</h2>
+            <h2 class="checkout-payment-methods__title">Gift Message</h2>
             <form id="gift-options-form" class="checkout-fields-form__form">
                 <div class="fromName-wrapper"></div>
                 <div class="toName-wrapper"></div>

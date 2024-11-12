@@ -1,4 +1,4 @@
-const e=`
+const e = `
   fragment PRICE_RANGE_FRAGMENT on PriceRange {
     minimum_price {
       regular_price {
@@ -29,7 +29,7 @@ const e=`
       }
     }
   }
-`,t=`
+`, t = `
   fragment CUSTOMIZABLE_OPTIONS_FRAGMENT on SelectedCustomizableOption {
     type
     customizable_option_uid
@@ -45,7 +45,7 @@ const e=`
       }
     }
   }
-`,a=`
+`, a = `
 fragment CART_ITEM_FRAGMENT on CartItemInterface {
   __typename
   uid
@@ -196,8 +196,7 @@ fragment CART_ITEM_FRAGMENT on CartItemInterface {
 
 ${e}
 ${t}
-`,r=`
-fragment CART_FRAGMENT on Cart {
+`, r = (`fragment CART_FRAGMENT on Cart {
   id
   total_quantity
   is_virtual
@@ -244,11 +243,7 @@ fragment CART_FRAGMENT on Cart {
   applied_coupons {
     code
   }
-  itemsV2 (
-      pageSize:$pageSize,
-      currentPage:$currentPage,
-      sort: $itemsSortInput
-    ) {
+  itemsV2(pageSize: $pageSize, currentPage: $currentPage, sort: $itemsSortInput) {
     items {
       ...CART_ITEM_FRAGMENT
     }
@@ -262,7 +257,18 @@ fragment CART_FRAGMENT on Cart {
     }
     postcode
   }
+  gift_message {
+    from
+    to
+    message
+  }
+  amorder_attributes {
+    attribute_code
+    value
+  }
 }
-
-${a}
-`;export{r as CART_FRAGMENT,a as CART_ITEM_FRAGMENT};
+${a}`);
+export {
+r as CART_FRAGMENT,
+a as CART_ITEM_FRAGMENT
+};

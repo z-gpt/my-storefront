@@ -64,7 +64,6 @@ class AmastyOrderAttributes extends HTMLElement {
   }
 
   set orderAttributes(value) {
-    console.log("orderAttributes", value);
     this._orderAttributes = value;
 
     if(!value) return;
@@ -77,7 +76,7 @@ class AmastyOrderAttributes extends HTMLElement {
         (attribute) => attribute.attribute_code === "ddate"
     );
 
-    if (deliveryDate) {
+    if (deliveryDate && deliveryDate.value) {
         deliveryDateInput.setAttribute("value", convertToDatetimeLocal(deliveryDate.value));
     }
   }
@@ -93,7 +92,7 @@ class AmastyOrderAttributes extends HTMLElement {
         (attribute) => attribute.attribute_code === "ddate"
         );
     
-    deliveryDate && deliveryDateInput.setAttribute("value", convertToDatetimeLocal(deliveryDate.value));
+    deliveryDate && deliveryDate.value && deliveryDateInput.setAttribute("value", convertToDatetimeLocal(deliveryDate.value));
 
     deliveryDateInput.addEventListener("change", (event) => {
       deliveryDateInput.setAttribute('disabled', '');
@@ -108,7 +107,6 @@ class AmastyOrderAttributes extends HTMLElement {
   }
 
   render() {
-    console.log("Rendering AmastyOrderAttributes", this._orderAttributes);
     const sdkStyleElement = sdkStyle.cloneNode(true);
     const checkoutStyleElement = checkoutStyle.cloneNode(true);
     const style = document.createElement("style");
