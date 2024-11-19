@@ -14,6 +14,6 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
     handleSelectedProductList: (orderItem: OrderItemModel) => void;
     handleSetQuantity: (value: number, productSku: string) => void;
     handleChangeStep: (value: StepsTypes) => void;
-    onSubmit: (_: SubmitEvent, isValid: boolean) => Promise<void | null>;
+    onSubmit: (_: SubmitEvent, isValid: boolean) => Promise<void | null | undefined>;
 };
 //# sourceMappingURL=useCreateReturn.d.ts.map

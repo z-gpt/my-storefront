@@ -19,19 +19,18 @@ type ReturnStatusValue = (typeof returnStatus)[ReturnStatusKey];
 type KeyValueObject = {
     [key: string]: any;
 };
+type returnAttributesType = Array<{
+    attributeCode: string;
+    value: string;
+}>;
+type normalizeAttributesTypes = {
+    selectedCustomAttributes: returnAttributesType;
+    enteredCustomAttributes: returnAttributesType;
+};
 export declare const cleanObjectKeys: (obj: KeyValueObject) => KeyValueObject;
 export declare const modifyFieldsConfig: (fieldsConfig: any, index: number) => any;
 export declare const replicateEntries: (objects: any[], n: number) => any[];
-export declare const normalizeAttributes: (obj: Record<string, string>) => {
-    selectedCustomAttributes: Array<{
-        attributeCode: string;
-        value: string;
-    }>;
-    enteredCustomAttributes: Array<{
-        attributeCode: string;
-        value: string;
-    }>;
-};
+export declare const normalizeAttributes: (obj: Record<string, string>) => normalizeAttributesTypes;
 export declare const formatReturnStatus: (str: string) => ReturnStatusValue | '';
 export declare const extractFilteredItems: (order: OrderDataModel) => {
     returnedList: {
@@ -95,5 +94,6 @@ export declare const extractFilteredItems: (order: OrderDataModel) => {
     }[];
     modifyOrder: (import('../data/models').OrderItemModel | null)[];
 };
+export declare const processFormElement: (formsRef: any) => any[];
 export {};
 //# sourceMappingURL=returnOrdersHelper.d.ts.map
