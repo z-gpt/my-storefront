@@ -94,6 +94,7 @@ export type OrderItemModel = {
     requestQuantity: number;
     totalQuantity: number;
     returnableQuantity?: number;
+    quantityReturnRequested: number;
 };
 export type ShipmentItemsModel = {
     id: string;
@@ -129,7 +130,6 @@ export type OrderDataModel = {
     shippingMethod?: string;
     carrier?: string;
     orderDate: string;
-    itemsEligibleForReturn?: OrderItemModel[];
     returns: OrdersReturnPropsModel[];
     discounts: {
         amount: MoneyProps;

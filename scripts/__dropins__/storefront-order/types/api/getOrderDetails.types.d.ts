@@ -126,6 +126,7 @@ export interface OrderItemProps {
     quantity_refunded: number;
     quantity_returned: number;
     quantity_shipped: number;
+    quantity_return_requested: number;
     selected_options: {
         label: string;
         value: string;
