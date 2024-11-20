@@ -122,7 +122,7 @@ export type OrderDataModel = {
     id: string;
     orderStatusChangeDate?: string;
     number: string;
-    email?: string;
+    email: string;
     token?: string;
     status: string;
     isVirtual: boolean;

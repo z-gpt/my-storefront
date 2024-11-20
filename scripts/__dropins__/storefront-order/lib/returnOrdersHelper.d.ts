@@ -1,4 +1,4 @@
-import { OrderDataModel } from '../data/models';
+import { OrderDataModel, OrderItemModel } from '../data/models';
 
 declare const returnStatus: {
     readonly PENDING: "pending";
@@ -92,8 +92,10 @@ export declare const extractFilteredItems: (order: OrderDataModel) => {
         returnableQuantity?: number | undefined;
         quantityReturnRequested: number;
     }[];
-    modifyOrder: (import('../data/models').OrderItemModel | null)[];
+    canceledItems: (OrderItemModel | null)[];
+    nonCanceledItems: (OrderItemModel | null)[];
 };
 export declare const processFormElement: (formsRef: any) => any[];
+export declare const sortItemsByCondition: (order: any) => any;
 export {};
 //# sourceMappingURL=returnOrdersHelper.d.ts.map
