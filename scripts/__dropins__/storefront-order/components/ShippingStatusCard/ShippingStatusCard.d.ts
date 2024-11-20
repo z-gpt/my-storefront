@@ -1,4 +1,5 @@
 import { ShippingStatusCardProps } from '../../types';
+import { FunctionComponent } from 'preact';
 
-export declare const ShippingStatusCard: ({ translations, slots, orderData, collapseThreshold, routeProductDetails, routeTracking, }: ShippingStatusCardProps) => import("preact").JSX.Element | null | undefined;
+export declare const ShippingStatusCard: FunctionComponent<ShippingStatusCardProps>;
 //# sourceMappingURL=ShippingStatusCard.d.ts.map

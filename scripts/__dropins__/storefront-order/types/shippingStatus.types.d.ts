@@ -36,6 +36,7 @@ export interface ShippingStatusCardProps {
     };
     orderData?: OrderDataModel;
     collapseThreshold?: number;
+    routeOrderDetails?: ({ returnNumber, token, orderNumber, }: routeOrderDetailsTypes) => string;
     routeProductDetails?: (product: any) => string;
     routeTracking?: (track: routeTrackingProps) => string;
 }

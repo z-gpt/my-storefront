@@ -100,6 +100,7 @@ export type ShipmentItemsModel = {
     id: string;
     productSku: string;
     productName: string;
+    quantityShipped: number;
     orderItem: OrderItemModel;
 };
 export type ShipmentsTracingModel = {
