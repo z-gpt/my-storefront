@@ -487,13 +487,13 @@ export default async function decorate(block) {
         forwardFormRef: shippingFormRef,
         hideActionFormButtons: true,
         inputsDefaultValueSet: cartShippingAddress ?? {
+          countryCode: storeConfig.defaultCountry,
           customAttributes: [
             {
               code: "test_text_area",
               value: "Hello world",
             },
           ],
-          countryCode: storeConfig.defaultCountry,
         },
         isOpen: true,
         onChange: (values) => {
@@ -591,8 +591,24 @@ export default async function decorate(block) {
 
       const inputsDefaultValueSet =
         cartShippingAddress && cartShippingAddress.id === undefined
-          ? cartShippingAddress
-          : { countryCode: storeConfig.defaultCountry };
+          ? {
+              ...cartShippingAddress,
+              customAttributes: [
+                {
+                  code: "test_text_area",
+                  value: "Hello world",
+                },
+              ],
+            }
+          : {
+              countryCode: storeConfig.defaultCountry,
+              customAttributes: [
+                {
+                  code: "test_text_area",
+                  value: "Hello world",
+                },
+              ],
+            };
 
       const hasCartShippingAddress = Boolean(data.shippingAddresses?.[0]);
       let isFirstRenderShipping = true;
