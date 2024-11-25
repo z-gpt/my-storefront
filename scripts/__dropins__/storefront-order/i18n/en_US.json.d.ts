@@ -4,6 +4,9 @@ declare const _default: {
       "headerText": "Return items",
       "downloadableCount": "Files",
       "returnedItems": "Returned items:",
+      "configurationsList": {
+        "quantity": "Quantity"
+      },
       "stockStatus": {
         "inStock": "In stock",
         "outOfStock": "Out of stock"
@@ -133,7 +136,7 @@ declare const _default: {
       "description": "You can find your order number in the receipt you received via email.",
       "button": "View Order",
       "email": "Email",
-      "postcode": "Zip Code",
+      "lastname": "Last Name",
       "orderNumber": "Order Number"
     },
     "Form": {
