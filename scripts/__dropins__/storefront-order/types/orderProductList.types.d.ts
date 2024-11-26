@@ -18,6 +18,7 @@ export interface OrderProductListContentProps extends Omit<OrderProductListProps
     loading: boolean;
 }
 export interface CartSummaryItemProps {
+    placeholderImage?: string;
     disabledIncrementer?: boolean;
     loading: boolean;
     itemType: string;

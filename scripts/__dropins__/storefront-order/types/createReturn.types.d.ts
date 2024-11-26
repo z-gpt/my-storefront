@@ -27,6 +27,7 @@ export interface CreateReturnProps {
     showConfigurableOptions?: (options: options | {}) => options;
 }
 export interface ReturnOrderProductListProps {
+    placeholderImage: string;
     slots?: {
         ReturnOrderItem: SlotProps;
     };

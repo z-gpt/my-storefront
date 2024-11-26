@@ -4,6 +4,7 @@ import { RefObject } from 'preact';
 
 export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAlert, orderData, }: UseCreateReturn) => {
     order: {
+        placeholderImage: string;
         returnNumber?: string | undefined;
         id: string;
         orderStatusChangeDate?: string | undefined;
@@ -54,7 +55,7 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
     formsRef: import('preact/hooks').MutableRef<RefObject<HTMLFormElement>[]>;
     taxConfig: TaxTypes;
     attributesList: [] | AttributesFormModel[];
-    selectedProductList: [] | OrderItemModel[];
+    selectedProductList: OrderItemModel[] | [];
     itemsEligibleForReturn: OrderItemModel[];
     handleSelectedProductList: (orderItem: OrderItemModel) => void;
     handleSetQuantity: (value: number, productSku: string) => void;
