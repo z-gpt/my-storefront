@@ -106,7 +106,7 @@ import{events as b}from"@dropins/tools/event-bus.js";import{FetchGraphQL as C}fr
       }
     }
   }
-`,W=async t=>{const n=`_account_regions_${t}`,e=sessionStorage.getItem(n);return e?JSON.parse(e):await s(q,{method:"GET",cache:"no-cache",variables:{countryCode:t}}).then(r=>{var i;if((i=r.errors)!=null&&i.length)return f(r.errors);const o=U(r);return sessionStorage.setItem(n,JSON.stringify(o)),o}).catch(_)},V=`
+`,W=async t=>{const n=`_account_regions_${t}`,e=sessionStorage.getItem(n);return e?(sessionStorage.removeItem(n),JSON.parse(e)):await s(q,{method:"GET",cache:"no-cache",variables:{countryCode:t}}).then(r=>{var i;if((i=r.errors)!=null&&i.length)return f(r.errors);const o=U(r);return sessionStorage.setItem(n,JSON.stringify(o)),o}).catch(_)},V=`
   mutation UPDATE_CUSTOMER_ADDRESS($id: Int!,
   $input: CustomerAddressInput) {
     updateCustomerAddress(id:$id, input:$input) {
