@@ -27,7 +27,7 @@ function renderSignIn(element) {
 export function renderAuthDropdown(navTools) {
   const dropdownElement = document.createRange().createContextualFragment(`
  <div class="dropdown-wrapper nav-tools-wrapper">
-    <button type="button" class="nav-dropdown-button">My Account</button>
+    <button type="button" class="nav-dropdown-button"></button>
     <div class="nav-auth-menu-panel nav-tools-panel">
       <div id="auth-dropin-container"></div>
       <ul class="authenticated-user-menu">
@@ -92,6 +92,7 @@ export function renderAuthDropdown(navTools) {
           width="25"
           height="25"
           viewBox="0 0 24 24"
+          aria-label="My Account"
           >
           <g fill="none" stroke="#000000" stroke-width="1.5">
           <circle cx="12" cy="6" r="4"></circle>
