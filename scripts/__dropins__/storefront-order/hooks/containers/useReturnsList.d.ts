@@ -10,7 +10,7 @@ export declare const useReturnsList: ({ returnPageSize }: UseReturnsListProps) =
     };
     selectedPage: number;
     loading: boolean;
-    orderReturns: OrdersReturnPropsModel[] | [];
+    orderReturns: [] | OrdersReturnPropsModel[];
     handleSetSelectPage: (value: number) => void;
 };
 //# sourceMappingURL=useReturnsList.d.ts.map
