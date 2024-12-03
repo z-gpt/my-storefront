@@ -287,8 +287,18 @@ declare const _default: {
       "button": "Submit Cancellation",
       "errorHeading": "Error",
       "errorDescription": "There was an error processing your order cancellation."
+    },
+    "OrderHeader": {
+      "title": "{{name}}, thank you for your order!",
+      "defaultTitle": "Thank you for your order!",
+      "order": "ORDER #{{order}}",
+      "CreateAccount": {
+        "message": "Save your information for faster checkout next time.",
+        "button": "Create an account"
+      }
     }
   }
-};
+}
+;
 
 export default _default;

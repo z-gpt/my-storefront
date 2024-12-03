@@ -42,6 +42,7 @@ export interface ReturnOrderProductListProps {
     handleChangeStep: (value: StepsTypes) => void;
 }
 export interface ReturnReasonFormProps {
+    placeholderImage: string;
     slots?: {
         ReturnFormActions: SlotProps<{
             handleChangeStep: (value: StepsTypes) => void;

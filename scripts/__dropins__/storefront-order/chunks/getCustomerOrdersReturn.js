@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{h as R}from"./network-error.js";import{f as E,h as _}from"./fetch-graphql.js";import{R as T,P as o,a as s,G as c,O as u,t as h}from"./transform-order-details.js";const n=`
+import{h as R}from"./network-error.js";import{f as E,h as _}from"./fetch-graphql.js";import{R as T,P as o,a as s,G as c,O as u,t as h}from"./transform-customer-orders-returns.js";const n=`
 query GET_CUSTOMER_ORDERS_RETURN($pageSize: Int) {
  customer {
   returns(pageSize: $pageSize) {

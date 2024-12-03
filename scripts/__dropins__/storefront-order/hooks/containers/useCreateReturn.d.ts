@@ -55,7 +55,7 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
     formsRef: import('preact/hooks').MutableRef<RefObject<HTMLFormElement>[]>;
     taxConfig: TaxTypes;
     attributesList: [] | AttributesFormModel[];
-    selectedProductList: OrderItemModel[] | [];
+    selectedProductList: [] | OrderItemModel[];
     itemsEligibleForReturn: OrderItemModel[];
     handleSelectedProductList: (orderItem: OrderItemModel) => void;
     handleSetQuantity: (value: number, productSku: string) => void;
