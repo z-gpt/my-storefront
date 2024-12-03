@@ -14,7 +14,7 @@ export declare const useSignInForm: ({ emailConfirmationStatusMessage, translati
     showEmailConfirmationForm: boolean;
     setShowEmailConfirmationForm: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<boolean>>;
     setSignInPasswordValue: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<string>>;
-    submitLogInUser: (event: any) => Promise<void>;
+    submitLogInUser: (event: SubmitEvent, isValid: boolean) => Promise<void>;
     forgotPasswordCallback: () => void;
     onSignUpLinkClickCallback: () => void;
     handledOnPrimaryButtonClick: () => void;
