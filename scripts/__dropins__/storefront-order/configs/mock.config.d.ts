@@ -3712,4 +3712,17 @@ export declare const customerReturnDetailsFullMock: {
         })[];
     };
 };
+export declare const storeConfigMock: {
+    baseMediaUrl: string;
+    orderCancellationEnabled: boolean;
+    orderCancellationReasons: {
+        description: string;
+    }[];
+    shoppingCartDisplayPrice: number;
+    shoppingOrdersDisplaySubtotal: number;
+    shoppingOrdersDisplayShipping: number;
+    shoppingOrdersDisplayGrandTotal: boolean;
+    shoppingOrdersDisplayFullSummary: boolean;
+    shoppingOrdersDisplayZeroTax: boolean;
+};
 //# sourceMappingURL=mock.config.d.ts.map
