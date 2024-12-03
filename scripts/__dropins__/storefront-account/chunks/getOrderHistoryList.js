@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{t as u,k as i,f as _,l as p}from"./removeCustomerAddress.js";const f=(e,r="en-US",s={})=>{const t={...{day:"2-digit",month:"2-digit",year:"numeric"},...s},a=new Date(e);return isNaN(a.getTime())?"Invalid Date":new Intl.DateTimeFormat(r,t).format(a)},g=e=>{var d,c;if(!((c=(d=e.data)==null?void 0:d.customer)!=null&&c.orders))return null;const{items:r,page_info:s,total_count:n,date_of_first_order:t}=e.data.customer.orders,{returns:a}=e.data.customer;return{items:r.map(o=>{const l={...o,returns:a==null?void 0:a.items.filter(m=>m.order.id===o.id),order_date:f(o.order_date),shipping_address:u(o.shipping_address),billing_address:u(o.billing_address)};return i(l,"camelCase",{})}),pageInfo:i(s,"camelCase",{}),totalCount:i(n,"camelCase",{}),dateOfFirstOrder:i(t,"camelCase",{})}},y=`
+import{t as u,m as i,f as _,l as p}from"./removeCustomerAddress.js";const f=(e,t="en-US",a={})=>{const s={...{day:"2-digit",month:"2-digit",year:"numeric"},...a},r=new Date(e);return isNaN(r.getTime())?"Invalid Date":new Intl.DateTimeFormat(t,s).format(r)},g=e=>{var d,c;if(!((c=(d=e.data)==null?void 0:d.customer)!=null&&c.orders))return null;const{items:t,page_info:a,total_count:o,date_of_first_order:s}=e.data.customer.orders,{returns:r}=e.data.customer;return{items:t.map(n=>{const l={...n,returns:r==null?void 0:r.items.filter(m=>m.order.id===n.id),order_date:f(n.order_date),shipping_address:u(n.shipping_address),billing_address:u(n.billing_address)};return i(l,"camelCase",{})}),pageInfo:i(a,"camelCase",{}),totalCount:i(o,"camelCase",{}),dateOfFirstOrder:i(s,"camelCase",{})}},y=`
 fragment AddressesList on OrderAddress {
   city
   company
@@ -123,4 +123,4 @@ fragment OrderSummary on OrderTotal {
 }
 ${y}
 ${O}
-`,h={sort_direction:"DESC",sort_field:"CREATED_AT"},E=async(e,r,s)=>{const n=r.includes("viewAll")?{}:{order_date:JSON.parse(r)};return await _(S,{method:"GET",cache:"no-cache",variables:{pageSize:e,currentPage:s,filter:n,sort:h}}).then(t=>(console.log("response.errors",t.errors),g(t))).catch(p)};export{E as g};
+`,h={sort_direction:"DESC",sort_field:"CREATED_AT"},E=async(e,t,a)=>{const o=t.includes("viewAll")?{}:{order_date:JSON.parse(t)};return await _(S,{method:"GET",cache:"no-cache",variables:{pageSize:e,currentPage:a,filter:o,sort:h}}).then(s=>g(s)).catch(p)};export{E as g};
