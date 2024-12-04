@@ -1,3 +1,5 @@
+/*! Copyright 2024 Adobe
+All Rights Reserved. */
 import{t as u,k as i,f as _,l as f,m as p}from"./removeCustomerAddress.js";const g=(r,a="en-US",s={})=>{const t={...{day:"2-digit",month:"2-digit",year:"numeric"},...s},e=new Date(r);return isNaN(e.getTime())?"Invalid Date":new Intl.DateTimeFormat(a,t).format(e)},y=r=>{var d,c;if(!((c=(d=r.data)==null?void 0:d.customer)!=null&&c.orders))return null;const{items:a,page_info:s,total_count:o,date_of_first_order:t}=r.data.customer.orders,{returns:e}=r.data.customer;return{items:a.map(n=>{const l={...n,returns:e==null?void 0:e.items.filter(m=>m.order.id===n.id),order_date:g(n.order_date),shipping_address:u(n.shipping_address),billing_address:u(n.billing_address)};return i(l,"camelCase",{})}),pageInfo:i(s,"camelCase",{}),totalCount:i(o,"camelCase",{}),dateOfFirstOrder:i(t,"camelCase",{})}},h=`
 fragment AddressesList on OrderAddress {
   city
