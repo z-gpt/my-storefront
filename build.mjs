@@ -11,7 +11,7 @@ overrideGQLOperations([
       firstname
       lastname
       gender
-      company
+      prefix
       email
       is_subscribed
     }
