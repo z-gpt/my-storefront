@@ -16,7 +16,6 @@ export default async function decorate(block) {
     window.location.href = CUSTOMER_ACCOUNT_PATH;
   } else {
     await authRenderer.render(SignIn, {
-      enableEmailConfirmation: true,
       routeForgotPassword: () => CUSTOMER_FORGOTPASSWORD_PATH,
       routeRedirectOnSignIn: () => CUSTOMER_ACCOUNT_PATH,
     })(block);
