@@ -13,13 +13,11 @@ export interface OrderProductListProps {
     routeProductDetails?: (product: any) => string;
 }
 export interface OrderProductListContentProps extends Omit<OrderProductListProps, 'className'> {
-    placeholderImage: string;
     order?: OrderDataModel;
     taxConfig: TaxTypes;
     loading: boolean;
 }
 export interface CartSummaryItemProps {
-    placeholderImage?: string;
     disabledIncrementer?: boolean;
     loading: boolean;
     itemType: string;

@@ -119,7 +119,6 @@ export type ShipmentsModel = {
     items: ShipmentItemsModel[];
 };
 export type OrderDataModel = {
-    placeholderImage?: string;
     returnNumber: string;
     id: string;
     orderStatusChangeDate?: string;

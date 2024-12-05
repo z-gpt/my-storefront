@@ -1,10 +1,9 @@
 import { AttributesFormModel, OrderItemModel } from '../../data/models';
-import { StepsTypes, UseCreateReturn } from '../../types';
+import { StepsTypes, TaxTypes, UseCreateReturn } from '../../types';
 import { RefObject } from 'preact';
 
 export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAlert, orderData, }: UseCreateReturn) => {
     order: {
-        placeholderImage?: string | undefined;
         returnNumber?: string | undefined;
         id: string;
         orderStatusChangeDate?: string | undefined;
@@ -53,6 +52,7 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
     steps: StepsTypes;
     loading: boolean;
     formsRef: import('preact/hooks').MutableRef<RefObject<HTMLFormElement>[]>;
+    taxConfig: TaxTypes;
     attributesList: [] | AttributesFormModel[];
     selectedProductList: [] | OrderItemModel[];
     itemsEligibleForReturn: OrderItemModel[];

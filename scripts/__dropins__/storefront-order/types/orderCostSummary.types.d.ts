@@ -23,7 +23,6 @@ export interface OrderCostSummaryContentProps {
 }
 export interface UseOrderCostSummaryProps {
     orderData?: OrderDataModel;
-    config: StoreConfigModel | null;
 }
 export {};
 //# sourceMappingURL=orderCostSummary.types.d.ts.map

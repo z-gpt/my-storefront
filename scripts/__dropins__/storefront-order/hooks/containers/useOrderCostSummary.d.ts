@@ -1,7 +1,7 @@
 import { OrderDataModel } from '../../data/models';
 import { StoreConfigProps, UseOrderCostSummaryProps } from '../../types';
 
-export declare const useOrderCostSummary: ({ orderData, config, }: UseOrderCostSummaryProps) => {
+export declare const useOrderCostSummary: ({ orderData, }: UseOrderCostSummaryProps) => {
     loading: boolean;
     storeConfig: StoreConfigProps | null;
     order: OrderDataModel | undefined;

@@ -1,9 +1,9 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{h as R}from"./network-error.js";import{R as E,P as _,a as T,G as s,O as c,t as n}from"./transform-customer-orders-returns.js";import{f as o}from"./fetch-graphql.js";const u=`
-query GET_CUSTOMER_ORDERS_RETURN($currentPage: Int, $pageSize: Int) {
+import{h as R}from"./network-error.js";import{f as E,h as _}from"./fetch-graphql.js";import{R as T,P as o,a as s,G as c,O as u,t as h}from"./transform-order-details.js";const n=`
+query GET_CUSTOMER_ORDERS_RETURN($pageSize: Int) {
  customer {
-  returns(currentPage: $currentPage, pageSize: $pageSize) {
+  returns(pageSize: $pageSize) {
     page_info {
       page_size
       total_pages
@@ -13,9 +13,9 @@ query GET_CUSTOMER_ORDERS_RETURN($currentPage: Int, $pageSize: Int) {
   }
  }
 }
-${E}
-${_}
 ${T}
+${o}
 ${s}
 ${c}
-`,G=async(t=10,a)=>await o(u,{method:"GET",cache:"force-cache",variables:{pageSize:t,currentPage:a}}).then(r=>{var e;return n((e=r==null?void 0:r.data)==null?void 0:e.customer.returns)}).catch(R);export{G as g};
+${u}
+`,G=async(e=10)=>await E(n,{method:"GET",cache:"force-cache",variables:{pageSize:e}}).then(r=>{var t,a;return(t=r.errors)!=null&&t.length?_(r.errors):h((a=r==null?void 0:r.data)==null?void 0:a.customer.returns)}).catch(R);export{G as g};

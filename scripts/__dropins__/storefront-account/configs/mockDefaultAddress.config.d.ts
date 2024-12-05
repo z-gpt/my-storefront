@@ -94,10 +94,6 @@ export declare const mockDefaultAddress: {
     streetMultiline_2: string;
     defaultShipping: boolean;
     defaultBilling: boolean;
-    fax: string;
-    middlename: string;
-    prefix: string;
-    suffix: string;
 };
 export declare const mockResponseAddressWithText: {
     firstname: string;
@@ -118,10 +114,45 @@ export declare const mockResponseAddressWithText: {
     default_shipping: boolean;
     default_billing: boolean;
     custom_attributesV2: never[];
-    fax: string;
-    middlename: string;
-    prefix: string;
-    suffix: string;
+};
+export declare const mockResponseAddressEmpty: {
+    firstname: string;
+    lastname: string;
+    city: string;
+    company: string;
+    country_code: string;
+    region: {
+        region: string;
+        region_code: string;
+        region_id: string;
+    };
+    telephone: string;
+    id: string;
+    vat_id: string;
+    postcode: string;
+    street: string[];
+    default_shipping: boolean;
+    default_billing: boolean;
+    custom_attributesV2: never[];
+};
+export declare const mockDefaultAddressEmpty: {
+    firstname: string;
+    lastname: string;
+    city: string;
+    company: string;
+    countryCode: string;
+    region: {
+        region: string;
+        regionCode: string;
+        regionId: string;
+    };
+    telephone: string;
+    id: string;
+    vatId: string;
+    postcode: string;
+    street: string;
+    defaultShipping: boolean;
+    defaultBilling: boolean;
 };
 export declare const mockResponseCountries: {
     two_letter_abbreviation: string;

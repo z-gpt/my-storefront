@@ -27,7 +27,6 @@ export interface CreateReturnProps {
     showConfigurableOptions?: (options: options | {}) => options;
 }
 export interface ReturnOrderProductListProps {
-    placeholderImage: string;
     slots?: {
         ReturnOrderItem: SlotProps;
     };
@@ -42,7 +41,6 @@ export interface ReturnOrderProductListProps {
     handleChangeStep: (value: StepsTypes) => void;
 }
 export interface ReturnReasonFormProps {
-    placeholderImage: string;
     slots?: {
         ReturnFormActions: SlotProps<{
             handleChangeStep: (value: StepsTypes) => void;

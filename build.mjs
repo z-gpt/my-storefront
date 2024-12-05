@@ -6,7 +6,7 @@ overrideGQLOperations([
     npm: '@dropins/storefront-auth',
     operations: [
       `
-    fragment CustomerInformation on Customer {
+    fragment CUSTOMER_INFORMATION_FRAGMENT on Customer {
       __typename
       firstname
       lastname
