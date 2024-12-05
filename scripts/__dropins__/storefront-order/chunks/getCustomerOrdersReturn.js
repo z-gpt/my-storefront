@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{h as R}from"./network-error.js";import{f as E,h as _}from"./fetch-graphql.js";import{R as T,P as o,a as s,G as c,O as u,t as h}from"./transform-order-details.js";const n=`
+import{h as t}from"./network-error.js";import{R,P as E,a as _,G as T,O as o,t as s}from"./transform-customer-orders-returns.js";import{f as c}from"./fetch-graphql.js";const n=`
 query GET_CUSTOMER_ORDERS_RETURN($pageSize: Int) {
  customer {
   returns(pageSize: $pageSize) {
@@ -13,9 +13,9 @@ query GET_CUSTOMER_ORDERS_RETURN($pageSize: Int) {
   }
  }
 }
+${R}
+${E}
+${_}
 ${T}
 ${o}
-${s}
-${c}
-${u}
-`,G=async(e=10)=>await E(n,{method:"GET",cache:"force-cache",variables:{pageSize:e}}).then(r=>{var t,a;return(t=r.errors)!=null&&t.length?_(r.errors):h((a=r==null?void 0:r.data)==null?void 0:a.customer.returns)}).catch(R);export{G as g};
+`,G=async(e=10)=>await c(n,{method:"GET",cache:"force-cache",variables:{pageSize:e}}).then(r=>{var a;return console.log("response",r),s((a=r==null?void 0:r.data)==null?void 0:a.customer.returns)}).catch(t);export{G as g};
