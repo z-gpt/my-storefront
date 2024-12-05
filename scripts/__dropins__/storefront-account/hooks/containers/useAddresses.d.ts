@@ -20,6 +20,5 @@ export declare const useAddresses: ({ selectShipping, selectBilling, defaultSele
     handleOnSuccess: () => Promise<void>;
     handleSelectAddressOption: (event: Event, item?: {} | CustomerAddressesModel | undefined) => void;
     selectedAddressOption: string;
-    setAddNewAddress: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<boolean>>;
 };
 //# sourceMappingURL=useAddresses.d.ts.map
