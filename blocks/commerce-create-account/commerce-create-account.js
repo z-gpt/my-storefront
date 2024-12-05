@@ -17,8 +17,8 @@ export default async function decorate(block) {
   } else {
     await authRenderer.render(SignUp, {
       hideCloseBtnOnEmailConfirmation: true,
-      routeSignIn: () => CUSTOMER_LOGIN_PATH,
-      routeRedirectOnSignIn: () => CUSTOMER_ACCOUNT_PATH,
+      // routeSignIn: () => CUSTOMER_LOGIN_PATH,
+      // routeRedirectOnSignIn: () => CUSTOMER_ACCOUNT_PATH,
     })(block);
   }
 }
