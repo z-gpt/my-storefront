@@ -10,7 +10,8 @@ overrideGQLOperations([
       __typename
       firstname
       lastname
-      prefix
+      gender
+      company
       email
       is_subscribed
     }
