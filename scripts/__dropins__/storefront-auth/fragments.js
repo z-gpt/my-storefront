@@ -5,7 +5,7 @@ const e = (`fragment CUSTOMER_INFORMATION_FRAGMENT on Customer {
   email
   is_subscribed
   gender
-  company
+  prefix
 }`);
 export {
 e as CUSTOMER_INFORMATION_FRAGMENT
