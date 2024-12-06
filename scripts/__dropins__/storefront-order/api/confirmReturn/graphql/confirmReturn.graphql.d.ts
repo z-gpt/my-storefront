@@ -1,0 +1,2 @@
+export declare const CONFIRM_RETURN_GUEST_ORDER = "\nmutation CONFIRM_RETURN_GUEST_ORDER($input: ConfirmReturnInput!) {\n  confirmReturn(input: $input) {\n    return {\n      __typename\n      status\n      uid\n      number\n      created_at\n    }\n  }\n}";
+//# sourceMappingURL=confirmReturn.graphql.d.ts.map
