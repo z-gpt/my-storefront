@@ -108,7 +108,7 @@ async function handleUserOrdersRedirects(
   // }
 
   if (targetPath) {
-    window.location.href = targetPath;
+    // window.location.href = targetPath;
   } else {
     await initializers.mountImmediately(initialize, {
       langDefinitions,
