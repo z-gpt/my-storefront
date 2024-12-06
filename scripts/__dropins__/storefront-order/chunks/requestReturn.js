@@ -49,4 +49,4 @@ mutation REQUEST_RETURN_ORDER($input: RequestReturnInput!) {
     }
   }
 }
-${_}`,y=async n=>{const t=c(n,"snakeCase",{});return await s(T,{method:"POST",variables:{input:t}}).then(e=>{var u;if((u=e.errors)!=null&&u.length)return o(e.errors);const{created_at:r,...a}=e.data.requestReturn.return;return{...a,createdAt:r}}).catch(i)};export{f as g,y as r};
+${_}`,y=async n=>{const t=c(n,"snakeCase",{});return await s(T,{method:"POST",variables:{input:t}}).then(e=>{var u;if((u=e.errors)!=null&&u.length)return o(e.errors);const{created_at:r,...a}=e.data.requestReturn.return;return{...a,createdAt:r}}).catch(i)};export{_ as R,f as g,y as r};

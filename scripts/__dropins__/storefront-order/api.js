@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{Initializer as I}from"@dropins/tools/lib.js";import{events as o}from"@dropins/tools/event-bus.js";import{f as n,h as m}from"./chunks/fetch-graphql.js";import{g as q,r as U,s as Y,a as Q,b as H}from"./chunks/fetch-graphql.js";import{h as l}from"./chunks/network-error.js";import{P as u,a as _,G as p,O as c,B as D,R as O,c as b}from"./chunks/transform-order-details.js";import{O as R,A as h}from"./chunks/getGuestOrder.graphql.js";import{t as G}from"./chunks/getCustomer.js";import{g as j,a as J}from"./chunks/getCustomer.js";import{g as W}from"./chunks/getAttributesForm.js";import{g as Z}from"./chunks/getStoreConfig.js";import{g as re}from"./chunks/getCustomerOrdersReturn.js";import{g as ae,r as se}from"./chunks/requestReturn.js";import{c as oe,r as ie}from"./chunks/requestGuestOrderCancel.js";import{r as me}from"./chunks/reorderItems.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/convertCase.js";import"./chunks/transform-attributes-form.js";const T=`
+import{c as ie,r as ue}from"./chunks/requestGuestOrderCancel.js";import{f as i,h as I}from"./chunks/fetch-graphql.js";import{g as me,r as pe,s as ce,a as _e,b as Oe}from"./chunks/fetch-graphql.js";import{g as De}from"./chunks/getAttributesForm.js";import{R as f}from"./chunks/requestReturn.js";import{g as Ee,r as Te}from"./chunks/requestReturn.js";import{t as A}from"./chunks/getGuestOrder.js";import{g as ye,a as Ce}from"./chunks/getGuestOrder.js";import{g as Ie}from"./chunks/getCustomerOrdersReturn.js";import{h as u}from"./chunks/network-error.js";import{P as l,a as m,G as p,O as c,B as _,R as y,b as G,c as $}from"./chunks/transform-customer-orders-returns.js";import{O,A as R}from"./chunks/getGuestOrder.graphql.js";import{g as Ae}from"./chunks/getStoreConfig.js";import{Initializer as N}from"@dropins/tools/lib.js";import{events as d}from"@dropins/tools/event-bus.js";import{r as $e}from"./chunks/reorderItems.js";import{a as S}from"./chunks/convertCase.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/transform-attributes-form.js";const v=`
 query ORDER_BY_NUMBER($orderNumber: String!, $pageSize: Int) {
  customer {
     orders(
@@ -106,15 +106,15 @@ query ORDER_BY_NUMBER($orderNumber: String!, $pageSize: Int) {
     }
   }
 }
-${u}
-${_}
+${l}
+${m}
 ${p}
 ${c}
-${D}
-${R}
-${h}
+${_}
 ${O}
-`,y=async({orderId:e,returnRef:r,queryType:t,returnsPageSize:a=50})=>await n(T,{method:"GET",cache:"force-cache",variables:{orderNumber:e,pageSize:a}}).then(s=>{var d;return(d=s.errors)!=null&&d.length?m(s.errors):b(t??"orderData",s,r)}).catch(l),f=`
+${R}
+${y}
+`,L=(e,r)=>({id:e,totalQuantity:r.totalQuantity,possibleOnepageCheckout:!0,items:r.items.map(t=>{var a,s,o,n,D,h;return{canApplyMsrp:!0,formattedPrice:"",id:t.id,quantity:t.totalQuantity,product:{canonicalUrl:((a=t.product)==null?void 0:a.canonicalUrl)??"",mainImageUrl:((s=t.product)==null?void 0:s.image)??"",name:((o=t.product)==null?void 0:o.name)??"",productId:0,productType:(n=t.product)==null?void 0:n.productType,sku:((D=t.product)==null?void 0:D.sku)??""},prices:{price:{value:t.price.value,currency:t.price.currency}},configurableOptions:((h=t.selectedOptions)==null?void 0:h.map(E=>({optionLabel:E.label,valueLabel:E.value})))||[]}})}),k=e=>{var a,s,o;const r=e.coupons[0],t=(a=e.payments)==null?void 0:a[0];return{appliedCouponCode:(r==null?void 0:r.code)??"",email:e.email,grandTotal:e.grandTotal.value,orderId:e.number,orderType:"checkout",otherTax:0,salesTax:e.totalTax.value,shipping:{shippingMethod:((s=e.shipping)==null?void 0:s.code)??"",shippingAmount:((o=e.shipping)==null?void 0:o.amount)??0},subtotalExcludingTax:e.subtotal.value,subtotalIncludingTax:0,payments:t?[{paymentMethodCode:(t==null?void 0:t.code)||"",paymentMethodName:(t==null?void 0:t.name)||"",total:e.grandTotal.value}]:[]}},w=e=>{var t,a;const r=(a=(t=e==null?void 0:e.data)==null?void 0:t.placeOrder)==null?void 0:a.orderV2;return r?G(r):null},x=async({orderId:e,returnRef:r,queryType:t,returnsPageSize:a=50})=>await i(v,{method:"GET",cache:"force-cache",variables:{orderNumber:e,pageSize:a}}).then(s=>$(t??"orderData",s,r)).catch(u),B=`
 query ORDER_BY_TOKEN($token: String!) {
   guestOrderByToken(input: { token: $token }) {
     email
@@ -203,12 +203,109 @@ query ORDER_BY_TOKEN($token: String!) {
     }
   }
 }
-${u}
-${_}
+${l}
+${m}
 ${p}
 ${c}
-${D}
-${R}
-${h}
+${_}
 ${O}
-`,$=async(e,r)=>await n(f,{method:"GET",cache:"no-cache",variables:{token:e}}).then(t=>{var a;return(a=t.errors)!=null&&a.length?m(t.errors):G(t,r)}).catch(l),A="orderData",C=async e=>{var i;const r=typeof(e==null?void 0:e.orderRef)=="string"?e==null?void 0:e.orderRef:"",t=typeof(e==null?void 0:e.returnRef)=="string"?e==null?void 0:e.returnRef:"",a=r&&typeof(e==null?void 0:e.orderRef)=="string"&&((i=e==null?void 0:e.orderRef)==null?void 0:i.length)>20,s=(e==null?void 0:e.orderData)??null;if(s){o.emit("order/data",{...s,returnNumber:t});return}if(!r)return;const d=a?await $(r,t):await y({orderId:r,returnRef:t,queryType:A});d?o.emit("order/data",{...d,returnNumber:t}):o.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},E=new I({init:async e=>{const r={};E.config.setConfig({...r,...e}),C(e).catch(console.error)},listeners:()=>[]}),x=E.config;export{oe as cancelOrder,x as config,n as fetchGraphQl,W as getAttributesForm,ae as getAttributesList,q as getConfig,j as getCustomer,re as getCustomerOrdersReturn,J as getGuestOrder,y as getOrderDetailsById,Z as getStoreConfig,$ as guestOrderByToken,E as initialize,U as removeFetchGraphQlHeader,me as reorderItems,ie as requestGuestOrderCancel,se as requestReturn,Y as setEndpoint,Q as setFetchGraphQlHeader,H as setFetchGraphQlHeaders};
+${R}
+${y}
+`,P=async(e,r)=>await i(B,{method:"GET",cache:"no-cache",variables:{token:e}}).then(t=>A(t,r)).catch(u),M="orderData",U=async e=>{var n;const r=typeof(e==null?void 0:e.orderRef)=="string"?e==null?void 0:e.orderRef:"",t=typeof(e==null?void 0:e.returnRef)=="string"?e==null?void 0:e.returnRef:"",a=r&&typeof(e==null?void 0:e.orderRef)=="string"&&((n=e==null?void 0:e.orderRef)==null?void 0:n.length)>20,s=(e==null?void 0:e.orderData)??null;if(s){d.emit("order/data",{...s,returnNumber:t});return}if(!r)return;const o=a?await P(r,t):await x({orderId:r,returnRef:t,queryType:M});o?d.emit("order/data",{...o,returnNumber:t}):d.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},C=new N({init:async e=>{const r={};C.config.setConfig({...r,...e}),U(e).catch(console.error)},listeners:()=>[]}),ae=C.config,T={SHOPPING_CART_CONTEXT:"shoppingCartContext",ORDER_CONTEXT:"orderContext"},F={PLACE_ORDER:"place-order"};function g(){return window.adobeDataLayer=window.adobeDataLayer||[],window.adobeDataLayer}function b(e,r){const t=g();t.push({[e]:null}),t.push({[e]:r})}function q(e,r){g().push(a=>{const s=a.getState?a.getState():{};a.push({event:e,eventInfo:{...s,...r}})})}function Q(e,r){const t=k(r),a=L(e,r);b(T.ORDER_CONTEXT,{...t}),b(T.SHOPPING_CART_CONTEXT,{...a}),q(F.PLACE_ORDER)}const z=`
+  mutation PLACE_ORDER_MUTATION($cartId: String!) {
+    placeOrder(input: { cart_id: $cartId }) {
+      errors {
+        code
+        message
+      }
+      orderV2 {
+        email
+        available_actions
+        status
+        number
+        id
+        order_date
+        carrier
+        shipping_method
+        is_virtual
+        applied_coupons {
+          code
+        }
+        shipments {
+          id
+          number
+          tracking {
+            title
+            number
+            carrier
+          }
+          comments {
+            message
+            timestamp
+          }
+          items {
+            id
+            product_sku
+            product_name
+            order_item {
+              ...OrderItemDetails
+              ... on GiftCardOrderItem {
+                ...GiftCardDetails
+                product {
+                  ...ProductDetails
+                }
+              }
+            }
+          }
+        }
+        payment_methods {
+          name
+          type
+        }
+        shipping_address {
+          ...AddressesList
+        }
+        billing_address {
+          ...AddressesList
+        }
+        items {
+          ...OrderItemDetails
+          ... on BundleOrderItem {
+            ...BundleOrderItemDetails
+          }
+          ... on GiftCardOrderItem {
+            ...GiftCardDetails
+            product {
+              ...ProductDetails
+            }
+          }
+          ... on DownloadableOrderItem {
+            product_name
+            downloadable_links {
+              sort_order
+              title
+            }
+          }
+        }
+        total {
+          ...OrderSummary
+        }
+      }
+    }
+  }
+  ${l}
+  ${m}
+  ${p}
+  ${c}
+  ${_}
+  ${O}
+  ${R}
+`,se=async e=>{if(!e)throw new Error("No cart ID found");return i(z,{variables:{cartId:e}}).then(r=>{var a;(a=r.errors)!=null&&a.length&&I(r.errors);const t=w(r);return t&&(d.emit("order/placed",t),d.emit("cart/reset",void 0),Q(e,t)),t}).catch(u)},Y=`
+mutation REQUEST_RETURN_ORDER($input: RequestReturnInput!) {
+  requestReturn(input: $input) {
+    return {
+      ...OrderReturn
+    }
+  }
+}
+${f}`,oe=async e=>{const r=S(e,"snakeCase",{});return await i(Y,{method:"POST",variables:{input:r}}).then(t=>{console.log("response",t);const{created_at:a,...s}=t.data.requestGuestReturn.return;return{...s,createdAt:a}}).catch(u)};export{ie as cancelOrder,ae as config,i as fetchGraphQl,De as getAttributesForm,Ee as getAttributesList,me as getConfig,ye as getCustomer,Ie as getCustomerOrdersReturn,Ce as getGuestOrder,x as getOrderDetailsById,Ae as getStoreConfig,P as guestOrderByToken,C as initialize,se as placeOrder,pe as removeFetchGraphQlHeader,$e as reorderItems,ue as requestGuestOrderCancel,oe as requestGuestReturn,Te as requestReturn,ce as setEndpoint,_e as setFetchGraphQlHeader,Oe as setFetchGraphQlHeaders};
