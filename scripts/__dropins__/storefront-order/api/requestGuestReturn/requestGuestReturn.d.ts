@@ -1,6 +1,6 @@
-import { RequestReturnProps } from '../../types';
+import { RequestGuestReturnProps } from '../../types';
 
-export declare const requestGuestReturn: (form: RequestReturnProps) => Promise<{
+export declare const requestGuestReturn: (form: RequestGuestReturnProps) => Promise<{
     uid: string;
     number: string;
     status: string;

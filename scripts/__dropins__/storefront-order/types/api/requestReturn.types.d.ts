@@ -1,5 +1,5 @@
 export interface RequestReturnProps {
-    orderUid: string;
+    orderUid?: string;
     contactEmail: string;
     items: {
         orderItemUid: string;
@@ -13,6 +13,10 @@ export interface RequestReturnProps {
             value: string;
         }[];
     }[];
+}
+export interface RequestGuestReturnProps extends RequestReturnProps {
+    token: string;
+    commentText: string;
 }
 export interface ReturnProps {
     uid: string;
