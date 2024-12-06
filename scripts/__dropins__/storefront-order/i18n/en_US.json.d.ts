@@ -232,7 +232,7 @@ declare const _default: {
         "messageWithoutDate": "Your order is processing. Check back for more details when your order ships."
       },
       "guestOrderCancellationRequested": {
-        "title": "Сancellation requested",
+        "title": "Cancellation requested",
         "message": "The cancellation has been requested on {DATE}. Check your email for further instructions.",
         "messageWithoutDate": "The cancellation has been requested. Check your email for further instructions."
       },
