@@ -183,6 +183,7 @@ declare const _default: {
       },
       "actions": {
         "cancel": "Cancel order",
+        "confirmGuestReturn": "Confirm Guest Return",
         "createReturn": "Return or replace",
         "createAnotherReturn": "Start another return",
         "reorder": "Reorder"
