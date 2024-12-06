@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{h as u}from"./network-error.js";import{f as s,h as i}from"./fetch-graphql.js";import{t as o}from"./transform-attributes-form.js";import{a as R}from"./convertCase.js";const c=`
+import{h as o}from"./network-error.js";import{f as s,h as u}from"./fetch-graphql.js";import{t as n}from"./transform-attributes-form.js";import"@dropins/tools/event-bus.js";import{a as l}from"./convertCase.js";const m=`
   query GET_ATTRIBUTES_LIST($entityType: AttributeEntityTypeEnum!) {
     attributesList(entityType: $entityType) {
       items {
@@ -33,20 +33,4 @@ import{h as u}from"./network-error.js";import{f as s,h as i}from"./fetch-graphql
       }
     }
   }
-`,h=async n=>await s(c,{method:"GET",cache:"force-cache",variables:{entityType:n}}).then(t=>{var e,r,a;return(e=t.errors)!=null&&e.length?i(t.errors):o((a=(r=t==null?void 0:t.data)==null?void 0:r.attributesList)==null?void 0:a.items)}).catch(u),m=`
-  fragment OrderReturn on Return {
-    __typename
-    uid
-    status
-    number
-    created_at
-  }
-`,_=`
-mutation REQUEST_RETURN_ORDER($input: RequestReturnInput!) {
-  requestReturn(input: $input) {
-    return {
-      ...OrderReturn
-    }
-  }
-}
-${m}`,p=async n=>{const t=R(n,"snakeCase",{});return await s(_,{method:"POST",variables:{input:t}}).then(e=>{console.log("response",e);const{created_at:r,...a}=e.data.requestGuestReturn.return;return{...a,createdAt:r}}).catch(u)};export{m as R,h as g,p as r};
+`,_=async e=>await s(m,{method:"GET",cache:"force-cache",variables:{entityType:e}}).then(t=>{var r,a,i;return(r=t.errors)!=null&&r.length?u(t.errors):n((i=(a=t==null?void 0:t.data)==null?void 0:a.attributesList)==null?void 0:i.items)}).catch(o),f=async e=>{const t=l(e,"snakeCase",{});console.log("input",t)};export{_ as g,f as r};
