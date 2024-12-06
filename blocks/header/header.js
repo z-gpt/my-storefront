@@ -10,6 +10,9 @@ import { loadFragment } from '../fragment/fragment.js';
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
 
+// Cart dropin
+import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
+
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
@@ -190,7 +193,12 @@ export default async function decorate(block) {
 
   async function toggleMiniCart(state) {
     const show = state ?? !minicartPanel.classList.contains('nav-tools-panel--show');
+    const stateChanged = show !== minicartPanel.classList.contains('nav-tools-panel--show');
     minicartPanel.classList.toggle('nav-tools-panel--show', show);
+
+    if(stateChanged && show) {
+      publishShoppingCartViewEvent();
+    }
   }
 
   cartButton.addEventListener('click', () => toggleMiniCart());
