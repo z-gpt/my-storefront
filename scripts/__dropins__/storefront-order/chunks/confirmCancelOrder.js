@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{h as O}from"./network-error.js";import{f as u,h as E}from"./fetch-graphql.js";import{R as f}from"./fragments.js";import{G as a}from"./getGuestOrder.graphql.js";import{events as _}from"@dropins/tools/event-bus.js";import{b as I}from"./transform-customer-orders-returns.js";const d=`
+import{h as O}from"./network-error.js";import{f as a,h as d}from"./fetch-graphql.js";import{G as E}from"./getGuestOrder.graphql.js";import{R as I}from"./fragments.js";import{b as _}from"./transform-customer-orders-returns.js";import{events as l}from"@dropins/tools/event-bus.js";const s=`
 mutation REORDER_ITEMS_MUTATION($orderNumber: String!) {
   reorderItems(orderNumber: $orderNumber) {
     cart {
@@ -17,7 +17,7 @@ mutation REORDER_ITEMS_MUTATION($orderNumber: String!) {
     }
   }
 }
-`,D=async o=>await u(d,{method:"POST",variables:{orderNumber:o}}).then(e=>{var i,n,m,c,s,R;if((i=e.errors)!=null&&i.length)return E(e.errors);const t=!!((c=(m=(n=e==null?void 0:e.data)==null?void 0:n.reorderItems)==null?void 0:m.cart)!=null&&c.itemsV2.items.length),r=((R=(s=e==null?void 0:e.data)==null?void 0:s.reorderItems)==null?void 0:R.userInputErrors)??[];return{success:t,userInputErrors:r}}).catch(O),N=`
+`,$=async R=>await a(s,{method:"POST",variables:{orderNumber:R}}).then(t=>{var n,o,i,m,c,u;if((n=t.errors)!=null&&n.length)return d(t.errors);const e=!!((m=(i=(o=t==null?void 0:t.data)==null?void 0:o.reorderItems)==null?void 0:i.cart)!=null&&m.itemsV2.items.length),r=((u=(c=t==null?void 0:t.data)==null?void 0:c.reorderItems)==null?void 0:u.userInputErrors)??[];return{success:e,userInputErrors:r}}).catch(O),N=`
 mutation CONFIRM_RETURN_GUEST_ORDER(
   $orderId: ID!,
   $confirmationKey: String!
@@ -28,10 +28,14 @@ mutation CONFIRM_RETURN_GUEST_ORDER(
     }) {
     return {
       ...OrderReturn
+      order {
+        ...guestOrderData
+      }
     }
   }
 }
-${f}`,M=async(o,e)=>(sessionStorage.setItem("212121212121",JSON.stringify({orderId:o,confirmationKey:e})),await u(N,{method:"POST",variables:{orderId:o,confirmationKey:e}}).then(t=>{var r;return(r=t.errors)!=null&&r.length?(sessionStorage.setItem("111111111",JSON.stringify(t.errors)),E(t.errors)):t.data}).catch(O)),T=`
+${I}
+${E}`,M=async(R,t)=>(sessionStorage.setItem("212121212121",JSON.stringify({orderId:R,confirmationKey:t})),await a(N,{method:"POST",variables:{orderId:R,confirmationKey:t}}).then(e=>{var n,o,i,m,c,u,f;if((n=e.errors)!=null&&n.length)return sessionStorage.setItem("111111111",JSON.stringify(e.errors)),d(e.errors);let r=null;return(m=(i=(o=e==null?void 0:e.data)==null?void 0:o.confirmReturn)==null?void 0:i.return)!=null&&m.order&&(r=_((f=(u=(c=e==null?void 0:e.data)==null?void 0:c.confirmReturn)==null?void 0:u.return)==null?void 0:f.order),l.emit("order/data",r)),r}).catch(O)),T=`
   mutation CONFIRM_CANCEL_ORDER_MUTATION(
       $orderId: ID!,
       $confirmationKey: String!
@@ -49,5 +53,5 @@ ${f}`,M=async(o,e)=>(sessionStorage.setItem("212121212121",JSON.stringify({order
       }
     }
   }
-${a}
-`,$=async(o,e)=>u(T,{variables:{orderId:o,confirmationKey:e}}).then(async({errors:t,data:r})=>{var m,c,s,R;const i=[...(m=r==null?void 0:r.confirmCancelOrder)!=null&&m.errorV2?[(c=r==null?void 0:r.confirmCancelOrder)==null?void 0:c.errorV2]:[],...t??[]];let n=null;return(s=r==null?void 0:r.confirmCancelOrder)!=null&&s.order&&(n=I((R=r==null?void 0:r.confirmCancelOrder)==null?void 0:R.order),_.emit("order/data",n)),i.length>0?E(i):n});export{M as a,$ as c,D as r};
+${E}
+`,U=async(R,t)=>a(T,{variables:{orderId:R,confirmationKey:t}}).then(async({errors:e,data:r})=>{var i,m,c,u;const n=[...(i=r==null?void 0:r.confirmCancelOrder)!=null&&i.errorV2?[(m=r==null?void 0:r.confirmCancelOrder)==null?void 0:m.errorV2]:[],...e??[]];let o=null;return(c=r==null?void 0:r.confirmCancelOrder)!=null&&c.order&&(o=_((u=r==null?void 0:r.confirmCancelOrder)==null?void 0:u.order),l.emit("order/data",o)),n.length>0?d(n):o});export{M as a,U as c,$ as r};
