@@ -51,7 +51,7 @@ mutation REQUEST_RETURN_ORDER($input: RequestReturnInput!) {
 }
 ${c}`,f=async a=>{const e=R(a,"snakeCase",{});return await s(_,{method:"POST",variables:{input:e}}).then(t=>{var i;if((i=t.errors)!=null&&i.length)return o(t.errors);const{created_at:r,...u}=t.data.requestReturn.return;return{...u,createdAt:r}}).catch(n)},l=`
 mutation REQUEST_RETURN_GUEST_ORDER($input: RequestGuestReturnInput!) {
-  requestReturn(input: $input) {
+  requestGuestReturn(input: $input) {
     return {
       ...OrderReturn
     }
