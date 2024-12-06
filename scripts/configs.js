@@ -85,14 +85,21 @@ const getConfigForEnvironment = async (environment) => {
  * @param {string} [environment] - Optional, overwrite the current environment.
  * @returns {Promise<string|undefined>} - The value of the configuration parameter, or undefined.
  */
+// export const getConfigValue = async (configParam, environment) => {
+//   const env = environment || calcEnvironment();
+//   const config = await getConfigForEnvironment(env);
+//   const configElements = config.data;
+
+//   if (configParam === "commerce-core-endpoint")
+//     return "https://mcstaging.aemshop.net/graphql"; // <=== This line, put any URL
+
+//   return configElements.find((c) => c.key === configParam)?.value;
+// };
+
 export const getConfigValue = async (configParam, environment) => {
   const env = environment || calcEnvironment();
   const config = await getConfigForEnvironment(env);
   const configElements = config.data;
-
-  if (configParam === "commerce-core-endpoint")
-    return "https://mcstaging.aemshop.net/graphql"; // <=== This line, put any URL
-
   return configElements.find((c) => c.key === configParam)?.value;
 };
 
