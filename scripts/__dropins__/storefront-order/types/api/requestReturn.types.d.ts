@@ -24,14 +24,24 @@ export interface ReturnProps {
     status: string;
     created_at: string;
 }
+interface ErrorsProps {
+    message: string;
+}
 export interface RequestReturnResponse {
     data: {
         requestReturn: {
             return: ReturnProps;
         };
     };
-    errors?: {
-        message: string;
-    }[];
+    errors?: ErrorsProps[];
 }
+export interface RequestGuestReturnResponse {
+    data: {
+        requestGuestReturn: {
+            return: ReturnProps;
+        };
+    };
+    errors?: ErrorsProps[];
+}
+export {};
 //# sourceMappingURL=requestReturn.types.d.ts.map
