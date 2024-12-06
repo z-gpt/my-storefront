@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{P as c,a as u,G as l,O as E,B as m,b as d}from"./transform-customer-orders-returns.js";import{O,A as D,G as R}from"./getGuestOrder.graphql.js";import{f as i,h as _}from"./fetch-graphql.js";const T=`
+import{P as c,a as l,G as u,O as E,B as m,b as d}from"./transform-customer-orders-returns.js";import{O,A as D,G as R}from"./getGuestOrder.graphql.js";import{f as i,h as _}from"./fetch-graphql.js";const T=`
 mutation CANCEL_ORDER_MUTATION($orderId: ID!, $reason: String!) {
   cancelOrder(input: { order_id: $orderId, reason: $reason }) {
     error
@@ -80,8 +80,8 @@ mutation CANCEL_ORDER_MUTATION($orderId: ID!, $reason: String!) {
   }
 }
 ${c}
-${u}
 ${l}
+${u}
 ${E}
 ${m}
 ${O}
@@ -96,4 +96,4 @@ mutation REQUEST_GUEST_ORDER_CANCEL_MUTATION($token: String!, $reason: String!) 
   }
 }
 ${R}
-`,C=async(r,e,s,t)=>{if(!r)throw new Error("No order token found");if(!e)throw new Error("No reason found");return i(A,{variables:{token:r,reason:e}}).then(({errors:a,data:o})=>{if(a)return _(a);o.requestGuestOrderCancel.error!=null&&t();const n=d(o.requestGuestOrderCancel.order);s(n)}).catch(()=>t())};export{G as c,C as r};
+`,C=async(r,e,s,t)=>{if(console.log("token",r),!r)throw new Error("No order token found");if(!e)throw new Error("No reason found");return i(A,{variables:{token:r,reason:e}}).then(({errors:a,data:o})=>{if(a)return _(a);o.requestGuestOrderCancel.error!=null&&t();const n=d(o.requestGuestOrderCancel.order);s(n)}).catch(()=>t())};export{G as c,C as r};
