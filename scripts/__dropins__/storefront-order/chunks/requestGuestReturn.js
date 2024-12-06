@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{h as s}from"./network-error.js";import{f as i,h as o}from"./fetch-graphql.js";import{t as R}from"./transform-attributes-form.js";import{a as c}from"./convertCase.js";import"@dropins/tools/event-bus.js";const m=`
+import{h as n}from"./network-error.js";import{f as s,h as o}from"./fetch-graphql.js";import{t as E}from"./transform-attributes-form.js";import{a as R}from"./convertCase.js";const T=`
   query GET_ATTRIBUTES_LIST($entityType: AttributeEntityTypeEnum!) {
     attributesList(entityType: $entityType) {
       items {
@@ -33,7 +33,7 @@ import{h as s}from"./network-error.js";import{f as i,h as o}from"./fetch-graphql
       }
     }
   }
-`,y=async r=>await i(m,{method:"GET",cache:"force-cache",variables:{entityType:r}}).then(t=>{var e,a,n;return(e=t.errors)!=null&&e.length?o(t.errors):R((n=(a=t==null?void 0:t.data)==null?void 0:a.attributesList)==null?void 0:n.items)}).catch(s),T=`
+`,y=async a=>await s(T,{method:"GET",cache:"force-cache",variables:{entityType:a}}).then(e=>{var t,r,u;return(t=e.errors)!=null&&t.length?o(e.errors):E((u=(r=e==null?void 0:e.data)==null?void 0:r.attributesList)==null?void 0:u.items)}).catch(n),c=`
   fragment OrderReturn on Return {
     __typename
     uid
@@ -49,4 +49,12 @@ mutation REQUEST_RETURN_ORDER($input: RequestReturnInput!) {
     }
   }
 }
-${T}`,f=async r=>{const t=c(r,"snakeCase",{});return await i(_,{method:"POST",variables:{input:t}}).then(e=>{var u;if((u=e.errors)!=null&&u.length)return o(e.errors);const{created_at:a,...n}=e.data.requestReturn.return;return{...n,createdAt:a}}).catch(s)},b=async r=>{const t=c(r,"snakeCase",{});return console.log("input",t),alert("This is a test")};export{b as a,y as g,f as r};
+${c}`,f=async a=>{const e=R(a,"snakeCase",{});return await s(_,{method:"POST",variables:{input:e}}).then(t=>{var i;if((i=t.errors)!=null&&i.length)return o(t.errors);const{created_at:r,...u}=t.data.requestReturn.return;return{...u,createdAt:r}}).catch(n)},l=`
+mutation REQUEST_RETURN_GUEST_ORDER($input: RequestGuestReturnInput!) {
+  requestReturn(input: $input) {
+    return {
+      ...OrderReturn
+    }
+  }
+}
+${c}`,U=async a=>{const e=R(a,"snakeCase",{});return console.log("input",e),await s(l,{method:"POST",variables:{input:e}}).then(t=>{var r,u;return console.log("response",t),console.log(" response.data.requestGuestReturn.return",(u=(r=t==null?void 0:t.data)==null?void 0:r.requestGuestReturn)==null?void 0:u.return),null}).catch(n)};export{U as a,y as g,f as r};
