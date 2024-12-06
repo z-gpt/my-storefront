@@ -14,5 +14,6 @@ export * from './reorderItems';
 export * from './requestGuestOrderCancel';
 export * from './requestReturn';
 export * from './requestGuestReturn';
-export * from './confirmReturn';
+export * from './confirmGuestReturn';
+export * from './confirmCancelOrder';
 //# sourceMappingURL=index.d.ts.map
