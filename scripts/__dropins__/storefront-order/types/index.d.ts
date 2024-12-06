@@ -22,4 +22,5 @@ export * from './orderStatus.types';
 export * from './reorder.types';
 export * from './returnsList.types';
 export * from './shippingStatus.types';
+export * from './orderEmailActionHandler.types';
 //# sourceMappingURL=index.d.ts.map
