@@ -9,6 +9,5 @@ export declare const useOrdersList: ({ ordersInMinifiedView, minifiedView, pageS
         currentPage: number;
         pageSize: number;
     };
-    placeholderImage: string;
 };
 //# sourceMappingURL=useOrdersList.d.ts.map

@@ -18,6 +18,7 @@ export * from './CartSignal';
 export * from './CustomerSignal';
 export * from './EstimateShippingMethodsSignal';
 export * from './IsBillToShippingSignal';
+export * from './SelectedPaymentMethodSignal';
 export * from './SelectedShippingMethodSignal';
 export * from './ServerErrorSignal';
 export * from './StoreConfigSignal';
