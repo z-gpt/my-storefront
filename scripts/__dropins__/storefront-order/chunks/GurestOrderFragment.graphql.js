@@ -1,7 +1,7 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{P as e,b as t,G as r,O as a,B as d,d as s,A as i,R as _}from"./initialize.js";const n=`
-  fragment guestOrderData on CustomerOrder {
+import{P as _,a as e,G as E,O as R,B as t,b as r,A as T,R as a}from"./initialize.js";const d=`
+  fragment GUEST_ORDER_FRAGMENT on CustomerOrder {
     email
     id
     number
@@ -16,10 +16,10 @@ import{P as e,b as t,G as r,O as a,B as d,d as s,A as i,R as _}from"./initialize
     available_actions
     is_virtual
     items_eligible_for_return {
-      ...OrderItemDetails
+      ...ORDER_ITEM_DETAILS_FRAGMENT
     }
     returns {
-      ...OrderReturns
+      ...RETURNS_FRAGMENT
     }
     payment_methods {
       name
@@ -45,11 +45,11 @@ import{P as e,b as t,G as r,O as a,B as d,d as s,A as i,R as _}from"./initialize
         product_sku
         product_name
         order_item {
-          ...OrderItemDetails
+          ...ORDER_ITEM_DETAILS_FRAGMENT
           ... on GiftCardOrderItem {
-            ...GiftCardDetails
+            ...GIFT_CARD_DETAILS_FRAGMENT
             product {
-              ...ProductDetails
+              ...PRODUCT_DETAILS_FRAGMENT
             }
           }
         }
@@ -60,20 +60,20 @@ import{P as e,b as t,G as r,O as a,B as d,d as s,A as i,R as _}from"./initialize
       type
     }
     shipping_address {
-      ...AddressesList
+      ...ADDRESS_FRAGMENT
     }
     billing_address {
-      ...AddressesList
+      ...ADDRESS_FRAGMENT
     }
     items {
-      ...OrderItemDetails
+      ...ORDER_ITEM_DETAILS_FRAGMENT
       ... on BundleOrderItem {
-        ...BundleOrderItemDetails
+        ...BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT
       }
       ... on GiftCardOrderItem {
-        ...GiftCardDetails
+        ...GIFT_CARD_DETAILS_FRAGMENT
         product {
-          ...ProductDetails
+          ...PRODUCT_DETAILS_FRAGMENT
         }
       }
       ... on DownloadableOrderItem {
@@ -85,15 +85,15 @@ import{P as e,b as t,G as r,O as a,B as d,d as s,A as i,R as _}from"./initialize
       }
     }
     total {
-      ...OrderSummary
+      ...ORDER_SUMMARY_FRAGMENT
     }
   }
+  ${_}
   ${e}
+  ${E}
+  ${R}
   ${t}
   ${r}
+  ${T}
   ${a}
-  ${d}
-  ${s}
-  ${i}
-  ${_}
-`;export{n as G};
+`;export{d as G};

@@ -7,4 +7,5 @@ export * from './transform-guest-order';
 export * from './transform-order-details';
 export * from './transform-place-order';
 export * from './transform-store-config';
+export * from './transform-request-return';
 //# sourceMappingURL=index.d.ts.map

@@ -1,7 +1,7 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as G}from"@dropins/tools/event-bus.js";import{f as Q,h as Y}from"./fetch-graphql.js";import{a as ea,h as K}from"./convertCase.js";const j=`
-  fragment AddressesList on OrderAddress {
+import{merge as z,Initializer as na}from"@dropins/tools/lib.js";import{events as q}from"@dropins/tools/event-bus.js";import{a as ta,h as Y}from"./network-error.js";import{f as Q}from"./fetch-graphql.js";const K=`
+  fragment ADDRESS_FRAGMENT on OrderAddress {
     city
     company
     country_code
@@ -18,8 +18,8 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
     telephone
     vat_id
   }
-`,H=`
-  fragment ProductDetails on ProductInterface {
+`,j=`
+  fragment PRODUCT_DETAILS_FRAGMENT on ProductInterface {
     __typename
     canonical_url
     url_key
@@ -41,8 +41,8 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
       }
     }
   }
-`,J=`
-  fragment PriceDetails on OrderItemInterface {
+`,H=`
+  fragment PRICE_DETAILS_FRAGMENT on OrderItemInterface {
     prices {
       price_including_tax {
         value
@@ -62,9 +62,9 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
       }
     }
   }
-`,V=`
-  fragment GiftCardDetails on GiftCardOrderItem {
-    ...PriceDetails
+`,J=`
+  fragment GIFT_CARD_DETAILS_FRAGMENT on GiftCardOrderItem {
+    ...PRICE_DETAILS_FRAGMENT
     gift_message {
       message
     }
@@ -76,8 +76,8 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
       message
     }
   }
-`,W=`
-  fragment OrderItemDetails on OrderItemInterface {
+`,V=`
+  fragment ORDER_ITEM_DETAILS_FRAGMENT on OrderItemInterface {
     __typename
     status
     product_sku
@@ -100,13 +100,13 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
       value
     }
     product {
-      ...ProductDetails
+      ...PRODUCT_DETAILS_FRAGMENT
     }
-    ...PriceDetails
+    ...PRICE_DETAILS_FRAGMENT
   }
-`,X=`
-  fragment BundleOrderItemDetails on BundleOrderItem {
-    ...PriceDetails
+`,W=`
+  fragment BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT on BundleOrderItem {
+    ...PRICE_DETAILS_FRAGMENT
     bundle_options {
       uid
       label
@@ -116,8 +116,8 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
       }
     }
   }
-`,Z=`
-  fragment OrderSummary on OrderTotal {
+`,X=`
+  fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     grand_total {
       value
       currency
@@ -126,7 +126,11 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
       currency
       value
     }
-    subtotal {
+    subtotal_excl_tax {
+      currency
+      value
+    }
+    subtotal_incl_tax {
       currency
       value
     }
@@ -154,48 +158,48 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
       label
     }
   }
-`,I=`
-  fragment OrderReturns on Returns {
-  __typename
-   items {
-    number
-    status
-    created_at
-    shipping {
-      tracking {
-        status {
-          text
-          type
-        }
-        carrier {
-          uid
-          label
-        }
-        tracking_number
-      }
-    }
-    order {
-      number
-      token
-    }
+`,Z=`
+  fragment RETURNS_FRAGMENT on Returns {
+    __typename
     items {
-     uid
-     quantity
-     status
-     request_quantity
-      order_item {
-        ...OrderItemDetails
-        ... on GiftCardOrderItem {
-          ...GiftCardDetails
-          product {
-            ...ProductDetails
+      number
+      status
+      created_at
+      shipping {
+        tracking {
+          status {
+            text
+            type
+          }
+          carrier {
+            uid
+            label
+          }
+          tracking_number
+        }
+      }
+      order {
+        number
+        token
+      }
+      items {
+        uid
+        quantity
+        status
+        request_quantity
+        order_item {
+          ...ORDER_ITEM_DETAILS_FRAGMENT
+          ... on GiftCardOrderItem {
+            ...GIFT_CARD_DETAILS_FRAGMENT
+            product {
+              ...PRODUCT_DETAILS_FRAGMENT
+            }
           }
         }
       }
     }
-   }
   }
-`,ia=`
+`,_a=a=>a||0,ua=a=>{var n,t,_;return{...a,canonicalUrl:(a==null?void 0:a.canonical_url)||"",urlKey:(a==null?void 0:a.url_key)||"",id:(a==null?void 0:a.uid)||"",name:(a==null?void 0:a.name)||"",sku:(a==null?void 0:a.sku)||"",image:((n=a==null?void 0:a.image)==null?void 0:n.url)||"",productType:(a==null?void 0:a.__typename)||"",thumbnail:{label:((t=a==null?void 0:a.thumbnail)==null?void 0:t.label)||"",url:((_=a==null?void 0:a.thumbnail)==null?void 0:_.url)||""}}},ea=a=>{if(!a||!("selected_options"in a))return;const n={};for(const t of a.selected_options)n[t.label]=t.value;return n},ia=a=>{const n=a==null?void 0:a.map(_=>({uid:_.uid,label:_.label,values:_.values.map(e=>e.product_name).join(", ")})),t={};return n==null||n.forEach(_=>{t[_.label]=_.values}),Object.keys(t).length>0?t:null},sa=a=>(a==null?void 0:a.length)>0?{count:a.length,result:a.map(n=>n.title).join(", ")}:null,la=a=>({quantityCanceled:(a==null?void 0:a.quantity_canceled)??0,quantityInvoiced:(a==null?void 0:a.quantity_invoiced)??0,quantityOrdered:(a==null?void 0:a.quantity_ordered)??0,quantityRefunded:(a==null?void 0:a.quantity_refunded)??0,quantityReturned:(a==null?void 0:a.quantity_returned)??0,quantityShipped:(a==null?void 0:a.quantity_shipped)??0,quantityReturnRequested:(a==null?void 0:a.quantity_return_requested)??0}),I=a=>a==null?void 0:a.filter(n=>n.__typename).map(n=>{var E,c,r,O,d,g,N,M,A,D,u,y,T,p,S,o,f,G,h,F,C,L,k,U,B,$,P,x,m,w;const{quantityCanceled:t,quantityInvoiced:_,quantityOrdered:e,quantityRefunded:i,quantityReturned:s,quantityShipped:l,quantityReturnRequested:R}=la(n);return{type:n==null?void 0:n.__typename,eligibleForReturn:n==null?void 0:n.eligible_for_return,productSku:n==null?void 0:n.product_sku,productName:n.product_name,productUrlKey:n.product_url_key,quantityCanceled:t,quantityInvoiced:_,quantityOrdered:e,quantityRefunded:i,quantityReturned:s,quantityShipped:l,quantityReturnRequested:R,id:n==null?void 0:n.id,discounted:((O=(r=(c=(E=n==null?void 0:n.product)==null?void 0:E.price_range)==null?void 0:c.maximum_price)==null?void 0:r.regular_price)==null?void 0:O.value)*(n==null?void 0:n.quantity_ordered)!==((d=n==null?void 0:n.product_sale_price)==null?void 0:d.value)*(n==null?void 0:n.quantity_ordered),total:{value:((g=n==null?void 0:n.product_sale_price)==null?void 0:g.value)*(n==null?void 0:n.quantity_ordered)||0,currency:((N=n==null?void 0:n.product_sale_price)==null?void 0:N.currency)||""},totalInclTax:{value:((M=n==null?void 0:n.product_sale_price)==null?void 0:M.value)*(n==null?void 0:n.quantity_ordered)||0,currency:(A=n==null?void 0:n.product_sale_price)==null?void 0:A.currency},price:{value:((D=n==null?void 0:n.product_sale_price)==null?void 0:D.value)||0,currency:(u=n==null?void 0:n.product_sale_price)==null?void 0:u.currency},priceInclTax:{value:((y=n==null?void 0:n.product_sale_price)==null?void 0:y.value)||0,currency:(T=n==null?void 0:n.product_sale_price)==null?void 0:T.currency},totalQuantity:_a(n==null?void 0:n.quantity_ordered),regularPrice:{value:(f=(o=(S=(p=n==null?void 0:n.product)==null?void 0:p.price_range)==null?void 0:S.maximum_price)==null?void 0:o.regular_price)==null?void 0:f.value,currency:(C=(F=(h=(G=n==null?void 0:n.product)==null?void 0:G.price_range)==null?void 0:h.maximum_price)==null?void 0:F.regular_price)==null?void 0:C.currency},product:ua(n==null?void 0:n.product),thumbnail:{label:((k=(L=n==null?void 0:n.product)==null?void 0:L.thumbnail)==null?void 0:k.label)||"",url:((B=(U=n==null?void 0:n.product)==null?void 0:U.thumbnail)==null?void 0:B.url)||""},giftCard:(n==null?void 0:n.__typename)==="GiftCardOrderItem"?{senderName:(($=n.gift_card)==null?void 0:$.sender_name)||"",senderEmail:((P=n.gift_card)==null?void 0:P.sender_email)||"",recipientEmail:((x=n.gift_card)==null?void 0:x.recipient_email)||"",recipientName:((m=n.gift_card)==null?void 0:m.recipient_name)||"",message:((w=n.gift_card)==null?void 0:w.message)||""}:void 0,configurableOptions:ea(n),bundleOptions:n.__typename==="BundleOrderItem"?ia(n.bundle_options):null,itemPrices:n.prices,downloadableLinks:n.__typename==="DownloadableOrderItem"?sa(n==null?void 0:n.downloadable_links):null}}),v=(a,n)=>{var O,d,g,N,M,A,D,u,y;const t=I(a.items),_=((O=ra(a==null?void 0:a.returns))==null?void 0:O.ordersReturn)??[],e=n?_.filter(T=>T.returnNumber===n):_,{total:i,...s}=ta({...a,items:t,returns:e},"camelCase",{applied_coupons:"coupons",__typename:"__typename",firstname:"firstName",middlename:"middleName",lastname:"lastName",postcode:"postCode",payment_methods:"payments"}),l=(d=a==null?void 0:a.payment_methods)==null?void 0:d[0],R=(l==null?void 0:l.type)||"",E=(l==null?void 0:l.name)||"",c=(g=s==null?void 0:s.items)==null?void 0:g.reduce((T,p)=>T+(p==null?void 0:p.totalQuantity),0),r={...i,...s,totalQuantity:c,shipping:{amount:((N=i==null?void 0:i.totalShipping)==null?void 0:N.value)??0,currency:((M=i==null?void 0:i.totalShipping)==null?void 0:M.currency)||"",code:s.shippingMethod??""},payments:[{code:R,name:E}]};return z(r,(y=(u=(D=(A=b==null?void 0:b.getConfig())==null?void 0:A.models)==null?void 0:D.OrderDataModel)==null?void 0:u.transformer)==null?void 0:y.call(u,a))},ca=(a,n,t)=>{var _,e,i,s,l,R,E;if((s=(i=(e=(_=n==null?void 0:n.data)==null?void 0:_.customer)==null?void 0:e.orders)==null?void 0:i.items)!=null&&s.length&&a==="orderData"){const c=(E=(R=(l=n==null?void 0:n.data)==null?void 0:l.customer)==null?void 0:R.orders)==null?void 0:E.items[0];return v(c,t)}return null},ra=a=>{var i,s,l,R,E;if(!((i=a==null?void 0:a.items)!=null&&i.length))return null;const n=a==null?void 0:a.items,t=a==null?void 0:a.page_info,e={ordersReturn:[...n].sort((c,r)=>+r.number-+c.number).map(c=>{var A,D;const{order:r,status:O,number:d,created_at:g}=c,N=((D=(A=c==null?void 0:c.shipping)==null?void 0:A.tracking)==null?void 0:D.map(u=>{const{status:y,carrier:T,tracking_number:p}=u;return{status:y,carrier:T,trackingNumber:p}}))??[],M=c.items.map(u=>{var G;const y=u==null?void 0:u.quantity,T=u==null?void 0:u.status,p=u==null?void 0:u.request_quantity,S=u==null?void 0:u.uid,o=u==null?void 0:u.order_item,f=((G=I([o]))==null?void 0:G.reduce((h,F)=>F,{}))??{};return{uid:S,quantity:y,status:T,requestQuantity:p,...f}});return{createdReturnAt:g,returnStatus:O,token:r==null?void 0:r.token,orderNumber:r==null?void 0:r.number,returnNumber:d,items:M,tracking:N}}),...t?{pageInfo:{pageSize:t.page_size,totalPages:t.total_pages,currentPage:t.current_page}}:{}};return z(e,(E=(R=(l=(s=b==null?void 0:b.getConfig())==null?void 0:s.models)==null?void 0:l.CustomerOrdersReturnModel)==null?void 0:R.transformer)==null?void 0:E.call(R,{...n,...t}))},Ma=(a,n)=>{var _,e;if(!((_=a==null?void 0:a.data)!=null&&_.guestOrder))return null;const t=(e=a==null?void 0:a.data)==null?void 0:e.guestOrder;return v(t,n)},Ra=(a,n)=>{var _,e;if(!((_=a==null?void 0:a.data)!=null&&_.guestOrderByToken))return null;const t=(e=a==null?void 0:a.data)==null?void 0:e.guestOrderByToken;return v(t,n)},Ea=`
   query ORDER_BY_NUMBER($orderNumber: String!, $pageSize: Int) {
     customer {
       orders(filter: { number: { eq: $orderNumber } }) {
@@ -211,17 +215,17 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
           shipping_method
           is_virtual
           returns(pageSize: $pageSize) {
-            ...OrderReturns
+            ...RETURNS_FRAGMENT
           }
           items_eligible_for_return {
-            ...OrderItemDetails
+            ...ORDER_ITEM_DETAILS_FRAGMENT
             ... on BundleOrderItem {
-              ...BundleOrderItemDetails
+              ...BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT
             }
             ... on GiftCardOrderItem {
-              ...GiftCardDetails
+              ...GIFT_CARD_DETAILS_FRAGMENT
               product {
-                ...ProductDetails
+                ...PRODUCT_DETAILS_FRAGMENT
               }
             }
             ... on DownloadableOrderItem {
@@ -253,11 +257,11 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
               product_name
               quantity_shipped
               order_item {
-                ...OrderItemDetails
+                ...ORDER_ITEM_DETAILS_FRAGMENT
                 ... on GiftCardOrderItem {
-                  ...GiftCardDetails
+                  ...GIFT_CARD_DETAILS_FRAGMENT
                   product {
-                    ...ProductDetails
+                    ...PRODUCT_DETAILS_FRAGMENT
                   }
                 }
               }
@@ -268,20 +272,20 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
             type
           }
           shipping_address {
-            ...AddressesList
+            ...ADDRESS_FRAGMENT
           }
           billing_address {
-            ...AddressesList
+            ...ADDRESS_FRAGMENT
           }
           items {
-            ...OrderItemDetails
+            ...ORDER_ITEM_DETAILS_FRAGMENT
             ... on BundleOrderItem {
-              ...BundleOrderItemDetails
+              ...BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT
             }
             ... on GiftCardOrderItem {
-              ...GiftCardDetails
+              ...GIFT_CARD_DETAILS_FRAGMENT
               product {
-                ...ProductDetails
+                ...PRODUCT_DETAILS_FRAGMENT
               }
             }
             ... on DownloadableOrderItem {
@@ -293,21 +297,21 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
             }
           }
           total {
-            ...OrderSummary
+            ...ORDER_SUMMARY_FRAGMENT
           }
         }
       }
     }
   }
+  ${j}
   ${H}
   ${J}
   ${V}
   ${W}
   ${X}
+  ${K}
   ${Z}
-  ${j}
-  ${I}
-`,ua=a=>{var l,s,r,d,p;if(!((l=a==null?void 0:a.items)!=null&&l.length))return null;const t=a==null?void 0:a.items,n=a==null?void 0:a.page_info,i={ordersReturn:[...t].sort((c,_)=>+_.number-+c.number).map(c=>{var O,f;const{order:_,status:h,number:R,created_at:q}=c,D=((f=(O=c==null?void 0:c.shipping)==null?void 0:O.tracking)==null?void 0:f.map(u=>{const{status:y,carrier:o,tracking_number:g}=u;return{status:y,carrier:o,trackingNumber:g}}))??[],v=c.items.map(u=>{var E;const y=u==null?void 0:u.quantity,o=u==null?void 0:u.status,g=u==null?void 0:u.request_quantity,b=u==null?void 0:u.uid,T=u==null?void 0:u.order_item,m=((E=aa([T]))==null?void 0:E.reduce((N,C)=>C,{}))??{};return{uid:b,quantity:y,status:o,requestQuantity:g,...m}});return{createdReturnAt:q,returnStatus:h,token:_==null?void 0:_.token,orderNumber:_==null?void 0:_.number,returnNumber:R,items:v,tracking:D}}),...n?{pageInfo:{pageSize:n.page_size,totalPages:n.total_pages,currentPage:n.current_page}}:{}};return U(i,(p=(d=(r=(s=k==null?void 0:k.getConfig())==null?void 0:s.models)==null?void 0:r.CustomerOrdersReturnModel)==null?void 0:d.transformer)==null?void 0:p.call(d,{...t,...n}))},sa=a=>a||0,la=a=>{var t,n,e;return{...a,canonicalUrl:(a==null?void 0:a.canonical_url)||"",urlKey:(a==null?void 0:a.url_key)||"",id:(a==null?void 0:a.uid)||"",name:(a==null?void 0:a.name)||"",sku:(a==null?void 0:a.sku)||"",image:((t=a==null?void 0:a.image)==null?void 0:t.url)||"",productType:(a==null?void 0:a.__typename)||"",thumbnail:{label:((n=a==null?void 0:a.thumbnail)==null?void 0:n.label)||"",url:((e=a==null?void 0:a.thumbnail)==null?void 0:e.url)||""}}},ra=a=>{if(!a||!("selected_options"in a))return;const t={};for(const n of a.selected_options)t[n.label]=n.value;return t},ca=a=>{const t=a==null?void 0:a.map(e=>({uid:e.uid,label:e.label,values:e.values.map(i=>i.product_name).join(", ")})),n={};return t==null||t.forEach(e=>{n[e.label]=e.values}),Object.keys(n).length>0?n:null},_a=a=>(a==null?void 0:a.length)>0?{count:a.length,result:a.map(t=>t.title).join(", ")}:null,da=a=>({quantityCanceled:(a==null?void 0:a.quantity_canceled)??0,quantityInvoiced:(a==null?void 0:a.quantity_invoiced)??0,quantityOrdered:(a==null?void 0:a.quantity_ordered)??0,quantityRefunded:(a==null?void 0:a.quantity_refunded)??0,quantityReturned:(a==null?void 0:a.quantity_returned)??0,quantityShipped:(a==null?void 0:a.quantity_shipped)??0,quantityReturnRequested:(a==null?void 0:a.quantity_return_requested)??0}),aa=a=>a==null?void 0:a.filter(t=>t.__typename).map(t=>{var p,c,_,h,R,q,D,v,O,f,u,y,o,g,b,T,m,E,N,C,B,A,$,P,w,x,M,L,F,z;const{quantityCanceled:n,quantityInvoiced:e,quantityOrdered:i,quantityRefunded:l,quantityReturned:s,quantityShipped:r,quantityReturnRequested:d}=da(t);return{type:t==null?void 0:t.__typename,eligibleForReturn:t==null?void 0:t.eligible_for_return,productSku:t==null?void 0:t.product_sku,productName:t.product_name,productUrlKey:t.product_url_key,quantityCanceled:n,quantityInvoiced:e,quantityOrdered:i,quantityRefunded:l,quantityReturned:s,quantityShipped:r,quantityReturnRequested:d,id:t==null?void 0:t.id,discounted:((h=(_=(c=(p=t==null?void 0:t.product)==null?void 0:p.price_range)==null?void 0:c.maximum_price)==null?void 0:_.regular_price)==null?void 0:h.value)*(t==null?void 0:t.quantity_ordered)!==((R=t==null?void 0:t.product_sale_price)==null?void 0:R.value)*(t==null?void 0:t.quantity_ordered),total:{value:((q=t==null?void 0:t.product_sale_price)==null?void 0:q.value)*(t==null?void 0:t.quantity_ordered)||0,currency:((D=t==null?void 0:t.product_sale_price)==null?void 0:D.currency)||""},totalInclTax:{value:((v=t==null?void 0:t.product_sale_price)==null?void 0:v.value)*(t==null?void 0:t.quantity_ordered)||0,currency:(O=t==null?void 0:t.product_sale_price)==null?void 0:O.currency},price:{value:((f=t==null?void 0:t.product_sale_price)==null?void 0:f.value)||0,currency:(u=t==null?void 0:t.product_sale_price)==null?void 0:u.currency},priceInclTax:{value:((y=t==null?void 0:t.product_sale_price)==null?void 0:y.value)||0,currency:(o=t==null?void 0:t.product_sale_price)==null?void 0:o.currency},totalQuantity:sa(t==null?void 0:t.quantity_ordered),regularPrice:{value:(m=(T=(b=(g=t==null?void 0:t.product)==null?void 0:g.price_range)==null?void 0:b.maximum_price)==null?void 0:T.regular_price)==null?void 0:m.value,currency:(B=(C=(N=(E=t==null?void 0:t.product)==null?void 0:E.price_range)==null?void 0:N.maximum_price)==null?void 0:C.regular_price)==null?void 0:B.currency},product:la(t==null?void 0:t.product),thumbnail:{label:(($=(A=t==null?void 0:t.product)==null?void 0:A.thumbnail)==null?void 0:$.label)||"",url:((w=(P=t==null?void 0:t.product)==null?void 0:P.thumbnail)==null?void 0:w.url)||""},giftCard:(t==null?void 0:t.__typename)==="GiftCardOrderItem"?{senderName:((x=t.gift_card)==null?void 0:x.sender_name)||"",senderEmail:((M=t.gift_card)==null?void 0:M.sender_email)||"",recipientEmail:((L=t.gift_card)==null?void 0:L.recipient_email)||"",recipientName:((F=t.gift_card)==null?void 0:F.recipient_name)||"",message:((z=t.gift_card)==null?void 0:z.message)||""}:void 0,configurableOptions:ra(t),bundleOptions:t.__typename==="BundleOrderItem"?ca(t.bundle_options):null,itemPrices:t.prices,downloadableLinks:t.__typename==="DownloadableOrderItem"?_a(t==null?void 0:t.downloadable_links):null}}),S=(a,t)=>{var h,R,q,D,v,O,f,u,y,o;const n=aa(a.items),e=((h=ua(a==null?void 0:a.returns))==null?void 0:h.ordersReturn)??[],i=t?e.filter(g=>g.returnNumber===t):e,{total:l,...s}=ea({...a,items:n,returns:i},"camelCase",{applied_coupons:"coupons",__typename:"__typename",firstname:"firstName",middlename:"middleName",lastname:"lastName",postcode:"postCode",payment_methods:"payments"}),r=(R=a==null?void 0:a.payment_methods)==null?void 0:R[0],d=(r==null?void 0:r.type)||"",p=(r==null?void 0:r.name)||"",c=(q=s==null?void 0:s.items)==null?void 0:q.reduce((g,b)=>g+(b==null?void 0:b.totalQuantity),0),_={...l,...s,totalQuantity:c,shipping:{amount:((D=s==null?void 0:s.total)==null?void 0:D.totalShipping.value)??0,currency:((O=(v=s.total)==null?void 0:v.totalShipping)==null?void 0:O.currency)||"",code:s.shippingMethod??""},payments:[{code:d,name:p}]};return U(_,(o=(y=(u=(f=k==null?void 0:k.getConfig())==null?void 0:f.models)==null?void 0:u.OrderDataModel)==null?void 0:y.transformer)==null?void 0:o.call(y,a))},ya=(a,t,n)=>{var e,i,l,s,r,d,p;if((s=(l=(i=(e=t==null?void 0:t.data)==null?void 0:e.customer)==null?void 0:i.orders)==null?void 0:l.items)!=null&&s.length&&a==="orderData"){const c=(p=(d=(r=t==null?void 0:t.data)==null?void 0:r.customer)==null?void 0:d.orders)==null?void 0:p.items[0];return S(c,n)}return null},va=(a,t)=>{var e,i;if(!((e=a==null?void 0:a.data)!=null&&e.guestOrder))return null;const n=(i=a==null?void 0:a.data)==null?void 0:i.guestOrder;return S(n,t)},pa=(a,t)=>{var e,i;if(!((e=a==null?void 0:a.data)!=null&&e.guestOrderByToken))return null;const n=(i=a==null?void 0:a.data)==null?void 0:i.guestOrderByToken;return S(n,t)},ga=async({orderId:a,returnRef:t,queryType:n,returnsPageSize:e=50})=>await Q(ia,{method:"GET",cache:"force-cache",variables:{orderNumber:a,pageSize:e}}).then(i=>{var l;return(l=i.errors)!=null&&l.length?Y(i.errors):ya(n??"orderData",i,t)}).catch(K),oa=`
+`,Ta=async({orderId:a,returnRef:n,queryType:t,returnsPageSize:_=50})=>await Q(Ea,{method:"GET",cache:"force-cache",variables:{orderNumber:a,pageSize:_}}).then(e=>ca(t??"orderData",e,n)).catch(Y),pa=`
   query ORDER_BY_TOKEN($token: String!) {
     guestOrderByToken(input: { token: $token }) {
       email
@@ -324,10 +328,10 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
       available_actions
       is_virtual
       items_eligible_for_return {
-        ...OrderItemDetails
+        ...ORDER_ITEM_DETAILS_FRAGMENT
       }
       returns(pageSize: 50) {
-        ...OrderReturns
+        ...RETURNS_FRAGMENT
       }
       payment_methods {
         name
@@ -352,11 +356,11 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
           product_sku
           product_name
           order_item {
-            ...OrderItemDetails
+            ...ORDER_ITEM_DETAILS_FRAGMENT
             ... on GiftCardOrderItem {
-              ...GiftCardDetails
+              ...GIFT_CARD_DETAILS_FRAGMENT
               product {
-                ...ProductDetails
+                ...PRODUCT_DETAILS_FRAGMENT
               }
             }
           }
@@ -367,20 +371,20 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
         type
       }
       shipping_address {
-        ...AddressesList
+        ...ADDRESS_FRAGMENT
       }
       billing_address {
-        ...AddressesList
+        ...ADDRESS_FRAGMENT
       }
       items {
-        ...OrderItemDetails
+        ...ORDER_ITEM_DETAILS_FRAGMENT
         ... on BundleOrderItem {
-          ...BundleOrderItemDetails
+          ...BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT
         }
         ... on GiftCardOrderItem {
-          ...GiftCardDetails
+          ...GIFT_CARD_DETAILS_FRAGMENT
           product {
-            ...ProductDetails
+            ...PRODUCT_DETAILS_FRAGMENT
           }
         }
         ... on DownloadableOrderItem {
@@ -392,16 +396,16 @@ import{merge as U,Initializer as na}from"@dropins/tools/lib.js";import{events as
         }
       }
       total {
-        ...OrderSummary
+        ...ORDER_SUMMARY_FRAGMENT
       }
     }
   }
+  ${j}
   ${H}
   ${J}
   ${V}
   ${W}
   ${X}
+  ${K}
   ${Z}
-  ${j}
-  ${I}
-`,Oa=async(a,t)=>await Q(oa,{method:"GET",cache:"no-cache",variables:{token:a}}).then(n=>{var e;return(e=n.errors)!=null&&e.length?Y(n.errors):pa(n,t)}).catch(K),fa="orderData",ba=async a=>{var s;const t=typeof(a==null?void 0:a.orderRef)=="string"?a==null?void 0:a.orderRef:"",n=typeof(a==null?void 0:a.returnRef)=="string"?a==null?void 0:a.returnRef:"",e=t&&typeof(a==null?void 0:a.orderRef)=="string"&&((s=a==null?void 0:a.orderRef)==null?void 0:s.length)>20,i=(a==null?void 0:a.orderData)??null;if(i){G.emit("order/data",{...i,returnNumber:n});return}if(!t)return;const l=e?await Oa(t,n):await ga({orderId:t,returnRef:n,queryType:fa});l?G.emit("order/data",{...l,returnNumber:n}):G.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},ta=new na({init:async a=>{const t={};ta.config.setConfig({...t,...a}),ba(a).catch(console.error)},listeners:()=>[]}),k=ta.config;export{j as A,X as B,V as G,W as O,H as P,I as R,Oa as a,J as b,k as c,Z as d,S as e,va as f,ga as g,ta as i,ua as t};
+`,ya=async(a,n)=>await Q(pa,{method:"GET",cache:"no-cache",variables:{token:a}}).then(t=>Ra(t,n)).catch(Y),Aa="orderData",Da=async a=>{var s;const n=typeof(a==null?void 0:a.orderRef)=="string"?a==null?void 0:a.orderRef:"",t=typeof(a==null?void 0:a.returnRef)=="string"?a==null?void 0:a.returnRef:"",_=n&&typeof(a==null?void 0:a.orderRef)=="string"&&((s=a==null?void 0:a.orderRef)==null?void 0:s.length)>20,e=(a==null?void 0:a.orderData)??null;if(e){q.emit("order/data",{...e,returnNumber:t});return}if(!n)return;const i=_?await ya(n,t):await Ta({orderId:n,returnRef:t,queryType:Aa});i?q.emit("order/data",{...i,returnNumber:t}):q.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},aa=new na({init:async a=>{const n={};aa.config.setConfig({...n,...a}),Da(a).catch(console.error)},listeners:()=>[]}),b=aa.config;export{K as A,W as B,J as G,V as O,j as P,Z as R,H as a,X as b,v as c,ya as d,b as e,Ma as f,Ta as g,aa as i,ra as t};
