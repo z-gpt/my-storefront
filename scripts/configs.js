@@ -1,4 +1,4 @@
-const ALLOWED_CONFIGS = ['prod', 'stage', 'dev'];
+const ALLOWED_CONFIGS = ["prod", "stage", "dev"];
 
 /**
  * This function calculates the environment in which the site is running based on the URL.
@@ -9,19 +9,19 @@ const ALLOWED_CONFIGS = ['prod', 'stage', 'dev'];
  */
 export const calcEnvironment = () => {
   const { host, href } = window.location;
-  let environment = 'prod';
-  if (href.includes('.aem.page') || host.includes('staging')) {
-    environment = 'stage';
+  let environment = "prod";
+  if (href.includes(".aem.page") || host.includes("staging")) {
+    environment = "stage";
   }
-  if (href.includes('localhost')) {
-    environment = 'dev';
+  if (href.includes("localhost")) {
+    environment = "dev";
   }
 
-  const environmentFromConfig = window.sessionStorage.getItem('environment');
+  const environmentFromConfig = window.sessionStorage.getItem("environment");
   if (
-    environmentFromConfig
-    && ALLOWED_CONFIGS.includes(environmentFromConfig)
-    && environment !== 'prod'
+    environmentFromConfig &&
+    ALLOWED_CONFIGS.includes(environmentFromConfig) &&
+    environment !== "prod"
   ) {
     return environmentFromConfig;
   }
@@ -31,8 +31,8 @@ export const calcEnvironment = () => {
 
 function buildConfigURL(environment) {
   const env = environment || calcEnvironment();
-  let fileName = 'configs.json?sheet=prod';
-  if (env !== 'prod') {
+  let fileName = "configs.json?sheet=prod";
+  if (env !== "prod") {
     fileName = `configs-${env}.json`;
   }
   const configURL = new URL(`${window.location.origin}/${fileName}`);
@@ -45,12 +45,15 @@ const getConfigForEnvironment = async (environment) => {
   try {
     const configJSON = window.sessionStorage.getItem(`config:${env}`);
     if (!configJSON) {
-      throw new Error('No config in session storage');
+      throw new Error("No config in session storage");
     }
 
     const parsedConfig = JSON.parse(configJSON);
-    if (!parsedConfig[':expiry'] || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)) {
-      throw new Error('Config expired');
+    if (
+      !parsedConfig[":expiry"] ||
+      parsedConfig[":expiry"] < Math.round(Date.now() / 1000)
+    ) {
+      throw new Error("Config expired");
     }
 
     return parsedConfig;
@@ -60,11 +63,13 @@ const getConfigForEnvironment = async (environment) => {
       throw new Error(`Failed to fetch config for ${env}`);
     }
     configJSON = await configJSON.json();
-    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
+    configJSON[":expiry"] = Math.round(Date.now() / 1000) + 7200;
     window.sessionStorage.setItem(`config:${env}`, JSON.stringify(configJSON));
     return configJSON;
   }
 };
+
+// scripts/configs.js
 
 /**
  * This function retrieves a configuration value for a given environment.
@@ -77,15 +82,19 @@ export const getConfigValue = async (configParam, environment) => {
   const env = environment || calcEnvironment();
   const config = await getConfigForEnvironment(env);
   const configElements = config.data;
+
+  if (configParam === "commerce-core-endpoint")
+    return "https://mcstaging.aemshop.net/graphql"; // <=== This line, put any URL
+
   return configElements.find((c) => c.key === configParam)?.value;
 };
 
 export const getCookie = (cookieName) => {
-  const cookies = document.cookie.split(';');
+  const cookies = document.cookie.split(";");
   let foundValue;
 
   cookies.forEach((cookie) => {
-    const [name, value] = cookie.trim().split('=');
+    const [name, value] = cookie.trim().split("=");
     if (name === cookieName) {
       foundValue = decodeURIComponent(value);
     }
@@ -94,4 +103,5 @@ export const getCookie = (cookieName) => {
   return foundValue;
 };
 
-export const checkIsAuthenticated = () => !!getCookie('auth_dropin_user_token') ?? false;
+export const checkIsAuthenticated = () =>
+  !!getCookie("auth_dropin_user_token") ?? false;
