@@ -52,8 +52,8 @@ function getJsonLd(product, { variants }) {
     offers: [],
     productID: product.sku,
     sku: product.sku,
-    url: product.path,
-    '@id': product.path,
+    url: `${basePath}${product.path}`,
+    '@id': `${basePath}${product.path}`,
   };
 
   if (brand?.value) {
