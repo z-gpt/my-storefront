@@ -1,44 +1,23 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{Initializer as I}from"@dropins/tools/lib.js";import{events as o}from"@dropins/tools/event-bus.js";import{f as n,h as m}from"./chunks/fetch-graphql.js";import{g as q,r as U,s as Y,a as Q,b as H}from"./chunks/fetch-graphql.js";import{h as l}from"./chunks/network-error.js";import{P as u,a as _,G as p,O as c,B as D,R as O,c as b}from"./chunks/transform-order-details.js";import{O as R,A as h}from"./chunks/getGuestOrder.graphql.js";import{t as G}from"./chunks/getCustomer.js";import{g as j,a as J}from"./chunks/getCustomer.js";import{g as W}from"./chunks/getAttributesForm.js";import{g as Z}from"./chunks/getStoreConfig.js";import{g as re}from"./chunks/getCustomerOrdersReturn.js";import{g as ae,r as se}from"./chunks/requestReturn.js";import{c as oe,r as ie}from"./chunks/requestGuestOrderCancel.js";import{r as me}from"./chunks/reorderItems.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/convertCase.js";import"./chunks/transform-attributes-form.js";const T=`
-query ORDER_BY_NUMBER($orderNumber: String!, $pageSize: Int) {
- customer {
-    orders(
-      filter: { number: { eq: $orderNumber } }
-    ) {
-      items {
+import{c as V,r as Y}from"./chunks/requestGuestOrderCancel.js";import{f as R,h as A}from"./chunks/fetch-graphql.js";import{g as j,r as J,s as K,a as W,b as Z}from"./chunks/fetch-graphql.js";import{g as te}from"./chunks/getAttributesForm.js";import{g as oe,a as ae,r as ne}from"./chunks/requestGuestReturn.js";import{g as ue,a as ce}from"./chunks/getGuestOrder.js";import{g as le}from"./chunks/getCustomerOrdersReturn.js";import{a as D}from"./chunks/initialize.js";import{c as de,g as Te,b as Ee,i as me}from"./chunks/initialize.js";import{g as Re}from"./chunks/getStoreConfig.js";import{h as g}from"./chunks/network-error.js";import{events as d}from"@dropins/tools/event-bus.js";import{PRODUCT_DETAILS_FRAGMENT as O,PRICE_DETAILS_FRAGMENT as h,GIFT_CARD_DETAILS_FRAGMENT as f,ORDER_ITEM_DETAILS_FRAGMENT as x,BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT as C,ORDER_SUMMARY_FRAGMENT as b,ADDRESS_FRAGMENT as G}from"./fragments.js";import{a as De,c as ge,r as Oe}from"./chunks/confirmCancelOrder.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/transform-attributes-form.js";import"@dropins/tools/lib.js";const m=(t,r)=>t+r.amount.value,M=(t,r)=>({id:t,totalQuantity:r.totalQuantity,possibleOnepageCheckout:!0,items:r.items.map(e=>{var o,a,n,s,u,c,i,l;return{canApplyMsrp:!0,formattedPrice:"",id:e.id,quantity:e.totalQuantity,product:{canonicalUrl:(o=e.product)==null?void 0:o.canonicalUrl,mainImageUrl:((a=e.product)==null?void 0:a.image)??"",name:((n=e.product)==null?void 0:n.name)??"",productId:0,productType:(s=e.product)==null?void 0:s.productType,sku:((u=e.product)==null?void 0:u.sku)??"",topLevelSku:(c=e.product)==null?void 0:c.sku},prices:{price:{value:e.price.value,currency:e.price.currency,regularPrice:((i=e.regularPrice)==null?void 0:i.value)??e.price.value}},configurableOptions:((l=e.selectedOptions)==null?void 0:l.map(p=>({optionLabel:p.label,valueLabel:p.value})))||[]}}),prices:{subtotalExcludingTax:{value:r.subtotalExclTax.value,currency:r.subtotalExclTax.currency},subtotalIncludingTax:{value:r.subtotalInclTax.value,currency:r.subtotalInclTax.currency}},discountAmount:r.discounts.reduce(m,0)}),I=t=>{var o,a,n;const r=t.coupons[0],e=(o=t.payments)==null?void 0:o[0];return{appliedCouponCode:(r==null?void 0:r.code)??"",email:t.email,grandTotal:t.grandTotal.value,orderId:t.number,orderType:"checkout",otherTax:0,salesTax:t.totalTax.value,shipping:{shippingMethod:((a=t.shipping)==null?void 0:a.code)??"",shippingAmount:((n=t.shipping)==null?void 0:n.amount)??0},subtotalExcludingTax:t.subtotalExclTax.value,subtotalIncludingTax:t.subtotalInclTax.value,payments:e?[{paymentMethodCode:(e==null?void 0:e.code)||"",paymentMethodName:(e==null?void 0:e.name)||"",total:t.grandTotal.value,orderId:t.number}]:[],discountAmount:t.discounts.reduce(m,0),taxAmount:t.totalTax.value}},N=t=>{var e,o;const r=(o=(e=t==null?void 0:t.data)==null?void 0:e.placeOrder)==null?void 0:o.orderV2;return r?D(r):null},T={SHOPPING_CART_CONTEXT:"shoppingCartContext",ORDER_CONTEXT:"orderContext"},v={PLACE_ORDER:"place-order"};function _(){return window.adobeDataLayer=window.adobeDataLayer||[],window.adobeDataLayer}function E(t,r){const e=_();e.push({[t]:null}),e.push({[t]:r})}function L(t){_().push(e=>{const o=e.getState?e.getState():{};e.push({event:t,eventInfo:{...o}})})}function y(t,r){const e=I(r),o=M(t,r);E(T.ORDER_CONTEXT,{...e}),E(T.SHOPPING_CART_CONTEXT,{...o}),L(v.PLACE_ORDER)}const S=`
+  mutation PLACE_ORDER_MUTATION($cartId: String!) {
+    placeOrder(input: { cart_id: $cartId }) {
+      errors {
+        code
+        message
+      }
+      orderV2 {
         email
         available_actions
         status
         number
+        token
         id
         order_date
-        order_status_change_date
         carrier
         shipping_method
         is_virtual
-        returns(pageSize: $pageSize) {
-          ...OrderReturns
-        }
-        items_eligible_for_return {
-          ...OrderItemDetails
-          ... on BundleOrderItem {
-            ...BundleOrderItemDetails
-          }
-          ... on GiftCardOrderItem {
-            ...GiftCardDetails
-            product {
-              ...ProductDetails
-            }
-          }
-          ... on DownloadableOrderItem {
-            product_name
-            downloadable_links {
-              sort_order
-              title
-            }
-          }
-        }
         applied_coupons {
           code
         }
@@ -58,13 +37,12 @@ query ORDER_BY_NUMBER($orderNumber: String!, $pageSize: Int) {
             id
             product_sku
             product_name
-            quantity_shipped
             order_item {
-              ...OrderItemDetails
+              ...ORDER_ITEM_DETAILS_FRAGMENT
               ... on GiftCardOrderItem {
-                ...GiftCardDetails
+                ...GIFT_CARD_DETAILS_FRAGMENT
                 product {
-                  ...ProductDetails
+                  ...PRODUCT_DETAILS_FRAGMENT
                 }
               }
             }
@@ -75,20 +53,20 @@ query ORDER_BY_NUMBER($orderNumber: String!, $pageSize: Int) {
           type
         }
         shipping_address {
-          ...AddressesList
+          ...ADDRESS_FRAGMENT
         }
         billing_address {
-          ...AddressesList
+          ...ADDRESS_FRAGMENT
         }
         items {
-          ...OrderItemDetails
+          ...ORDER_ITEM_DETAILS_FRAGMENT
           ... on BundleOrderItem {
-            ...BundleOrderItemDetails
+            ...BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT
           }
           ... on GiftCardOrderItem {
-            ...GiftCardDetails
+            ...GIFT_CARD_DETAILS_FRAGMENT
             product {
-              ...ProductDetails
+              ...PRODUCT_DETAILS_FRAGMENT
             }
           }
           ... on DownloadableOrderItem {
@@ -100,115 +78,16 @@ query ORDER_BY_NUMBER($orderNumber: String!, $pageSize: Int) {
           }
         }
         total {
-          ...OrderSummary
+          ...ORDER_SUMMARY_FRAGMENT
         }
       }
     }
   }
-}
-${u}
-${_}
-${p}
-${c}
-${D}
-${R}
-${h}
-${O}
-`,y=async({orderId:e,returnRef:r,queryType:t,returnsPageSize:a=50})=>await n(T,{method:"GET",cache:"force-cache",variables:{orderNumber:e,pageSize:a}}).then(s=>{var d;return(d=s.errors)!=null&&d.length?m(s.errors):b(t??"orderData",s,r)}).catch(l),f=`
-query ORDER_BY_TOKEN($token: String!) {
-  guestOrderByToken(input: { token: $token }) {
-    email
-    id
-    number
-    order_date
-    order_status_change_date
-    status
-    token
-    carrier
-    shipping_method
-    printed_card_included
-    gift_receipt_included
-    available_actions
-    is_virtual
-    items_eligible_for_return {
-      ...OrderItemDetails
-    }
-    returns(pageSize: 50) {
-      ...OrderReturns
-    }
-    payment_methods {
-      name
-      type
-    }
-    applied_coupons {
-      code
-    }
-    shipments {
-      id
-      tracking {
-        title
-        number
-        carrier
-      }
-      comments {
-        message
-        timestamp
-      }
-      items {
-        id
-        product_sku
-        product_name
-        order_item {
-          ...OrderItemDetails
-          ... on GiftCardOrderItem {
-            ...GiftCardDetails
-            product {
-              ...ProductDetails
-            }
-          }
-        }
-      }
-    }
-    payment_methods {
-      name
-      type
-    }
-    shipping_address {
-      ...AddressesList
-    }
-    billing_address {
-      ...AddressesList
-    }
-    items {
-      ...OrderItemDetails
-      ... on BundleOrderItem {
-        ...BundleOrderItemDetails
-      }
-      ... on GiftCardOrderItem {
-        ...GiftCardDetails
-        product {
-          ...ProductDetails
-        }
-      }
-      ... on DownloadableOrderItem {
-        product_name
-        downloadable_links {
-          sort_order
-          title
-        }
-      }
-    }
-    total {
-      ...OrderSummary
-    }
-  }
-}
-${u}
-${_}
-${p}
-${c}
-${D}
-${R}
-${h}
-${O}
-`,$=async(e,r)=>await n(f,{method:"GET",cache:"no-cache",variables:{token:e}}).then(t=>{var a;return(a=t.errors)!=null&&a.length?m(t.errors):G(t,r)}).catch(l),A="orderData",C=async e=>{var i;const r=typeof(e==null?void 0:e.orderRef)=="string"?e==null?void 0:e.orderRef:"",t=typeof(e==null?void 0:e.returnRef)=="string"?e==null?void 0:e.returnRef:"",a=r&&typeof(e==null?void 0:e.orderRef)=="string"&&((i=e==null?void 0:e.orderRef)==null?void 0:i.length)>20,s=(e==null?void 0:e.orderData)??null;if(s){o.emit("order/data",{...s,returnNumber:t});return}if(!r)return;const d=a?await $(r,t):await y({orderId:r,returnRef:t,queryType:A});d?o.emit("order/data",{...d,returnNumber:t}):o.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},E=new I({init:async e=>{const r={};E.config.setConfig({...r,...e}),C(e).catch(console.error)},listeners:()=>[]}),x=E.config;export{oe as cancelOrder,x as config,n as fetchGraphQl,W as getAttributesForm,ae as getAttributesList,q as getConfig,j as getCustomer,re as getCustomerOrdersReturn,J as getGuestOrder,y as getOrderDetailsById,Z as getStoreConfig,$ as guestOrderByToken,E as initialize,U as removeFetchGraphQlHeader,me as reorderItems,ie as requestGuestOrderCancel,se as requestReturn,Y as setEndpoint,Q as setFetchGraphQlHeader,H as setFetchGraphQlHeaders};
+  ${O}
+  ${h}
+  ${f}
+  ${x}
+  ${C}
+  ${b}
+  ${G}
+`,H=async t=>{if(!t)throw new Error("No cart ID found");return R(S,{variables:{cartId:t}}).then(r=>{var o;(o=r.errors)!=null&&o.length&&A(r.errors);const e=N(r);return e&&(d.emit("order/placed",e),d.emit("cart/reset",void 0),y(t,e)),e}).catch(g)};export{V as cancelOrder,de as config,De as confirmCancelOrder,ge as confirmGuestReturn,R as fetchGraphQl,te as getAttributesForm,oe as getAttributesList,j as getConfig,ue as getCustomer,le as getCustomerOrdersReturn,ce as getGuestOrder,Te as getOrderDetailsById,Re as getStoreConfig,Ee as guestOrderByToken,me as initialize,H as placeOrder,J as removeFetchGraphQlHeader,Oe as reorderItems,Y as requestGuestOrderCancel,ae as requestGuestReturn,ne as requestReturn,K as setEndpoint,W as setFetchGraphQlHeader,Z as setFetchGraphQlHeaders};
