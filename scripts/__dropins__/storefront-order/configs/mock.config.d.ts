@@ -1209,7 +1209,7 @@ export declare const orderMockOrderProductItemsList: {
             Size?: undefined;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -1298,7 +1298,7 @@ export declare const orderMockOrderProductItemsList: {
             Size: string;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -1389,7 +1389,7 @@ export declare const orderMockOrderProductItemsList: {
             Size?: undefined;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -1485,7 +1485,7 @@ export declare const orderMockOrderProductItemsList: {
             'Sprite Stasis Ball': string;
             'Sprite Yoga Strap': string;
         };
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -1583,7 +1583,7 @@ export declare const orderMockOrderProductItemsList: {
             Size?: undefined;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -1886,7 +1886,7 @@ export declare const createReturnOrderMock: {
                 Color?: undefined;
             };
             bundleOptions: null;
-            itemPrices: {
+            prices: {
                 priceIncludingTax: {
                     value: number;
                     currency: string;
@@ -1978,7 +1978,7 @@ export declare const createReturnOrderMock: {
                 Color: string;
             };
             bundleOptions: null;
-            itemPrices: {
+            prices: {
                 priceIncludingTax: {
                     value: number;
                     currency: string;
@@ -2069,7 +2069,7 @@ export declare const createReturnOrderMock: {
             Size?: undefined;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -2157,7 +2157,7 @@ export declare const createReturnOrderMock: {
             Size: string;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -2250,7 +2250,7 @@ export declare const createReturnOrderMock: {
             'Sprite Yoga Strap': string;
             'Sprite Foam Roller': string;
         };
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -2451,7 +2451,7 @@ export declare const createReturnOrderMock: {
             Size?: undefined;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -2539,7 +2539,7 @@ export declare const createReturnOrderMock: {
             Size: string;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -2632,7 +2632,7 @@ export declare const createReturnOrderMock: {
             'Sprite Yoga Strap': string;
             'Sprite Foam Roller': string;
         };
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -2721,7 +2721,7 @@ export declare const createReturnOrderMock: {
             Size?: undefined;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -2809,7 +2809,7 @@ export declare const createReturnOrderMock: {
             Size: string;
         };
         bundleOptions: null;
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -2902,7 +2902,7 @@ export declare const createReturnOrderMock: {
             'Sprite Yoga Strap': string;
             'Sprite Foam Roller': string;
         };
-        itemPrices: {
+        prices: {
             priceIncludingTax: {
                 value: number;
                 currency: string;
@@ -3189,7 +3189,7 @@ export declare const customerReturnDetailsFullMock: {
                     Color?: undefined;
                 };
                 bundleOptions: null;
-                itemPrices: {
+                prices: {
                     priceIncludingTax: {
                         value: number;
                         currency: string;
@@ -3282,7 +3282,7 @@ export declare const customerReturnDetailsFullMock: {
                     Color: string;
                 };
                 bundleOptions: null;
-                itemPrices: {
+                prices: {
                     priceIncludingTax: {
                         value: number;
                         currency: string;
@@ -3561,7 +3561,7 @@ export declare const customerReturnDetailsFullMock: {
                 Color?: undefined;
             };
             bundleOptions: null;
-            itemPrices: {
+            prices: {
                 priceIncludingTax: {
                     value: number;
                     currency: string;
@@ -3650,7 +3650,7 @@ export declare const customerReturnDetailsFullMock: {
                 Color: string;
             };
             bundleOptions: null;
-            itemPrices: {
+            prices: {
                 priceIncludingTax: {
                     value: number;
                     currency: string;

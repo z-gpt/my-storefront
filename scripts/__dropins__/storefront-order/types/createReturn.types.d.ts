@@ -63,7 +63,7 @@ export interface ReturnOrderMessageProps {
 }
 export interface UseCreateReturn {
     orderData?: OrderDataModel;
-    onSuccess?: (response: onSuccessTypes) => void;
+    onSuccess?: (response: onSuccessTypes | {}) => void;
     onError?: (message: string) => void;
     handleSetInLineAlert: (value?: InLineAlertProps) => void;
 }
