@@ -62,6 +62,8 @@ export interface DiscountProps {
     label: string;
 }
 export interface TotalProps {
+    subtotal_excl_tax?: MoneyProps;
+    subtotal_incl_tax?: MoneyProps;
     total_giftcard?: MoneyProps;
     grand_total?: GrandTotalProps;
     subtotal?: SubtotalProps;

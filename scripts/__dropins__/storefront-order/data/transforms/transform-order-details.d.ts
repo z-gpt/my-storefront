@@ -13,6 +13,8 @@ export declare const transformLinks: (links: {
 } | null;
 export declare const transformOrderItems: (items: OrderItemProps[]) => OrderItemModel[];
 export declare const transformOrderData: (orderData: OrderProps, returnRef?: string) => {
+    subtotalExclTax: any;
+    subtotalInclTax: any;
     billingAddress: {
         city: any;
         company: any;
@@ -83,8 +85,6 @@ export declare const transformOrderData: (orderData: OrderProps, returnRef?: str
     }[];
     grandTotal: any;
     totalGiftcard: any;
-    subtotalExclTax: any;
-    subtotalInclTax: any;
     taxes: any;
     totalTax: any;
     totalShipping: any;

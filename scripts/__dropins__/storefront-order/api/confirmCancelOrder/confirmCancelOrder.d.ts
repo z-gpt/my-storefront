@@ -13,6 +13,8 @@
  * from Adobe.
  *******************************************************************/
 export declare const confirmCancelOrder: (orderId: string, confirmationKey: string) => Promise<{
+    subtotalExclTax: any;
+    subtotalInclTax: any;
     billingAddress: {
         city: any;
         company: any;
@@ -83,8 +85,6 @@ export declare const confirmCancelOrder: (orderId: string, confirmationKey: stri
     }[];
     grandTotal: any;
     totalGiftcard: any;
-    subtotalExclTax: any;
-    subtotalInclTax: any;
     taxes: any;
     totalTax: any;
     totalShipping: any;
