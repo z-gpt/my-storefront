@@ -81,6 +81,20 @@ export type OrderItemModel = {
             }
         ];
     };
+    itemPrices: {
+        priceIncludingTax: MoneyProps;
+        originalPrice: MoneyProps;
+        originalPriceIncludingTax: MoneyProps;
+        price: MoneyProps;
+        discounts: [
+            {
+                label: string;
+                amount: {
+                    value: number;
+                };
+            }
+        ];
+    };
     bundleOptions: Record<string, string> | null;
     totalInclTax: MoneyProps;
     priceInclTax: MoneyProps;

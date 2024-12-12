@@ -40,6 +40,18 @@ export declare const categorizeProducts: (order: OrderDataModel) => {
                 };
             }];
         };
+        itemPrices: {
+            priceIncludingTax: import('../types/index').MoneyProps;
+            originalPrice: import('../types/index').MoneyProps;
+            originalPriceIncludingTax: import('../types/index').MoneyProps;
+            price: import('../types/index').MoneyProps;
+            discounts: [{
+                label: string;
+                amount: {
+                    value: number;
+                };
+            }];
+        };
         bundleOptions: Record<string, string> | null;
         totalInclTax: import('../types/index').MoneyProps;
         priceInclTax: import('../types/index').MoneyProps;
