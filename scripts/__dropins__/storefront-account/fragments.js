@@ -3,6 +3,7 @@ All Rights Reserved. */
 const e=`
   fragment BASIC_CUSTOMER_INFO_FRAGMENT on Customer {
     date_of_birth
+    dob
     email
     firstname
     gender
