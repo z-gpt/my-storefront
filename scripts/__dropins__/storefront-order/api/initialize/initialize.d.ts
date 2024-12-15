@@ -11,7 +11,7 @@ export type ConfigProps = {
     };
     orderRef?: string;
     returnRef?: string;
-    orderData?: OrderDataModel;
+    orderData?: OrderDataModel | null;
 };
 export declare const initialize: Initializer<ConfigProps>;
 export declare const config: import('@dropins/tools/types/elsie/src/lib').Config<ConfigProps>;
