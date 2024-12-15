@@ -163,6 +163,7 @@ export declare const transformMockOrderInput: {
         customer: {
             orders: {
                 items: {
+                    uid: string;
                     available_actions: string[];
                     status: string;
                     number: string;

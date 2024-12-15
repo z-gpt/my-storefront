@@ -3,6 +3,8 @@ import { OrderDataModel } from '../data/models';
 export declare const categorizeProducts: (order: OrderDataModel) => {
     returnedList: {
         totalQuantity: number;
+        productSalePrice: import('../types/index').MoneyProps;
+        status?: string | undefined;
         currentReturnOrderQuantity?: number | undefined;
         eligibleForReturn: boolean;
         productSku?: string | undefined;
@@ -26,6 +28,18 @@ export declare const categorizeProducts: (order: OrderDataModel) => {
             count: number;
             result: string;
         } | null;
+        prices: {
+            priceIncludingTax: import('../types/index').MoneyProps;
+            originalPrice: import('../types/index').MoneyProps;
+            originalPriceIncludingTax: import('../types/index').MoneyProps;
+            price: import('../types/index').MoneyProps;
+            discounts: [{
+                label: string;
+                amount: {
+                    value: number;
+                };
+            }];
+        };
         itemPrices: {
             priceIncludingTax: import('../types/index').MoneyProps;
             originalPrice: import('../types/index').MoneyProps;
@@ -56,7 +70,7 @@ export declare const categorizeProducts: (order: OrderDataModel) => {
         quantityRefunded: number;
         quantityReturned: number;
         quantityShipped: number;
-        requestQuantity: number;
+        requestQuantity?: number | undefined;
         returnableQuantity?: number | undefined;
         quantityReturnRequested: number;
     }[];
