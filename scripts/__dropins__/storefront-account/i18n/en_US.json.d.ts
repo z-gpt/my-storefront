@@ -104,6 +104,7 @@ declare const _default: {
         "newAddressFormTitle": "Add address",
         "addNewAddressButton": "Create new",
         "differentAddressButton": "Use a different address",
+        "ariaLabelAddressPicker": "form",
         "addressCard": {
           "actionRemove": "Remove",
           "actionEdit": "Edit",
