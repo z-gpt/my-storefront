@@ -281,6 +281,11 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
+  if (!('structuredClone' in window)) {
+    // eslint-disable-next-line import/no-unresolved
+    window.structuredClone = (await import('https://cdn.jsdelivr.net/npm/@ungap/structured-clone@1.2.1/+esm')).default;
+  }
+
   await Promise.all([
     loadHeader(doc.querySelector('header')),
     loadFooter(doc.querySelector('footer')),
