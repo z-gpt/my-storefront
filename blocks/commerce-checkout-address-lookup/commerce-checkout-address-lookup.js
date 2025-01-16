@@ -7,10 +7,10 @@
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
-import { Input } from '@dropins/tools/components.js';
 
 // Dropin Components
 import {
+  Input,
   Button,
   Header,
   ProgressSpinner,
@@ -586,6 +586,7 @@ export default async function decorate(block) {
             ctx.onChange((nextState) => handleStateChange(nextState, markupElements));
 
             const initAutocomplete = (inputElement) => {
+              // eslint-disable-next-line no-undef
               const autocompleteEl = new google.maps.places.Autocomplete(inputElement, {
                 types: ['address'],
                 fields: ['address_components'],
