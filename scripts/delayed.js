@@ -20,6 +20,7 @@ async function initAnalytics() {
       storeName: await getConfigValue('commerce-store-name'),
       storeViewName: await getConfigValue('commerce-store-view-name'),
       baseCurrencyCode: await getConfigValue('commerce-base-currency-code'),
+      defaultDisplayCurrencyCode: await getConfigValue('commerce-default-display-currency-code'),
       storeViewCurrencyCode: await getConfigValue('commerce-base-currency-code'),
       storefrontTemplate: 'EDS',
     };

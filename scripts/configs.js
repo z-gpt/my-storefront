@@ -29,13 +29,31 @@ export const calcEnvironment = () => {
   return environment;
 };
 
+/*
+ * Custom function to determine store code from URL
+ */
+export function getStoreCode() {
+  let code = '';
+  const match = window.location.pathname.match(/^\/([a-z]{2})\/*/);
+  if (match !== null) {
+    code = match[1];
+  }
+
+  return code;
+}
+
 function buildConfigURL(environment) {
   const env = environment || calcEnvironment();
   let fileName = 'configs.json';
   if (env !== 'prod') {
     fileName = `configs-${env}.json`;
   }
-  const configURL = new URL(`${window.location.origin}/${fileName}`);
+  let configURL = new URL(`${window.location.origin}/${fileName}`);
+  const storeCode = getStoreCode();
+  if (storeCode) {
+    configURL = new URL(`${window.location.origin}/${storeCode}/${fileName}`);
+  }
+  console.log(configURL);
   return configURL;
 }
 
