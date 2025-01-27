@@ -34,9 +34,9 @@ export const calcEnvironment = () => {
  */
 export function getStoreCode() {
   let code = '';
-  const match = window.location.pathname.match(/^\/([a-z]{2})\/*/);
-  if (match !== null) {
-    code = match[1];
+  const [, lang] = window.location.pathname.match(/^\/([a-z]{2})\/*/);
+  if (lang !== null) {
+    code = lang;
   }
 
   return code;
@@ -53,7 +53,7 @@ function buildConfigURL(environment) {
   if (storeCode) {
     configURL = new URL(`${window.location.origin}/${storeCode}/${fileName}`);
   }
-  console.log(configURL);
+console.log('configURL: ', configURL);
   return configURL;
 }
 
