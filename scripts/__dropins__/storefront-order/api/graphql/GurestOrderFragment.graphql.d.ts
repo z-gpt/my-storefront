@@ -14,4 +14,4 @@
  * from Adobe.
  *******************************************************************/
 export declare const GUEST_ORDER_FRAGMENT: string;
-//# sourceMappingURL=GuestOrderFragment.graphql.d.ts.map
+//# sourceMappingURL=GurestOrderFragment.graphql.d.ts.map
