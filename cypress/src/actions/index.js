@@ -78,3 +78,36 @@ export const signUpUser = (sign_up, isValid = true) => {
   cy.get('.dropin-picker__select').select('Male');
   createAccount();
 };
+
+export const setPaymentMethod = (paymentMethod, params) => {
+  cy.get('input[name="payment-method"][value="payment_services_paypal_hosted_fields"]').click({force: true});
+
+  if (paymentMethod === 'Cards') {
+    cy.wait(5000);
+    getIframeBody('braintree-hosted-field-number').find('input[name="credit-card-number"]').type(params.cc_number);
+    getIframeBody('braintree-hosted-field-expirationDate').find('input[name="expiration"]').type(params.cc_exp);
+    getIframeBody('braintree-hosted-field-cvv').find('input[name="cvv"]').type(params.cc_cid);
+  }
+}
+
+const getIframeDocument = (iframeName) => {
+  return cy
+  .get(`iframe[name="${iframeName}"]`)
+  // Cypress yields jQuery element, which has the real
+  // DOM element under property "0".
+  // From the real DOM iframe element we can get
+  // the "document" element, it is stored in "contentDocument" property
+  // Cypress "its" command can access deep properties using dot notation
+  // https://on.cypress.io/its
+  .its('0.contentDocument').should('exist')
+}
+
+const getIframeBody = (iframeName) => {
+  // get the document
+  return getIframeDocument(iframeName)
+  // automatically retries until body is loaded
+  .its('body').should('not.be.undefined')
+  // wraps "body" DOM element to allow
+  // chaining more Cypress commands, like ".find(...)"
+  .then(cy.wrap)
+}

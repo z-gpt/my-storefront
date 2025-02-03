@@ -69,6 +69,9 @@ export const billToShippingAddress =
 // Shipping Methods
 export const shippingMethods = 'div[class*="checkout-shipping-methods"]';
 
+// Payment Methods
+export const paymentMethods = 'input[name="payment-method"]';
+
 // Place Order
 export const placeOrderButton = 'button[class*="checkout-place-order__button"]';
 
