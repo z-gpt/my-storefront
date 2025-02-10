@@ -13,9 +13,6 @@ import { getConfigValue, getCookie } from '../configs.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
-// Override fetchGraphQl headers storeView
-setFetchGraphQlHeader('store', 'en_ca');
-
 // Update auth headers
 const setAuthHeaders = (state) => {
   if (state) {
