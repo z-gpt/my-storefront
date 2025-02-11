@@ -60,7 +60,7 @@ export default async function decorate(block) {
 
   // Rendering the Store Switcher Modal Content
   const $storeSwitcherBtn = footer.querySelector(
-    '.storeview-switcher--button',
+    '.storeview-switcher-button',
   );
 
   // Store Switcher Modal Content - Chore: move to different file
