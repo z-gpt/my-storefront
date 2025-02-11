@@ -13,7 +13,8 @@ footer .footer > div {
 footer .footer p {
     margin: 0;
 }
-.storeview-switcher-footer__modal-button {
+
+.storeview-switcher-button {
     background: transparent;
     padding-left: 0;
 }

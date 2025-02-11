@@ -46,7 +46,7 @@ export default async function decorate(block) {
 
   // Footer content - Store Switcher
   footer.innerHTML = `
-      <div class="storeview-switcher-footer__modal-button"></div>
+      <div class="storeview-switcher-button"></div>
     `;
 
   // Container and component refs
@@ -60,7 +60,7 @@ export default async function decorate(block) {
 
   // Rendering the Store Switcher Modal Content
   const $storeSwitcherBtn = footer.querySelector(
-    '.storeview-switcher-footer__modal-button',
+    '.storeview-switcher--button',
   );
 
   // Store Switcher Modal Content - Chore: move to different file
@@ -142,8 +142,8 @@ export default async function decorate(block) {
 
   UI.render(Button, {
     children: `${storeDetails.storeViewName ? storeDetails.storeViewName : storeDetails.storeViewCode} (${storeDetails.currencyCode})`, // If storeview name unavaialble use storeview code
-    'data-testid': 'storeview-switcher-footer__modal-button',
-    className: 'storeview-switcher-footer__modal-button',
+    'data-testid': 'storeview-switcher-button',
+    className: 'storeview-switcher-button',
     size: 'medium',
     variant: 'teritary',
     onClick: () => {
