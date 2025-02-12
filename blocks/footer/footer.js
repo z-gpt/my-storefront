@@ -63,10 +63,14 @@ export default async function decorate(block) {
     '.storeview-switcher-button',
   );
 
-  // Store Switcher Modal Content - Chore: move to different file
-  const storeSwitcherPath = '/store-switcher';
+  // Store Switcher Modal Content - Chore:fix origin path 
+  const { origin } = window.location.origin;
+  const storeSwitcherPath = origin ? `${origin}/store-switcher` : '/store-switcher';
   const fragmentStoreView = await loadFragment(storeSwitcherPath);
   const storeSwitcher = document.createElement('div');
+
+  console.log('storeSwitcherpath', storeSwitcherPath);
+  console.log(fragmentStoreView);
 
   storeSwitcher.id = 'storeview-modal';
   while (fragmentStoreView.firstElementChild) {
