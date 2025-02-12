@@ -8,14 +8,7 @@ import {
 import createModal from '../modal/modal.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { getConfigValue } from '../../scripts/configs.js';
-
-// Pull Config Values for Store Details
-const storeDetails = {
-  storeViewCode: await getConfigValue('commerce.headers.cs.Magento-Store-View-Code'),
-  currencyCode: await getConfigValue('commerce-base-currency-code'),
-  storeViewName: await getConfigValue('commerce-store-view-name'),
-};
+import { getRootPath } from '../../scripts/scripts.js';
 
 /**
  * Toggles all storeSelector sections
@@ -35,6 +28,7 @@ function toggleStoreDropdown(sections, expanded = false) {
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
+  const root = getRootPath();
   // Load Footer as Fragment
   const footerMeta = getMetadata('footer');
   const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
@@ -65,8 +59,14 @@ export default async function decorate(block) {
 
   // Store Switcher Modal Content - Set RootRoot Path to true
   const storeSwitcherPath = '/store-switcher';
-  const fragmentStoreView = await loadFragment(storeSwitcherPath, true);
+  const fragmentStoreView = await loadFragment(storeSwitcherPath);
   const storeSwitcher = document.createElement('div');
+
+  // Return Storename from stores-switcher
+  const selected = [...fragmentStoreView.querySelectorAll('a')].find((a) => {
+    const url = new URL(a.href);
+    return url.pathname.startsWith(root);
+  });
 
   storeSwitcher.id = 'storeview-modal';
   while (fragmentStoreView.firstElementChild) {
@@ -143,7 +143,7 @@ export default async function decorate(block) {
   }
 
   UI.render(Button, {
-    children: `${storeDetails.storeViewName ? storeDetails.storeViewName : storeDetails.storeViewCode} (${storeDetails.currencyCode})`, // If storeview name unavaialble use storeview code
+    children: `${selected.text}`,
     'data-testid': 'storeview-switcher-button',
     className: 'storeview-switcher-button',
     size: 'medium',

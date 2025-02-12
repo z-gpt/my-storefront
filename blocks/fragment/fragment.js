@@ -17,12 +17,11 @@ import {
 /**
  * Loads a fragment.
  * @param {string} path The path to the fragment
- * @param {boolean} useOrigin Use the origin of the current page to use root-root folder path
  * @returns {HTMLElement} The root element of the fragment
  */
-export async function loadFragment(path, useOrigin = false) {
+export async function loadFragment(path) {
   if (path && path.startsWith('/')) {
-    const root = useOrigin ? window.location.origin.replace(/\/$/, '') : getRootPath().replace(/\/$/, '');
+    const root = getRootPath().replace(/\/$/, '');
     const url = `${root}${path}.plain.html`;
     const resp = await fetch(url);
     if (resp.ok) {
