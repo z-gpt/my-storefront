@@ -63,14 +63,10 @@ export default async function decorate(block) {
     '.storeview-switcher-button',
   );
 
-  // Store Switcher Modal Content - Chore:fix origin path 
-  const { origin } = window.location.origin;
-  const storeSwitcherPath = origin ? `${origin}/store-switcher` : '/store-switcher';
-  const fragmentStoreView = await loadFragment(storeSwitcherPath);
+  // Store Switcher Modal Content - Set RootRoot Path to true
+  const storeSwitcherPath = '/store-switcher';
+  const fragmentStoreView = await loadFragment(storeSwitcherPath, true);
   const storeSwitcher = document.createElement('div');
-
-  console.log('storeSwitcherpath', storeSwitcherPath);
-  console.log(fragmentStoreView);
 
   storeSwitcher.id = 'storeview-modal';
   while (fragmentStoreView.firstElementChild) {
@@ -78,7 +74,7 @@ export default async function decorate(block) {
   }
 
   // create classes for storeview modal sections
-  const classes = ['storeview-title', 'storeview-list', 'storeview-accordion'];
+  const classes = ['storeview-title', 'storeview-list'];
   classes.forEach((c, i) => {
     const section = storeSwitcher.children[i];
     if (section) section.classList.add(`storeview-modal-${c}`);
@@ -109,8 +105,10 @@ export default async function decorate(block) {
       if (storeRegion.children.length > 1) {
         if (storeRegion.querySelector('ul')) storeRegion.classList.add('storeviews');
 
+        // Accessiblity: addeventlistener for 'click' and keyboard event and tab indexes
         storeViewList.querySelectorAll(':scope li').forEach((storeView) => {
-          // Accessiblity: addeventlistener for 'click' and keyboard event
+          const link = storeView.closest('a');
+          if (link) link.setAttribute('tabindex', '0');
           storeView.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               const expanded = storeView.getAttribute('aria-expanded') === 'true';
