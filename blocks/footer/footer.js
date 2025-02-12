@@ -132,8 +132,10 @@ export default async function decorate(block) {
       if (storeRegion.children.length <= 1) {
         li.classList.add('storeview-single-store');
         const ulParent = li.closest('ul');
-        ulParent.removeChild(li);
-        ulParent.appendChild(storeRegion.firstElementChild).className = 'storeview-single-store';
+        const replacedChild = (storeRegion.firstElementChild);
+        replacedChild.className = 'storeview-single-store';
+
+        ulParent.replaceChild(replacedChild, li);
         ulParent.setAttribute('tabindex', '0');
       } else {
         li.classList.add('storeview-multiple-stores');
