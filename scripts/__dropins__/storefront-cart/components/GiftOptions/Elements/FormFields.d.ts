@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'preact';
 import { GiftOptionsViewProps, GiftFormDataType } from '../../../types';
 import { CartModel } from '../../../data/models';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 
 interface FormFieldsProps {
     view: GiftOptionsViewProps;
@@ -10,6 +11,7 @@ interface FormFieldsProps {
     errorMessage: Record<string, string>;
     onInputChange: (value: Event) => void;
     onBlur: (event: Event) => void;
+    setIsVisible: Dispatch<StateUpdater<Record<string, boolean>>>;
 }
 export declare const FormFields: FunctionComponent<FormFieldsProps>;
 export {};
