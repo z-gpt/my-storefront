@@ -138,18 +138,14 @@ export default async function decorate(block) {
 
   let cartViewEventPublished = false;
   // Events
-  events.on(
-    'cart/data',
-    (payload) => {
-      toggleEmptyCart(isCartEmpty(payload));
+  events.on('cart/data', (payload) => {
+    toggleEmptyCart(isCartEmpty(payload));
 
-      if (!cartViewEventPublished) {
-        cartViewEventPublished = true;
-        publishShoppingCartViewEvent();
-      }
-    },
-    { eager: true },
-  );
+    if (!cartViewEventPublished) {
+      cartViewEventPublished = true;
+      publishShoppingCartViewEvent();
+    }
+  }, { eager: true });
 
   return Promise.resolve();
 }
