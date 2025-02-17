@@ -1,7 +1,7 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{s as a,f as T,h as m}from"./resetCart.js";import{C as u,t as C}from"./refreshCart.js";import{events as s}from"@dropins/tools/event-bus.js";import{a as O}from"./acdl.js";import{CART_FRAGMENT as N}from"../fragments.js";const A=`
-  mutation SET_GIFT_OPTIONS_ON_CART_MUTATION($cartId: String!, $giftMessage: GiftMessageInput, $giftWrappingId: ID, $giftReceiptIncluded: Boolean!, $printedCardIncluded: Boolean!, ${u}) {
+import{s as a}from"./state.js";import{C as m,t as T}from"./refreshCart.js";import{events as s}from"@dropins/tools/event-bus.js";import{f as u,h as C}from"./resetCart.js";import{a as O}from"./acdl.js";import{CART_FRAGMENT as N}from"../fragments.js";const A=`
+  mutation SET_GIFT_OPTIONS_ON_CART_MUTATION($cartId: String!, $giftMessage: GiftMessageInput, $giftWrappingId: ID, $giftReceiptIncluded: Boolean!, $printedCardIncluded: Boolean!, ${m}) {
  setGiftOptionsOnCart(
     input: {
      cart_id: $cartId
@@ -17,4 +17,4 @@ import{s as a,f as T,h as m}from"./resetCart.js";import{C as u,t as C}from"./ref
   }
 }
 ${N}
-`,E=async d=>{const e=a.cartId;if(!e)throw Error("Cart ID is not set");const{recipientName:o,senderName:p,message:c,giftReceiptIncluded:f,printedCardIncluded:g,giftWrappingId:I,isGiftWrappingSelected:_}=d;return T(A,{variables:{cartId:e,giftMessage:{from:p,to:o,message:c},giftWrappingId:_?I:null,giftReceiptIncluded:f,printedCardIncluded:g}}).then(({errors:l,data:r})=>{var n;const i=[...((n=r==null?void 0:r.addProductsToCart)==null?void 0:n.user_errors)??[],...l??[]];if(i.length>0)return m(i);const t=C(r.setGiftOptionsOnCart.cart);return s.emit("cart/updated",t),s.emit("cart/data",t),t&&O(t,[],a.locale??"en-US"),t})};export{E as s};
+`,S=async d=>{const e=a.cartId;if(!e)throw Error("Cart ID is not set");const{recipientName:o,senderName:p,message:c,giftReceiptIncluded:f,printedCardIncluded:g,giftWrappingId:I,isGiftWrappingSelected:_}=d;return u(A,{variables:{cartId:e,giftMessage:{from:p,to:o,message:c},giftWrappingId:_?I:null,giftReceiptIncluded:f,printedCardIncluded:g}}).then(({errors:l,data:r})=>{var n;const i=[...((n=r==null?void 0:r.addProductsToCart)==null?void 0:n.user_errors)??[],...l??[]];if(i.length>0)return C(i);const t=T(r.setGiftOptionsOnCart.cart);return s.emit("cart/updated",t),s.emit("cart/data",t),t&&O(t,[],a.locale??"en-US"),t})};export{S as s};
