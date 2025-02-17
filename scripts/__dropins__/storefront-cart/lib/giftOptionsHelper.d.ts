@@ -11,7 +11,7 @@ export declare const DEFAULT_CHECKBOXES_STATE: {
     printedCardIncluded: boolean;
     isGiftWrappingSelected: boolean;
 };
-export declare const shouldShowGiftMessage: (item: CartModel['items'][0], isProductView: boolean) => boolean | null | undefined;
+export declare const shouldShowGiftMessage: (item: CartModel['items'][0], isProductView: boolean) => boolean | "" | null | undefined;
 export declare const getSelectedGiftWrapping: (giftWrappingOptions: GiftWrappingConfigProps[] | [
 ]) => GiftWrappingConfigProps;
 //# sourceMappingURL=giftOptionsHelper.d.ts.map

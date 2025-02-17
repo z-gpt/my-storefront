@@ -1,14 +1,15 @@
 import { FunctionComponent } from 'preact';
 import { GiftOptionsViewProps, GiftFormDataType } from '../../../types';
+import { CartModel } from '../../../data/models';
 
 interface FormFieldsProps {
     view: GiftOptionsViewProps;
+    item: CartModel['items'][0];
     giftOptions: GiftFormDataType;
     disabled: boolean;
     errorMessage: Record<string, string>;
     onInputChange: (value: Event) => void;
     onBlur: (event: Event) => void;
-    giftMessageAvailable: boolean;
 }
 export declare const FormFields: FunctionComponent<FormFieldsProps>;
 export {};
