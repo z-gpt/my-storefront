@@ -49,10 +49,7 @@ const getConfigForEnvironment = async (environment) => {
     }
 
     const parsedConfig = JSON.parse(configJSON);
-    if (
-      !parsedConfig[':expiry']
-      || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)
-    ) {
+    if (!parsedConfig[':expiry'] || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)) {
       throw new Error('Config expired');
     }
 
@@ -80,10 +77,6 @@ export const getConfigValue = async (configParam, environment) => {
   const env = environment || calcEnvironment();
   const config = await getConfigForEnvironment(env);
   const configElements = config.data;
-
-  // if (configParam === "commerce-core-endpoint")
-  //   return "https://mcstaging.aemshop.net/graphql";
-
   return configElements.find((c) => c.key === configParam)?.value;
 };
 
