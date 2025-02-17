@@ -80,9 +80,7 @@ export default async function decorate(block) {
       routeProduct: (product) => `/products/${product.url.urlKey}/${product.topLevelSku}`,
       routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
-      attributesToHide: hideAttributes
-        .split(',')
-        .map((attr) => attr.trim().toLowerCase()),
+      attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
       slots: {
