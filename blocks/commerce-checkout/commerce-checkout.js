@@ -33,6 +33,7 @@ import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
+import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Checkout Dropin
@@ -58,8 +59,6 @@ import OrderProductList from '@dropins/storefront-order/containers/OrderProductL
 import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
 import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
 import { render as OrderProvider } from '@dropins/storefront-order/render.js';
-
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
@@ -156,8 +155,8 @@ export default async function decorate(block) {
         </div>
         <div class="checkout__aside">
           <div class="checkout__block checkout__order-summary"></div>
-          <div class="checkout__block checkout__cart-summary"></div>
           <div class="checkout__block checkout__cart-gift-options"></div>
+          <div class="checkout__block checkout__cart-summary"></div>
         </div>
       </div>
     </div>
@@ -196,10 +195,7 @@ export default async function decorate(block) {
     '.checkout__cart-summary',
   );
   const $placeOrder = checkoutFragment.querySelector('.checkout__place-order');
-
-  const $giftOptions = checkoutFragment.querySelector(
-    '.checkout__cart-gift-options',
-  );
+  const $giftOptions = checkoutFragment.querySelector('.checkout__cart-gift-options');
 
   block.appendChild(checkoutFragment);
 
