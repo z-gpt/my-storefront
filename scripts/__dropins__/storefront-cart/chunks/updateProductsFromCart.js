@@ -9,7 +9,7 @@ import{s as m,f as i,h as T}from"./resetCart.js";import{C as _,t as p}from"./ref
     updateCartItems(
       input: {
         cart_id: $cartId
-        cart_items: $cartItems
+        cart_items: $cartItems  
       }
     ) {
       cart {
@@ -18,6 +18,6 @@ import{s as m,f as i,h as T}from"./resetCart.js";import{C as _,t as p}from"./ref
 
     }
   }
-
+    
   ${u}
-`,h=async s=>{const o=m.cartId;if(!o)throw Error("Cart ID is not set");return i(C,{variables:{cartId:o,cartItems:s.map(({uid:e,quantity:t,giftOptions:a})=>({cart_item_uid:e,quantity:t,...a}))}}).then(({errors:e,data:t})=>{var c;const a=[...((c=t==null?void 0:t.addProductsToCart)==null?void 0:c.user_errors)??[],...e??[]];if(a.length>0)return T(a);const r=p(t.updateCartItems.cart);return n.emit("cart/updated",r),n.emit("cart/data",r),r&&I(r,s,m.locale??"en-US"),r})};export{h as u};
+`,h=async e=>{const s=m.cartId;if(!s)throw Error("Cart ID is not set");return i(C,{variables:{cartId:s,cartItems:e.map(({uid:a,quantity:t})=>({cart_item_uid:a,quantity:t}))}}).then(({errors:a,data:t})=>{var c;const o=[...((c=t==null?void 0:t.addProductsToCart)==null?void 0:c.user_errors)??[],...a??[]];if(o.length>0)return T(o);const r=p(t.updateCartItems.cart);return n.emit("cart/updated",r),n.emit("cart/data",r),r&&I(r,e,m.locale??"en-US"),r})};export{h as u};
