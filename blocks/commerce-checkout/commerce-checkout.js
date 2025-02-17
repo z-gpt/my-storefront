@@ -407,6 +407,21 @@ export default async function decorate(block) {
             );
           });
         },
+        Footer: (ctx) => {
+          const giftOptions = document.createElement('div');
+
+          CartProvider.render(GiftOptions, {
+            item: ctx.item,
+            view: 'product',
+            dataSource: 'cart',
+            isEditable: false,
+            handleItemsLoading: ctx.handleItemsLoading,
+            handleItemsError: ctx.handleItemsError,
+            onItemUpdate: ctx.onItemUpdate,
+          })(giftOptions);
+
+          ctx.appendChild(giftOptions);
+        },
       },
     })($cartSummary),
 
