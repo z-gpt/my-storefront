@@ -11,7 +11,7 @@ interface FormFieldsProps {
     errorMessage: Record<string, string>;
     onInputChange: (value: Event) => void;
     onBlur: (event: Event) => void;
-    setIsVisible: Dispatch<StateUpdater<Record<string, boolean>>>;
+    setFormVisibility: Dispatch<StateUpdater<Record<string, boolean>>>;
 }
 export declare const FormFields: FunctionComponent<FormFieldsProps>;
 export {};
