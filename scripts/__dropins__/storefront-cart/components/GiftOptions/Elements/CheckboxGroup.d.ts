@@ -13,6 +13,7 @@ interface CheckboxGroupProps {
     cartData: CartModel | null;
     giftWrappingConfig: GiftWrappingConfigProps[] | [];
     setShowModal: Dispatch<StateUpdater<boolean>>;
+    setIsGiftOptionsVisible: Dispatch<StateUpdater<boolean>>;
 }
 export declare const CheckboxGroup: FunctionComponent<CheckboxGroupProps>;
 export {};

@@ -78,7 +78,9 @@ const u=`
   fragment GIFT_CARD_DETAILS_FRAGMENT on GiftCardOrderItem {
     ...PRICE_DETAILS_FRAGMENT
     gift_message {
-      ...GIFT_MESSAGE_FRAGMENT
+      from
+      to
+      message
     }
     gift_card {
       recipient_name
@@ -117,7 +119,9 @@ const u=`
     quantity_refunded
     quantity_return_requested
     gift_message {
-      ...GIFT_MESSAGE_FRAGMENT
+      from
+      to
+      message
     }
     product_sale_price {
       value
@@ -144,7 +148,7 @@ const u=`
       }
     }
   }
-`,E=`
+`,i=`
   fragment DOWNLOADABLE_ORDER_ITEMS_FRAGMENT on DownloadableOrderItem {
     product_name
     downloadable_links {
@@ -152,7 +156,7 @@ const u=`
       title
     }
   }
-`,i=`
+`,E=`
   fragment ORDER_ITEM_FRAGMENT on OrderItemInterface {
     ...ORDER_ITEM_DETAILS_FRAGMENT
     ... on BundleOrderItem {
@@ -167,8 +171,8 @@ const u=`
     ...DOWNLOADABLE_ORDER_ITEMS_FRAGMENT
   }
 
-  ${E}
-`,R=`
+  ${i}
+`,c=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     gift_options {
       gift_wrapping_for_items {
@@ -236,7 +240,7 @@ const u=`
       label
     }
   }
-`,c=`
+`,R=`
   fragment RETURNS_FRAGMENT on Returns {
     __typename
     items {
@@ -277,7 +281,7 @@ const u=`
       }
     }
   }
-`,T=`
+`,o=`
   fragment GUEST_ORDER_FRAGMENT on CustomerOrder {
     email
     id
@@ -293,10 +297,16 @@ const u=`
     available_actions
     is_virtual
     gift_message {
-      ...GIFT_MESSAGE_FRAGMENT
+      from
+      to
+      message
     }
     applied_gift_cards {
-      ...APPLIED_GIFT_CARDS_FRAGMENT
+      code
+      applied_balance {
+        value
+        currency
+      }
     }
     items_eligible_for_return {
       ...ORDER_ITEM_DETAILS_FRAGMENT
@@ -360,11 +370,11 @@ const u=`
   ${t}
   ${n}
   ${a}
-  ${R}
-  ${e}
   ${c}
-  ${i}
-`,A=`
+  ${e}
+  ${R}
+  ${E}
+`,T=`
   fragment APPLIED_GIFT_CARDS_FRAGMENT on ApplyGiftCardToOrder {
     __typename
     code
@@ -373,14 +383,14 @@ const u=`
       currency
     }
   }
-`,o=`
+`,d=`
   fragment GIFT_MESSAGE_FRAGMENT on GiftMessage {
     __typename
     from
     to
     message
   }
-`,d=`
+`,s=`
   fragment GIFT_WRAPPING_FRAGMENT on GiftWrapping {
     __typename
     uid
@@ -393,7 +403,7 @@ const u=`
       currency
     }
   }
-`,s=`
+`,A=`
   fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {
    __typename
    uid
@@ -407,4 +417,4 @@ const u=`
      value
    }
   }
-`;export{e as ADDRESS_FRAGMENT,A as APPLIED_GIFT_CARDS_FRAGMENT,s as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,E as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,o as GIFT_MESSAGE_FRAGMENT,d as GIFT_WRAPPING_FRAGMENT,T as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,i as ORDER_ITEM_FRAGMENT,R as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,u as REQUEST_RETURN_ORDER_FRAGMENT,c as RETURNS_FRAGMENT};
+`;export{e as ADDRESS_FRAGMENT,T as APPLIED_GIFT_CARDS_FRAGMENT,A as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,i as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,d as GIFT_MESSAGE_FRAGMENT,s as GIFT_WRAPPING_FRAGMENT,o as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,E as ORDER_ITEM_FRAGMENT,c as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,u as REQUEST_RETURN_ORDER_FRAGMENT,R as RETURNS_FRAGMENT};
