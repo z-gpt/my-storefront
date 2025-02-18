@@ -19,4 +19,5 @@ export { PRODUCT_DETAILS_FRAGMENT, PRICE_DETAILS_FRAGMENT, GIFT_CARD_DETAILS_FRA
 export { ORDER_SUMMARY_FRAGMENT } from './graphql/OrderSummaryFragment.graphql';
 export { RETURNS_FRAGMENT } from './graphql/ReturnsFragment.graphql';
 export { GUEST_ORDER_FRAGMENT } from './graphql/GuestOrderFragment.graphql';
+export { APPLIED_GIFT_CARDS_FRAGMENT } from './graphql/GiftFragment.graphql';
 //# sourceMappingURL=fragments.d.ts.map

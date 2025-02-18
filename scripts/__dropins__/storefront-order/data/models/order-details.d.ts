@@ -42,6 +42,10 @@ export type OrderItemProductModel = {
     };
 };
 export type OrderItemModel = {
+    giftWrappingItem: {
+        price: MoneyProps;
+        uid: string;
+    };
     taxCalculations: {
         includeAndExcludeTax: {
             originalPrice: MoneyProps;
@@ -160,6 +164,12 @@ export type ShipmentsModel = {
     items: ShipmentItemsModel[];
 };
 export type OrderDataModel = {
+    giftReceiptIncluded: boolean;
+    printedCardIncluded: boolean;
+    giftWrappingOrder: {
+        price: MoneyProps;
+        uid: string;
+    };
     placeholderImage?: string;
     returnNumber?: string;
     id: string;
@@ -192,19 +202,31 @@ export type OrderDataModel = {
     };
     shipments: ShipmentsModel[];
     items: OrderItemModel[];
-    totalGiftcard: MoneyProps;
+    totalGiftCard: MoneyProps;
     grandTotal: MoneyProps;
     totalShipping?: MoneyProps;
     subtotalExclTax: MoneyProps;
     subtotalInclTax: MoneyProps;
     totalTax: MoneyProps;
     shippingAddress: OrderAddressModel;
+    totalGiftOptions: {
+        giftWrappingForItems: MoneyProps;
+        giftWrappingForItemsInclTax: MoneyProps;
+        giftWrappingForOrder: MoneyProps;
+        giftWrappingForOrderInclTax: MoneyProps;
+        printedCard: MoneyProps;
+        printedCardInclTax: MoneyProps;
+    };
     billingAddress: OrderAddressModel;
     availableActions: AvailableActionsProps[];
     taxes: {
         amount: MoneyProps;
         rate: number;
         title: string;
+    }[];
+    appliedGiftCards: {
+        code: string;
+        appliedBalance: MoneyProps;
     }[];
 };
 export type TransformedData<T extends QueryType> = T extends 'orderData' ? OrderDataModel : null;

@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-const T=`
+const u=`
   fragment REQUEST_RETURN_ORDER_FRAGMENT on Return {
     __typename
     uid
@@ -49,7 +49,7 @@ const T=`
       }
     }
   }
-`,t=`
+`,r=`
   fragment PRICE_DETAILS_FRAGMENT on OrderItemInterface {
     prices {
       price_including_tax {
@@ -70,7 +70,7 @@ const T=`
       }
     }
   }
-`,r=`
+`,t=`
   fragment GIFT_CARD_DETAILS_FRAGMENT on GiftCardOrderItem {
     ...PRICE_DETAILS_FRAGMENT
     gift_message {
@@ -86,6 +86,13 @@ const T=`
   }
 `,n=`
   fragment ORDER_ITEM_DETAILS_FRAGMENT on OrderItemInterface {
+    gift_wrapping {
+      price {
+        currency
+        value
+      }
+      uid
+    }
     __typename
     status
     product_sku
@@ -132,7 +139,7 @@ const T=`
       title
     }
   }
-`,R=`
+`,i=`
   fragment ORDER_ITEM_FRAGMENT on OrderItemInterface {
     ...ORDER_ITEM_DETAILS_FRAGMENT
     ... on BundleOrderItem {
@@ -148,8 +155,34 @@ const T=`
   }
 
   ${E}
-`,i=`
+`,R=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
+    gift_options {
+      gift_wrapping_for_items {
+        currency
+        value
+      }
+      gift_wrapping_for_items_incl_tax {
+        currency
+        value
+      }
+      gift_wrapping_for_order {
+        currency
+        value
+      }
+      gift_wrapping_for_order_incl_tax {
+        currency
+        value
+      }
+      printed_card {
+        currency
+        value
+      }
+      printed_card_incl_tax {
+        currency
+        value
+      }
+    }
     grand_total {
       value
       currency
@@ -190,7 +223,7 @@ const T=`
       label
     }
   }
-`,u=`
+`,c=`
   fragment RETURNS_FRAGMENT on Returns {
     __typename
     items {
@@ -231,7 +264,7 @@ const T=`
       }
     }
   }
-`,c=`
+`,T=`
   fragment GUEST_ORDER_FRAGMENT on CustomerOrder {
     email
     id
@@ -246,6 +279,9 @@ const T=`
     gift_receipt_included
     available_actions
     is_virtual
+    applied_gift_cards {
+      ...APPLIED_GIFT_CARDS_FRAGMENT
+    }
     items_eligible_for_return {
       ...ORDER_ITEM_DETAILS_FRAGMENT
     }
@@ -304,12 +340,21 @@ const T=`
     }
   }
   ${_}
-  ${t}
   ${r}
+  ${t}
   ${n}
   ${a}
-  ${i}
-  ${e}
-  ${u}
   ${R}
-`;export{e as ADDRESS_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,E as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,r as GIFT_CARD_DETAILS_FRAGMENT,c as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,R as ORDER_ITEM_FRAGMENT,i as ORDER_SUMMARY_FRAGMENT,t as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,T as REQUEST_RETURN_ORDER_FRAGMENT,u as RETURNS_FRAGMENT};
+  ${e}
+  ${c}
+  ${i}
+`,d=`
+  fragment APPLIED_GIFT_CARDS_FRAGMENT on ApplyGiftCardToOrder {
+    __typename
+    code
+    applied_balance {
+      value
+      currency
+    }
+  }
+`;export{e as ADDRESS_FRAGMENT,d as APPLIED_GIFT_CARDS_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,E as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,T as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,i as ORDER_ITEM_FRAGMENT,R as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,u as REQUEST_RETURN_ORDER_FRAGMENT,c as RETURNS_FRAGMENT};

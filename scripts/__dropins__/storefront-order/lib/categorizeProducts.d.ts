@@ -3,6 +3,10 @@ import { OrderDataModel, OrderItemModel } from '../data/models';
 export declare const categorizeProducts: (order: OrderDataModel) => {
     returnedList: {
         totalQuantity: number;
+        giftWrappingItem: {
+            price: import('../types/index').MoneyProps;
+            uid: string;
+        };
         taxCalculations: {
             includeAndExcludeTax: {
                 originalPrice: import('../types/index').MoneyProps;
