@@ -42,13 +42,19 @@ export type OrderItemProductModel = {
     };
 };
 export type OrderItemModel = {
+    giftMessage: {
+        senderName: string;
+        recipientName: string;
+        message: string;
+    };
+    giftWrappingPrice: MoneyProps;
     productGiftWrapping: {
         uid: string;
         design: string;
         selected: boolean;
         image: {
             url: string;
-            design: string;
+            label: string;
         };
         price: MoneyProps;
     }[];
