@@ -1,4 +1,3 @@
-import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { OrderDataModel, OrderItemModel } from '../data/models';
 
 type options = Record<string, string | number | boolean>;
@@ -7,9 +6,6 @@ export type TaxTypes = {
     taxExcluded: boolean;
 };
 export interface OrderProductListProps {
-    slots?: {
-        GiftOptions: SlotProps;
-    };
     orderData?: OrderDataModel;
     className?: string;
     withHeader?: boolean;
@@ -23,9 +19,6 @@ export interface OrderProductListContentProps extends Omit<OrderProductListProps
     loading: boolean;
 }
 export interface CartSummaryItemProps {
-    slots?: {
-        GiftOptions: SlotProps;
-    };
     placeholderImage?: string;
     disabledIncrementer?: boolean;
     loading: boolean;
@@ -37,7 +30,7 @@ export interface CartSummaryItemProps {
     showConfigurableOptions?: (options: options | {}) => options;
     routeProductDetails?: (product: any) => string;
 }
-export interface UseOrderProductListProps extends Omit<OrderProductListProps, 'className' | 'withHeader' | 'showConfigurableOptions' | 'slots'> {
+export interface UseOrderProductListProps extends Omit<OrderProductListProps, 'className' | 'withHeader' | 'showConfigurableOptions'> {
 }
 export {};
 //# sourceMappingURL=orderProductList.types.d.ts.map

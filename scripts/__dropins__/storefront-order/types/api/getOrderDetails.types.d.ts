@@ -76,14 +76,6 @@ export interface DiscountProps {
     amount: MoneyProps;
     label: string;
 }
-export interface TotalGiftOptionsProps {
-    gift_wrapping_for_items: MoneyProps;
-    gift_wrapping_for_items_incl_tax: MoneyProps;
-    gift_wrapping_for_order_incl_tax: MoneyProps;
-    gift_wrapping_for_order: MoneyProps;
-    printed_card: MoneyProps;
-    printed_card_incl_tax: MoneyProps;
-}
 export interface TotalProps {
     total_giftcard?: MoneyProps;
     grand_total?: GrandTotalProps;
@@ -92,7 +84,6 @@ export interface TotalProps {
     total_tax?: TotalTaxProps;
     total_shipping?: TotalShippingProps;
     discounts?: DiscountProps[];
-    gift_options: TotalGiftOptionsProps;
 }
 interface InvoiceItemInterface {
 }
@@ -112,12 +103,14 @@ export interface GiftMessageProps {
     to: string;
 }
 export interface GiftWrappingProps {
-    design: string;
-    price: MoneyProps;
-    uid: string;
-    image: {
-        url: string;
-        label: string;
+    gift_wrapping: {
+        design: string;
+        price: MoneyProps;
+        uid: string;
+        image: {
+            url: string;
+            label: string;
+        };
     };
 }
 export interface giftCardProps {
@@ -269,10 +262,6 @@ export interface OrderProps {
     shipping_address: UserAddressesProps;
     billing_address: UserAddressesProps;
     total?: TotalProps;
-    applied_gift_cards: {
-        code: string;
-        applied_balance: MoneyProps;
-    }[];
 }
 export interface ErrorProps {
     errors?: {

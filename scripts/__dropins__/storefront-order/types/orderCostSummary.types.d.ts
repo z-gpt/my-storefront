@@ -9,8 +9,6 @@ export interface StoreConfigProps extends Omit<StoreConfigModel, 'orderCancellat
     shoppingOrderDisplayPrice: TaxTypes;
     shoppingOrdersDisplayShipping: TaxTypes;
     shoppingOrdersDisplaySubtotal: TaxTypes;
-    salesPrintedCard: TaxTypes;
-    salesGiftWrapping: TaxTypes;
 }
 export interface OrderCostSummaryProps extends HTMLAttributes<HTMLDivElement> {
     orderData?: OrderDataModel;
