@@ -870,7 +870,7 @@ export default async function decorate(block) {
           const giftOptions = document.createElement('div');
 
           OrderProvider.render(GiftOptions, {
-            item: ctx.product,
+            item: ctx.item,
             view: 'product',
             dataSource: 'cart',
             isEditable: false,
