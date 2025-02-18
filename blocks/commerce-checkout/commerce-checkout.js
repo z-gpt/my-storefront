@@ -869,7 +869,7 @@ export default async function decorate(block) {
           console.log("ctx :>> GiftOptions", ctx);
           const giftOptions = document.createElement("div");
 
-          OrderProvider.render(GiftOptions, {
+          CartProvider.render(GiftOptions, {
             item: ctx.item,
             view: "product",
             dataSource: "order",
