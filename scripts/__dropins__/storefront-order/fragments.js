@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-const u=`
+const R=`
   fragment REQUEST_RETURN_ORDER_FRAGMENT on Return {
     __typename
     uid
@@ -156,7 +156,7 @@ const u=`
       title
     }
   }
-`,E=`
+`,c=`
   fragment ORDER_ITEM_FRAGMENT on OrderItemInterface {
     ...ORDER_ITEM_DETAILS_FRAGMENT
     ... on BundleOrderItem {
@@ -172,7 +172,7 @@ const u=`
   }
 
   ${i}
-`,c=`
+`,E=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     gift_options {
       gift_wrapping_for_items {
@@ -240,7 +240,7 @@ const u=`
       label
     }
   }
-`,R=`
+`,u=`
   fragment RETURNS_FRAGMENT on Returns {
     __typename
     items {
@@ -296,6 +296,17 @@ const u=`
     gift_receipt_included
     available_actions
     is_virtual
+    gift_wrapping {
+      uid
+      design
+      image {
+        url
+      }
+      price {
+        value
+        currency
+      }
+    }
     gift_message {
       from
       to
@@ -370,10 +381,10 @@ const u=`
   ${t}
   ${n}
   ${a}
-  ${c}
-  ${e}
-  ${R}
   ${E}
+  ${e}
+  ${u}
+  ${c}
 `,T=`
   fragment APPLIED_GIFT_CARDS_FRAGMENT on ApplyGiftCardToOrder {
     __typename
@@ -417,4 +428,4 @@ const u=`
      value
    }
   }
-`;export{e as ADDRESS_FRAGMENT,T as APPLIED_GIFT_CARDS_FRAGMENT,A as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,i as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,d as GIFT_MESSAGE_FRAGMENT,s as GIFT_WRAPPING_FRAGMENT,o as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,E as ORDER_ITEM_FRAGMENT,c as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,u as REQUEST_RETURN_ORDER_FRAGMENT,R as RETURNS_FRAGMENT};
+`;export{e as ADDRESS_FRAGMENT,T as APPLIED_GIFT_CARDS_FRAGMENT,A as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,i as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,d as GIFT_MESSAGE_FRAGMENT,s as GIFT_WRAPPING_FRAGMENT,o as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,c as ORDER_ITEM_FRAGMENT,E as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,R as REQUEST_RETURN_ORDER_FRAGMENT,u as RETURNS_FRAGMENT};
