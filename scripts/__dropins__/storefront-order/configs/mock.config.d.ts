@@ -4765,7 +4765,7 @@ export declare const placeOrderMockData: {
             senderEmail: string;
             senderName: string;
         };
-        giftWrappingItem: {
+        productGiftWrapping: {
             price: {
                 currency: string;
                 value: number;

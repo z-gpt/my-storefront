@@ -87,11 +87,17 @@ const u=`
 `,n=`
   fragment ORDER_ITEM_DETAILS_FRAGMENT on OrderItemInterface {
     gift_wrapping {
+      __typename
+      uid
+      design
+      image {
+        url
+        label
+      }
       price {
         currency
         value
       }
-      uid
     }
     __typename
     status
@@ -131,7 +137,7 @@ const u=`
       }
     }
   }
-`,E=`
+`,i=`
   fragment DOWNLOADABLE_ORDER_ITEMS_FRAGMENT on DownloadableOrderItem {
     product_name
     downloadable_links {
@@ -139,7 +145,7 @@ const u=`
       title
     }
   }
-`,i=`
+`,E=`
   fragment ORDER_ITEM_FRAGMENT on OrderItemInterface {
     ...ORDER_ITEM_DETAILS_FRAGMENT
     ... on BundleOrderItem {
@@ -154,7 +160,7 @@ const u=`
     ...DOWNLOADABLE_ORDER_ITEMS_FRAGMENT
   }
 
-  ${E}
+  ${i}
 `,R=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     gift_options {
@@ -347,8 +353,8 @@ const u=`
   ${R}
   ${e}
   ${c}
-  ${i}
-`,d=`
+  ${E}
+`,o=`
   fragment APPLIED_GIFT_CARDS_FRAGMENT on ApplyGiftCardToOrder {
     __typename
     code
@@ -357,4 +363,38 @@ const u=`
       currency
     }
   }
-`;export{e as ADDRESS_FRAGMENT,d as APPLIED_GIFT_CARDS_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,E as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,T as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,i as ORDER_ITEM_FRAGMENT,R as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,u as REQUEST_RETURN_ORDER_FRAGMENT,c as RETURNS_FRAGMENT};
+`,A=`
+  fragment GIFT_MESSAGE_FRAGMENT on GiftMessage {
+    __typename
+    from
+    to
+    message
+  }
+`,d=`
+  fragment GIFT_WRAPPING_FRAGMENT on GiftWrapping {
+    __typename
+    uid
+    design
+    image {
+      url
+    }
+    price {
+      value
+      currency
+    }
+  }
+`,s=`
+  fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {
+   __typename
+   uid
+   design
+   image {
+     url
+     label
+   }
+   price {
+     currency
+     value
+   }
+  }
+`;export{e as ADDRESS_FRAGMENT,o as APPLIED_GIFT_CARDS_FRAGMENT,s as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,i as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,A as GIFT_MESSAGE_FRAGMENT,d as GIFT_WRAPPING_FRAGMENT,T as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,E as ORDER_ITEM_FRAGMENT,R as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,u as REQUEST_RETURN_ORDER_FRAGMENT,c as RETURNS_FRAGMENT};

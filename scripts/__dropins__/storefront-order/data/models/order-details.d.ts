@@ -42,10 +42,16 @@ export type OrderItemProductModel = {
     };
 };
 export type OrderItemModel = {
-    giftWrappingItem: {
-        price: MoneyProps;
+    productGiftWrapping: {
         uid: string;
-    };
+        design: string;
+        selected: boolean;
+        image: {
+            url: string;
+            design: string;
+        };
+        price: MoneyProps;
+    }[];
     taxCalculations: {
         includeAndExcludeTax: {
             originalPrice: MoneyProps;
