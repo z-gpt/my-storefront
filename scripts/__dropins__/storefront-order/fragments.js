@@ -35,6 +35,10 @@ const u=`
     name
     sku
     only_x_left_in_stock
+    gift_wrapping_price {
+      currency
+      value
+    }
     stock_status
     thumbnail {
       label
@@ -161,7 +165,7 @@ const u=`
   }
 
   ${i}
-`,R=`
+`,c=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     gift_options {
       gift_wrapping_for_items {
@@ -229,7 +233,7 @@ const u=`
       label
     }
   }
-`,c=`
+`,R=`
   fragment RETURNS_FRAGMENT on Returns {
     __typename
     items {
@@ -350,9 +354,9 @@ const u=`
   ${t}
   ${n}
   ${a}
-  ${R}
-  ${e}
   ${c}
+  ${e}
+  ${R}
   ${E}
 `,o=`
   fragment APPLIED_GIFT_CARDS_FRAGMENT on ApplyGiftCardToOrder {
@@ -383,7 +387,7 @@ const u=`
       currency
     }
   }
-`,s=`
+`,l=`
   fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {
    __typename
    uid
@@ -397,4 +401,4 @@ const u=`
      value
    }
   }
-`;export{e as ADDRESS_FRAGMENT,o as APPLIED_GIFT_CARDS_FRAGMENT,s as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,i as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,A as GIFT_MESSAGE_FRAGMENT,d as GIFT_WRAPPING_FRAGMENT,T as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,E as ORDER_ITEM_FRAGMENT,R as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,u as REQUEST_RETURN_ORDER_FRAGMENT,c as RETURNS_FRAGMENT};
+`;export{e as ADDRESS_FRAGMENT,o as APPLIED_GIFT_CARDS_FRAGMENT,l as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,i as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,A as GIFT_MESSAGE_FRAGMENT,d as GIFT_WRAPPING_FRAGMENT,T as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,E as ORDER_ITEM_FRAGMENT,c as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,u as REQUEST_RETURN_ORDER_FRAGMENT,R as RETURNS_FRAGMENT};
