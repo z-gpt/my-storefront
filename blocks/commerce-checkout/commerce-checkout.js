@@ -866,6 +866,7 @@ export default async function decorate(block) {
     OrderProvider.render(OrderProductList, {
       slots: {
         GiftOptions: (ctx) => {
+          console.log('ctx :>> GiftOptions', ctx);
           const giftOptions = document.createElement('div');
 
           OrderProvider.render(GiftOptions, {
