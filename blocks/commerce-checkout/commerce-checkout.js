@@ -165,38 +165,38 @@ export default async function decorate(block) {
   const $content = checkoutFragment.querySelector('.checkout__content');
   const $loader = checkoutFragment.querySelector('.checkout__loader');
   const $mergedCartBanner = checkoutFragment.querySelector(
-    '.checkout__merged-cart-banner'
+    '.checkout__merged-cart-banner',
   );
 
   const $heading = checkoutFragment.querySelector('.checkout__heading');
   const $emptyCart = checkoutFragment.querySelector('.checkout__empty-cart');
   const $serverError = checkoutFragment.querySelector(
-    '.checkout__server-error'
+    '.checkout__server-error',
   );
   const $outOfStock = checkoutFragment.querySelector('.checkout__out-of-stock');
   const $login = checkoutFragment.querySelector('.checkout__login');
   const $shippingForm = checkoutFragment.querySelector(
-    '.checkout__shipping-form'
+    '.checkout__shipping-form',
   );
   const $billToShipping = checkoutFragment.querySelector(
-    '.checkout__bill-to-shipping'
+    '.checkout__bill-to-shipping',
   );
   const $delivery = checkoutFragment.querySelector('.checkout__delivery');
   const $paymentMethods = checkoutFragment.querySelector(
-    '.checkout__payment-methods'
+    '.checkout__payment-methods',
   );
   const $billingForm = checkoutFragment.querySelector(
-    '.checkout__billing-form'
+    '.checkout__billing-form',
   );
   const $orderSummary = checkoutFragment.querySelector(
-    '.checkout__order-summary'
+    '.checkout__order-summary',
   );
   const $cartSummary = checkoutFragment.querySelector(
-    '.checkout__cart-summary'
+    '.checkout__cart-summary',
   );
   const $placeOrder = checkoutFragment.querySelector('.checkout__place-order');
   const $giftOptions = checkoutFragment.querySelector(
-    '.checkout__gift-options'
+    '.checkout__gift-options',
   );
 
   block.appendChild(checkoutFragment);
@@ -385,12 +385,12 @@ export default async function decorate(block) {
 
           const cartSummaryListHeadingText = document.createElement('div');
           cartSummaryListHeadingText.classList.add(
-            'cart-summary-list__heading-text'
+            'cart-summary-list__heading-text',
           );
 
           cartSummaryListHeadingText.innerText = title.replace(
             '({count})',
-            headingCtx.count ? `(${headingCtx.count})` : ''
+            headingCtx.count ? `(${headingCtx.count})` : '',
           );
           const editCartLink = document.createElement('a');
           editCartLink.classList.add('cart-summary-list__edit');
@@ -405,7 +405,7 @@ export default async function decorate(block) {
           headingCtx.onChange((nextHeadingCtx) => {
             cartSummaryListHeadingText.innerText = title.replace(
               '({count})',
-              nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : ''
+              nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
             );
           });
         },
@@ -558,7 +558,7 @@ export default async function decorate(block) {
       const cartShippingAddress = getCartAddress(data, 'shipping');
 
       const shippingAddressCache = sessionStorage.getItem(
-        SHIPPING_ADDRESS_DATA_KEY
+        SHIPPING_ADDRESS_DATA_KEY,
       );
 
       if (cartShippingAddress && shippingAddressCache) {
@@ -609,7 +609,7 @@ export default async function decorate(block) {
       const cartBillingAddress = getCartAddress(data, 'billing');
 
       const billingAddressCache = sessionStorage.getItem(
-        BILLING_ADDRESS_DATA_KEY
+        BILLING_ADDRESS_DATA_KEY,
       );
 
       if (cartBillingAddress && billingAddressCache) {
@@ -669,7 +669,7 @@ export default async function decorate(block) {
         : undefined;
 
       const shippingAddressCache = sessionStorage.getItem(
-        SHIPPING_ADDRESS_DATA_KEY
+        SHIPPING_ADDRESS_DATA_KEY,
       );
 
       // clear persisted shipping address if cart has a shipping address
@@ -727,7 +727,7 @@ export default async function decorate(block) {
         : undefined;
 
       const billingAddressCache = sessionStorage.getItem(
-        BILLING_ADDRESS_DATA_KEY
+        BILLING_ADDRESS_DATA_KEY,
       );
 
       // clear persisted billing address if cart has a billing address
@@ -799,28 +799,28 @@ export default async function decorate(block) {
 
     // Order confirmation elements
     const $orderConfirmationHeader = orderConfirmationFragment.querySelector(
-      '.order-confirmation__header'
+      '.order-confirmation__header',
     );
     const $orderStatus = orderConfirmationFragment.querySelector(
-      '.order-confirmation__order-status'
+      '.order-confirmation__order-status',
     );
     const $shippingStatus = orderConfirmationFragment.querySelector(
-      '.order-confirmation__shipping-status'
+      '.order-confirmation__shipping-status',
     );
     const $customerDetails = orderConfirmationFragment.querySelector(
-      '.order-confirmation__customer-details'
+      '.order-confirmation__customer-details',
     );
     const $orderCostSummary = orderConfirmationFragment.querySelector(
-      '.order-confirmation__order-cost-summary'
+      '.order-confirmation__order-cost-summary',
     );
     const $orderGiftOptions = orderConfirmationFragment.querySelector(
-      '.order-confirmation__gift-options'
+      '.order-confirmation__gift-options',
     );
     const $orderProductList = orderConfirmationFragment.querySelector(
-      '.order-confirmation__order-product-list'
+      '.order-confirmation__order-product-list',
     );
     const $orderConfirmationFooter = orderConfirmationFragment.querySelector(
-      '.order-confirmation__footer'
+      '.order-confirmation__footer',
     );
 
     await initializers.mountImmediately(orderApi.initialize, { orderData });
@@ -852,7 +852,7 @@ export default async function decorate(block) {
     })($orderConfirmationHeader);
 
     OrderProvider.render(OrderStatus, { slots: { OrderActions: () => null } })(
-      $orderStatus
+      $orderStatus,
     );
     OrderProvider.render(ShippingStatus)($shippingStatus);
     OrderProvider.render(CustomerDetails)($customerDetails);
@@ -899,7 +899,7 @@ export default async function decorate(block) {
 
     const $orderConfirmationFooterContinueBtn =
       $orderConfirmationFooter.querySelector(
-        '.order-confirmation-footer__continue-button'
+        '.order-confirmation-footer__continue-button',
       );
 
     UI.render(Button, {
