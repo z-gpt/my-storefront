@@ -46,6 +46,10 @@
   display: none;
 }
 
+.checkout__gift-options:has(.cart-gift-options-view--readonly:empty) {
+  display: none;
+}
+
 /* Hide main containers when the cart is empty or there is a server error */
 .checkout__content--error .checkout__out-of-stock,
 .checkout__content--error .checkout__login,
@@ -124,6 +128,11 @@
 
 .cart-coupons__accordion {
   margin-top: var(--spacing-xsmall);
+}
+
+/* Gift Options */
+.cart-gift-options-view--product .dropin-accordion-section__heading {
+  margin-bottom: 0;
 }
 
 /* temporary fix to hide the default cart heading */
@@ -252,6 +261,10 @@
 
 /* Hide empty blocks */
 .order-confirmation__block:empty {
+  display: none;
+}
+
+.order-confirmation__gift-options:has(.cart-gift-options-view--readonly:empty) {
   display: none;
 }
 
