@@ -24,8 +24,6 @@ export interface StoreConfigModel {
     shoppingOrdersDisplayFullSummary: boolean;
     shoppingOrdersDisplayGrandTotal: boolean;
     shoppingOrdersDisplayZeroTax: boolean;
-    salesPrintedCard: number;
-    salesGiftWrapping: number;
 }
 export interface OrderCancellationReason {
     description: string;
