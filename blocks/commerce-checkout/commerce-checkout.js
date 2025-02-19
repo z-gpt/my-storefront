@@ -260,12 +260,6 @@ export default async function decorate(block) {
       },
     })($outOfStock),
 
-    CartProvider.render(GiftOptions, {
-      view: 'order',
-      dataSource: 'cart',
-      isEditable: false,
-    })($giftOptions),
-
     CheckoutProvider.render(LoginForm, {
       name: LOGIN_FORM_NAME,
       onSignInClick: async (initialEmailValue) => {
@@ -489,6 +483,12 @@ export default async function decorate(block) {
         }
       },
     })($placeOrder),
+
+    CartProvider.render(GiftOptions, {
+      view: 'order',
+      dataSource: 'cart',
+      isEditable: false,
+    })($giftOptions),
   ]);
 
   // Dynamic containers and components
