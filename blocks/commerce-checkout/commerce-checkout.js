@@ -442,10 +442,10 @@ export default async function decorate(block) {
         const shippingForm = forms[SHIPPING_FORM_NAME];
 
         if (
-          success &&
-          shippingFormRef.current &&
-          shippingForm &&
-          shippingForm.checkVisibility()
+          success
+          && shippingFormRef.current
+          && shippingForm
+          && shippingForm.checkVisibility()
         ) {
           success = shippingFormRef.current.handleValidationSubmit(false);
         }
@@ -453,10 +453,10 @@ export default async function decorate(block) {
         const billingForm = forms[BILLING_FORM_NAME];
 
         if (
-          success &&
-          billingFormRef.current &&
-          billingForm &&
-          billingForm.checkVisibility()
+          success
+          && billingFormRef.current
+          && billingForm
+          && billingForm.checkVisibility()
         ) {
           success = billingFormRef.current.handleValidationSubmit(false);
         }
@@ -640,8 +640,7 @@ export default async function decorate(block) {
         },
         isOpen: true,
         onChange: (values) => {
-          const canSetBillingAddressOnCart =
-            !isFirstRenderBilling || !hasCartBillingAddress;
+          const canSetBillingAddressOnCart = !isFirstRenderBilling || !hasCartBillingAddress;
           if (canSetBillingAddressOnCart) setBillingAddressOnCart(values);
           if (isFirstRenderBilling) isFirstRenderBilling = false;
         },
@@ -679,10 +678,9 @@ export default async function decorate(block) {
 
       const storeConfig = checkoutApi.getStoreConfigCache();
 
-      const inputsDefaultValueSet =
-        cartShippingAddress && cartShippingAddress.id === undefined
-          ? cartShippingAddress
-          : { countryCode: storeConfig.defaultCountry };
+      const inputsDefaultValueSet = cartShippingAddress && cartShippingAddress.id === undefined
+        ? cartShippingAddress
+        : { countryCode: storeConfig.defaultCountry };
 
       const hasCartShippingAddress = Boolean(data.shippingAddresses?.[0]);
       let isFirstRenderShipping = true;
@@ -701,8 +699,7 @@ export default async function decorate(block) {
         inputsDefaultValueSet,
         minifiedView: false,
         onAddressData: (values) => {
-          const canSetShippingAddressOnCart =
-            !isFirstRenderShipping || !hasCartShippingAddress;
+          const canSetShippingAddressOnCart = !isFirstRenderShipping || !hasCartShippingAddress;
           if (canSetShippingAddressOnCart) setShippingAddressOnCart(values);
           if (isFirstRenderShipping) isFirstRenderShipping = false;
         },
@@ -737,10 +734,9 @@ export default async function decorate(block) {
 
       const storeConfig = checkoutApi.getStoreConfigCache();
 
-      const inputsDefaultValueSet =
-        cartBillingAddress && cartBillingAddress.id === undefined
-          ? cartBillingAddress
-          : { countryCode: storeConfig.defaultCountry };
+      const inputsDefaultValueSet = cartBillingAddress && cartBillingAddress.id === undefined
+        ? cartBillingAddress
+        : { countryCode: storeConfig.defaultCountry };
 
       const hasCartBillingAddress = Boolean(data.billingAddress);
       let isFirstRenderBilling = true;
@@ -759,8 +755,7 @@ export default async function decorate(block) {
         inputsDefaultValueSet,
         minifiedView: false,
         onAddressData: (values) => {
-          const canSetBillingAddressOnCart =
-            !isFirstRenderBilling || !hasCartBillingAddress;
+          const canSetBillingAddressOnCart = !isFirstRenderBilling || !hasCartBillingAddress;
           if (canSetBillingAddressOnCart) setBillingAddressOnCart(values);
           if (isFirstRenderBilling) isFirstRenderBilling = false;
         },
@@ -897,10 +892,9 @@ export default async function decorate(block) {
       </div>
     `;
 
-    const $orderConfirmationFooterContinueBtn =
-      $orderConfirmationFooter.querySelector(
-        '.order-confirmation-footer__continue-button',
-      );
+    const $orderConfirmationFooterContinueBtn = $orderConfirmationFooter.querySelector(
+      '.order-confirmation-footer__continue-button',
+    );
 
     UI.render(Button, {
       children: 'Continue shopping',
