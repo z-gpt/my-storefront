@@ -211,6 +211,8 @@ export const assertGiftOptionsEmptyForm = (className) => {
 
 export const assertGiftOptionsReadOnlyFormView = () => {
   const summaryClassName = ".cart-gift-options-view--readonly";
+  const cartClassName =
+    ".cart-cart-summary-list.cart-cart-summary-list__background--secondary";
 
   cy.get(summaryClassName)
     .contains("Selected gift order options")
@@ -249,6 +251,24 @@ export const assertGiftOptionsReadOnlyFormView = () => {
     .should("exist")
     .should("be.visible");
   cy.get(summaryClassName)
+    .contains("giftOptionMessage")
+    .should("exist")
+    .should("be.visible");
+
+  cy.get(cartClassName).contains("This item is a gift").click();
+  cy.get(cartClassName)
+    .contains("Foil Finish Paper")
+    .should("exist")
+    .should("be.visible");
+  cy.get(cartClassName)
+    .contains("giftOptionRecipientName")
+    .should("exist")
+    .should("be.visible");
+  cy.get(cartClassName)
+    .contains("giftOptionSenderName")
+    .should("exist")
+    .should("be.visible");
+  cy.get(cartClassName)
     .contains("giftOptionMessage")
     .should("exist")
     .should("be.visible");

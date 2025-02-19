@@ -44,7 +44,7 @@ describe("Verify price summary on cart", () => {
     cy.get(itemsClassName).should("exist").should("be.visible");
     fillGiftOptiosForm(itemsClassName, "product");
 
-    assertGiftOptionsSummary("Printer card", "excluding taxes", "$100.00");
+    assertGiftOptionsSummary("Printed card", "excluding taxes", "$100.00");
     assertGiftOptionsSummary(
       "Item gift wrapping",
       "excluding taxes",
@@ -67,6 +67,7 @@ describe("Verify price summary on cart", () => {
 
     const itemsClassName = ".cart-gift-options-view--product";
     cy.get(itemsClassName).should("exist").should("be.visible");
+    cy.get(itemsClassName).contains("Gift options").click();
     cy.get(`${itemsClassName} ${fields.giftOptionWrapCheckBox}`).click({
       force: true,
     });
@@ -86,6 +87,7 @@ describe("Verify price summary on cart", () => {
 
     const itemsClassName = ".cart-gift-options-view--product";
     cy.get(itemsClassName).should("exist").should("be.visible");
+    cy.get(itemsClassName).contains("Gift options").click();
     cy.get(`${itemsClassName} ${fields.giftOptionWrapCheckBox}`).click({
       force: true,
     });
@@ -96,7 +98,7 @@ describe("Verify price summary on cart", () => {
     cy.get(orderClassName).should("exist").should("be.visible");
     fillGiftOptiosForm(orderClassName);
 
-    assertGiftOptionsSummary("Printer card", "excluding taxes", "$100.00");
+    assertGiftOptionsSummary("Printed card", "excluding taxes", "$100.00");
     assertGiftOptionsSummary(
       "Order gift wrapping",
       "excluding taxes",
@@ -123,6 +125,7 @@ describe("Verify price summary on cart", () => {
     const itemsClassName =
       ".cart-gift-options-view.cart-gift-options-view--product";
     cy.get(itemsClassName).should("exist").should("be.visible");
+    cy.get(itemsClassName).contains("Gift options").click();
     fillGiftOptiosFormEmpty(itemsClassName);
     assertGiftOptionsEmptyForm(itemsClassName);
   });
@@ -211,7 +214,7 @@ describe("Verify price summary on cart", () => {
     cy.get(itemsClassName).should("exist").should("be.visible");
     fillGiftOptiosForm(itemsClassName, "product");
 
-    assertGiftOptionsSummary("Printer card", "excluding taxes", "$100.00");
+    assertGiftOptionsSummary("Printed card", "excluding taxes", "$100.00");
     assertGiftOptionsSummary(
       "Item gift wrapping",
       "excluding taxes",
