@@ -9,6 +9,7 @@ import { CUSTOMER_LOGIN_PATH } from '../../scripts/constants.js';
 import '../../scripts/initializers/account.js';
 
 export default async function decorate(block) {
+  console.log('1 :>> ', 1);
   if (!checkIsAuthenticated()) {
     window.location.href = CUSTOMER_LOGIN_PATH;
   } else {
