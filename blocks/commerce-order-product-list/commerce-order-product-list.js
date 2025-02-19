@@ -11,7 +11,7 @@ import '../../scripts/initializers/order.js';
 export default async function decorate(block) {
   await orderRenderer.render(OrderProductList, {
     slots: {
-      GiftOptions: (ctx) => {
+      Footer: (ctx) => {
         const giftOptions = document.createElement('div');
 
         CartProvider.render(GiftOptions, {

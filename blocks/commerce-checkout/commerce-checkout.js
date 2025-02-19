@@ -860,7 +860,7 @@ export default async function decorate(block) {
     })($orderGiftOptions);
     OrderProvider.render(OrderProductList, {
       slots: {
-        GiftOptions: (ctx) => {
+        Footer: (ctx) => {
           const giftOptions = document.createElement('div');
 
           CartProvider.render(GiftOptions, {

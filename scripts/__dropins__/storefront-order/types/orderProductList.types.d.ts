@@ -8,7 +8,7 @@ export type TaxTypes = {
 };
 export interface OrderProductListProps {
     slots?: {
-        GiftOptions: SlotProps;
+        Footer: SlotProps;
     };
     orderData?: OrderDataModel;
     className?: string;
@@ -24,7 +24,7 @@ export interface OrderProductListContentProps extends Omit<OrderProductListProps
 }
 export interface CartSummaryItemProps {
     slots?: {
-        GiftOptions: SlotProps;
+        Footer: SlotProps;
     };
     placeholderImage?: string;
     disabledIncrementer?: boolean;
