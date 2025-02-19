@@ -73,18 +73,5 @@ describe('Store Switcher', () => {
                     .should('contain', multiStoreName);
             }
             )
-
-
-
-
-
-
-
-
-
-
-
-
-
     });
 });
