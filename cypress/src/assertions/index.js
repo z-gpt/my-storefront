@@ -237,7 +237,7 @@ export const assertGiftOptionsReadOnlyFormView = () => {
     .should("exist")
     .should("be.visible");
   cy.get(summaryClassName)
-    .contains("Wrapping option: Gift Wrapping 2")
+    .contains("Foil Finish Paper")
     .should("exist")
     .should("be.visible");
   cy.get(summaryClassName)

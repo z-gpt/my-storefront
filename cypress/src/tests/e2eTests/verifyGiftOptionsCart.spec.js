@@ -19,12 +19,9 @@ import {
   assertGiftOptionsSummary,
   assertGiftOptionsEmptyForm,
   assertGiftOptionsReadOnlyFormView,
-} from "../../../assertions";
-import {
-  fillGiftOptiosForm,
-  fillGiftOptiosFormEmpty,
-} from "../../../actions";
-import * as fields from "../../../fields/index";
+} from "../../assertions";
+import { fillGiftOptiosForm, fillGiftOptiosFormEmpty } from "../../actions";
+import * as fields from "../../fields";
 
 describe("Verify price summary on cart", () => {
   it("Validate GiftOptions in Summary with All Configs Enabled", () => {
