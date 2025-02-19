@@ -392,7 +392,7 @@ export function decorateLinks(main) {
 
 /**
  * Decorates links.
- * @param {string} [url] url to be localized
+ * @param {string} [link] url to be localized
  */
 export function rootLink(link) {
   const root = getRootPath().replace(/\/$/, '');
