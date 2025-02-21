@@ -53,12 +53,12 @@ export default async function decorate(block) {
         });
       },
       PreCheckoutSection: (ctx) => {
-        const productListFooter = document.createElement('div');
-        ctx.appendChild(productListFooter);
+        const preCheckoutSection = document.createElement('div');
+        ctx.appendChild(preCheckoutSection);
     
         ctx.onChange((next) => {
           // Clear the existing content
-          productListFooter.innerHTML = '';
+          preCheckoutSection.innerHTML = '';
     
           if (Object.keys(next.data.items).length === 0) {
             return;
@@ -79,8 +79,8 @@ export default async function decorate(block) {
           // Append the content div to the shadow wrapper
           shadowWrapper.appendChild(contentDiv);
     
-          // Append the shadow wrapper to the productListFooter div
-          productListFooter.appendChild(shadowWrapper);
+          // Append the shadow wrapper to the preCheckoutSection div
+          preCheckoutSection.appendChild(shadowWrapper);
         });
       },
     },
