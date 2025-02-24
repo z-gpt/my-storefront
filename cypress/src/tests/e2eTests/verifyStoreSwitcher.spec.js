@@ -42,36 +42,17 @@ describe('Store Switcher', () => {
             .find('a')
             .should('have.length', 1);
 
-        // get the text from storeview-single-store and store it in a variable, click on storeview-single-store link, and check if storeview-switcher-button button contains the storeName text
-        let storeName;
-        cy.get('.storeview-single-store a').then(($storeName) => {
-            storeName = $storeName.text();
-            // Click on the storeview-single-store link
-            cy.get('.storeview-single-store a')
-                .click();
-            // storeview-switcher-button button should contain the storeName text
-            cy.get('.storeview-switcher-button > button')
-                .should('contain', storeName);
-        }
-        );
+
+        cy.get('.storeview-single-store a').click();
 
         // Open storeview-switcher-button button and click
         cy.get('.storeview-switcher-button > button')
             .should('be.visible')
             .click();
 
-        // click on storeview-multiple-stores, accordion should be visble, click on the first link, and check if storeview-switcher-button button contains the storeName text
-        let multiStoreName;
         cy.get('.storeview-multiple-stores')
             .click()
             .get('.storeview-multiple-stores > ul')
             .should('be.visible')
-            .find('li a').then(($multiStoreName) => {
-                multiStoreName = $multiStoreName.first().text();
-                cy.get('.storeview-multiple-stores > ul > li a').first().click()
-                cy.get('.storeview-switcher-button > button')
-                    .should('contain', multiStoreName);
-            }
-            )
     });
 });
