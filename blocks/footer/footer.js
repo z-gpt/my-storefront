@@ -68,8 +68,6 @@ export default async function decorate(block) {
     return url.pathname.startsWith(root);
   });
 
-  const selectedText = selected.parentElement.parentElement.parentNode.firstChild.textContent;
-
   storeSwitcher.id = 'storeview-modal';
   while (fragmentStoreView.firstElementChild) {
     storeSwitcher.append(fragmentStoreView.firstElementChild);
@@ -147,7 +145,7 @@ export default async function decorate(block) {
   }
 
   UI.render(Button, {
-    children: `${selectedText}`,
+    children: `${selected.text}`,
     'data-testid': 'storeview-switcher-button',
     className: 'storeview-switcher-button',
     size: 'medium',
