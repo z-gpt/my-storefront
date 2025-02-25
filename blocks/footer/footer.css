@@ -24,6 +24,11 @@ footer .footer p {
     padding-inline-start: var(--spacing-xbig);
 }
 
+.modal .close-button {
+    top: 40px !important;
+    right: 40px !important;
+}
+
 .storeview-single-store {
     list-style-type: none;
 }
