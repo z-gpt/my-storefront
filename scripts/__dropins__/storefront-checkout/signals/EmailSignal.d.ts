@@ -14,6 +14,13 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './useBreakpoint';
-export * from './useStableList';
-//# sourceMappingURL=index.d.ts.map
+interface Email {
+    available: boolean;
+    error: string;
+    initialized: boolean;
+    pending: boolean;
+    value: string;
+}
+export declare const emailSignal: import('@preact/signals-core').Signal<Email>;
+export {};
+//# sourceMappingURL=EmailSignal.d.ts.map
