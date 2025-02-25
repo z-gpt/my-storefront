@@ -9,7 +9,6 @@ import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-// TODO: Following two imports added for demo purpose (Auth Drop-In)
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
 
@@ -24,6 +23,7 @@ function closeOnEscape(e) {
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections);
+      document.getElementsByTagName('main')[0].classList.remove('overlay');
       navSectionExpanded.focus();
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
@@ -41,9 +41,10 @@ function closeOnFocusLost(e) {
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections, false);
+      document.getElementsByTagName('main')[0].classList.remove('overlay');
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
-      toggleMenu(nav, navSections, false);
+      toggleMenu(nav, navSections, true);
     }
   }
 }
@@ -117,6 +118,36 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+const activeSubmenu = document.createElement('div');
+activeSubmenu.classList.add('active-submenu');
+activeSubmenu.innerHTML = `
+    <button>All Categories</button>
+    <h6>Title</h6><ul><li class="nav-drop"></li></ul>
+`;
+
+/**
+ * Sets up the menu for mobile
+ * @param {navSection} navSection The nav section element
+ */
+function setupMobileMenu(navSection) {
+  if (!isDesktop.matches && navSection.querySelector('ul')) {
+    let label;
+    if (navSection.childNodes.length) {
+      [label] = navSection.childNodes;
+    }
+
+    const subMenu = navSection.querySelector('ul');
+    const clonedSubMenu = subMenu.cloneNode(true);
+
+    navSection.addEventListener('click', () => {
+      activeSubmenu.classList.add('visible');
+      activeSubmenu.querySelector('h6').textContent = label.textContent;
+      activeSubmenu.querySelector('li')
+        .append(clonedSubMenu);
+    });
+  }
+}
+
 /**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -152,16 +183,30 @@ export default async function decorate(block) {
       .querySelectorAll(':scope .default-content-wrapper > ul > li')
       .forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+        setupMobileMenu(navSection);
         navSection.addEventListener('click', () => {
           if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            if (!expanded) {
+              document.getElementsByTagName('main')[0].classList.add('overlay');
+            } else {
+              document.getElementsByTagName('main')[0].classList.remove('overlay');
+            }
           }
         });
       });
   }
 
+  if (!isDesktop.matches) {
+    activeSubmenu.querySelector('button').addEventListener('click', () => {
+      activeSubmenu.classList.remove('visible');
+      activeSubmenu.querySelector('.nav-drop').removeChild(activeSubmenu.querySelector('.nav-drop ul'));
+    });
+
+    navSections.append(activeSubmenu);
+  }
   const navTools = nav.querySelector('.nav-tools');
 
   /** Mini Cart */
@@ -281,10 +326,13 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   block.append(navWrapper);
 
-  // TODO: Following statements added for demo purpose (Auth Drop-In)
   renderAuthCombine(
     navSections,
     () => !isDesktop.matches && toggleMenu(nav, navSections, false),
   );
   renderAuthDropdown(navTools);
 }
+
+window.addEventListener('resize', () => {
+  window.location.reload();
+});

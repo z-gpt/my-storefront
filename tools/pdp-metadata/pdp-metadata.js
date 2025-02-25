@@ -3,18 +3,29 @@ import fs from 'fs';
 import he from 'he';
 import productSearchQuery from './queries/products.graphql.js';
 import { variantsFragment } from './queries/variants.graphql.js';
-import { commerceEndpointWithQueryParams } from "../../scripts/commerce.js";
 
 const basePath = 'https://www.aemshop.net';
 const configFile = `${basePath}/configs.json?sheet=prod`;
 
+export async function commerceEndpointWithQueryParams(config) {
+  const urlWithQueryParams = new URL(config['commerce-endpoint']);
+  // Set some query parameters for use as a cache-buster. No other purpose.
+  urlWithQueryParams.searchParams.append('ac-storecode', config['commerce.headers.cs.Magento-Store-Code']);
+  return urlWithQueryParams;
+}
+
 async function performCatalogServiceQuery(config, query, variables) {
   const headers = {
     'Content-Type': 'application/json',
-    'x-api-key': config['commerce-x-api-key'],
+    'x-api-key': config['commerce.headers.cs.x-api-key'],
+    'Magento-Customer-Group': config['commerce.headers.cs.Magento-Customer-Group'],
+    'Magento-Environment-Id': config['commerce.headers.cs.Magento-Environment-Id'],
+    'Magento-Store-Code': config['commerce.headers.cs.Magento-Store-Code'],
+    'Magento-Store-View-Code': config['commerce.headers.cs.Magento-Store-View-Code'],
+    'Magento-Website-Code': config['commerce.headers.cs.Magento-Website-Code'],
   };
 
-  const apiCall = await commerceEndpointWithQueryParams();
+  const apiCall = await commerceEndpointWithQueryParams(config);
 
   const response = await fetch(apiCall, {
     method: 'POST',
@@ -166,7 +177,7 @@ async function addVariantsToProducts(products, config) {
         item_${i}: variants(sku: "${product.productView.sku}") {
           ...ProductVariant
         }
-        `  
+        `
       }).join('\n')}
     }${variantsFragment}`;
 
