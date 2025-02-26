@@ -411,6 +411,8 @@ export default async function decorate(block) {
     CheckoutProvider.render(TermsAndConditions, {
       slots: {
         Agreements: (ctx) => {
+          // const agreements = await checkoutApi.getCheckoutAgreements();
+
           ctx.appendAgreement(() => ({
             name: 'default',
             mode: 'auto',
@@ -426,6 +428,19 @@ export default async function decorate(block) {
             mode: 'auto',
             translationId: 'Checkout.TermsAndConditions.eds.label',
           }));
+          ctx.appendAgreement(() => ({
+            name: 'html',
+            mode: 'manual',
+            text: 'Please, accept the terms and conditions and our <a href="/privacy-policy" target="_blank">Privacy Policy</a>.',
+          }));
+
+          // agreements.forEach((agreement) => {
+          //   ctx.appendAgreement(() => ({
+          //     name: agreement.name,
+          //     mode: agreement.mode,
+          //     text: agreement.text,
+          //   }));
+          // });
         },
       },
     })($termsAndConditions),
