@@ -410,7 +410,7 @@ export default async function decorate(block) {
 
     CheckoutProvider.render(TermsAndConditions, {
       slots: {
-        Agreements: (ctx) => {
+        Agreements: async (ctx) => {
           // const agreements = await checkoutApi.getCheckoutAgreements();
 
           ctx.appendAgreement(() => ({
