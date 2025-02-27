@@ -124,3 +124,7 @@ export const submitCancelOrderButton =
   '[data-testid="order-cancel-submit-button"]';
 export const cancellationReasonsModal =
   '[data-testid="order-cancellation-reasons-modal"]';
+
+  // Gift card
+export const orderSummary = '.cart__order-summary';
+export const giftCardField = 'input[name="giftCardCode"]';
