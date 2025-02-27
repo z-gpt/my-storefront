@@ -58,9 +58,8 @@ export default async function initializeDropins() {
   });
 
   // Initialize Global Drop-ins
-  import('./auth.js').then(() => {
-    import('./cart.js');
-  });
+  await import('./auth.js');
+  import('./cart.js');
 }
 
 export function initializeDropin(cb) {
