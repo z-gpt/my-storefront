@@ -62,7 +62,7 @@ export default async function decorate(block) {
     );
 
     // Store Switcher Modal Content
-    const storeSwitcherPath = '/store-switcher';
+    const storeSwitcherPath = '/non-exist';
     let fragmentStoreView;
 
     try {
