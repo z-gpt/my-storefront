@@ -68,7 +68,8 @@ export default async function initializeDropins() {
     const data = JSON.parse(cachedCartData);
     if (data.items) {
       data.items.forEach((item) => {
-        imageToProduct.set(item.image.src, { urlKey: item.url.urlKey });
+        const [base, ] = item.image.src.split('?');
+        imageToProduct.set(base, { urlKey: item.url.urlKey });
       });
     }
   }
