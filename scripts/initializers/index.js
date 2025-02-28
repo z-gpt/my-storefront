@@ -97,6 +97,17 @@ export default async function initializeDropins() {
     { eager: true },
   );
   events.on(
+    'cart/updated',
+    (data) => {
+      if (data?.items) {
+        data.items.forEach((item) => {
+          imageToProduct.set(item.image.src, { urlKey: item.url.urlKey });
+        });
+      }
+    },
+    { eager: true },
+  );
+  events.on(
     'cart/initialized',
     (data) => {
       if (data?.items) {
