@@ -63,7 +63,7 @@ export default async function initializeDropins() {
   const imageToProduct = new Map();
 
   // Load any existing cart data from session storage
-  const cachedCartData = sessionStorage.getItem("DROPIN__CART__CART__DATA");
+  const cachedCartData = sessionStorage.getItem('DROPIN__CART__CART__DATA');
   if (cachedCartData) {
     const data = JSON.parse(cachedCartData);
     if (data.items) {
@@ -75,17 +75,17 @@ export default async function initializeDropins() {
 
   // Listen for data events and hydrate image to product mapping
   events.on(
-    "pdp/data",
+    'pdp/data',
     (data) => {
       const { images } = data;
       images.forEach((image) => {
         imageToProduct.set(image.url, { urlKey: data.urlKey });
       });
     },
-    { eager: true }
+    { eager: true },
   );
   events.on(
-    "cart/data",
+    'cart/data',
     (data) => {
       if (data?.items) {
         data.items.forEach((item) => {
@@ -93,10 +93,10 @@ export default async function initializeDropins() {
         });
       }
     },
-    { eager: true }
+    { eager: true },
   );
   events.on(
-    "cart/initialized",
+    'cart/initialized',
     (data) => {
       if (data?.items) {
         data.items.forEach((item) => {
@@ -104,13 +104,13 @@ export default async function initializeDropins() {
         });
       }
     },
-    { eager: true }
+    { eager: true },
   );
 
   // Set Image Param Keys with string and function examples
   initializers.setImageParamKeys({
-    width: "w",
-    height: (data) => ["h", String(data + 1)],
+    width: 'w',
+    height: (data) => ['h', String(data + 1)],
   });
 
   // Set Image Src Transformer
