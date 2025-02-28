@@ -44,6 +44,7 @@ type Initializers = [Initializer<any>, {
  * @method register - Registers a new initializer. If the initializers have already been mounted, it immediately binds the event listeners and initializes the API for the new initializer.
  * @method mount - Mounts all registered initializers. This involves binding the event listeners and initializing the APIs for each initializer, in that order.
  * @method setImageParamKeys - Sets the image parameter keys. These keys are used when initializing the APIs for the initializers.
+ * @method setImageSrcTransformer - Sets the image source transformer. This transformer is used to transform the image source URL before appending the image optimization parameters.
  */
 export declare class initializers {
     static _initializers: Initializers;
@@ -51,6 +52,10 @@ export declare class initializers {
     static _imageParamsKeyMap: {
         [key: string]: string;
     } | undefined;
+    static _imageSrcTransformer: ((data: {
+        src: string;
+        params: any;
+    }) => string) | undefined;
     /**
      * Registers a new initializer. If the initializers have already been mounted,it immediately binds the event listeners and initializes the API for the new initializer.
      * @param initializer - The initializer to register.
@@ -76,6 +81,11 @@ export declare class initializers {
     static setImageParamKeys(params: {
         [key: string]: any;
     }): void;
+    /**
+     * Sets the image source transformer. This transformer is used to transform the image source URL before appending the image optimization parameters.
+     * @param transformer - The image source transformer.
+     */
+    static setImageSrcTransformer(transformer: typeof initializers._imageSrcTransformer): void;
 }
 export {};
 //# sourceMappingURL=initializer.d.ts.map
