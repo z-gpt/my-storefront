@@ -8,6 +8,8 @@ import {
 } from '@dropins/tools/fetch-graphql.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
 
+import { initializers } from '@dropins/tools/initializer.js';
+
 // Libs
 import { getConfigValue, getCookie } from '../configs.js';
 
@@ -55,6 +57,73 @@ export default async function initializeDropins() {
     await import('@dropins/tools/recaptcha.js').then(({ setConfig }) => {
       setConfig();
     });
+  });
+
+  // Mapping of image to product
+  const imageToProduct = new Map();
+
+  // Load any existing cart data from session storage
+  const cachedCartData = sessionStorage.getItem("DROPIN__CART__CART__DATA");
+  if (cachedCartData) {
+    const data = JSON.parse(cachedCartData);
+    if (data.items) {
+      data.items.forEach((item) => {
+        imageToProduct.set(item.image.src, { urlKey: item.url.urlKey });
+      });
+    }
+  }
+
+  // Listen for data events and hydrate image to product mapping
+  events.on(
+    "pdp/data",
+    (data) => {
+      const { images } = data;
+      images.forEach((image) => {
+        imageToProduct.set(image.url, { urlKey: data.urlKey });
+      });
+    },
+    { eager: true }
+  );
+  events.on(
+    "cart/data",
+    (data) => {
+      if (data?.items) {
+        data.items.forEach((item) => {
+          imageToProduct.set(item.image.src, { urlKey: item.url.urlKey });
+        });
+      }
+    },
+    { eager: true }
+  );
+  events.on(
+    "cart/initialized",
+    (data) => {
+      if (data?.items) {
+        data.items.forEach((item) => {
+          imageToProduct.set(item.image.src, { urlKey: item.url.urlKey });
+        });
+      }
+    },
+    { eager: true }
+  );
+
+  // Set Image Param Keys with string and function examples
+  initializers.setImageParamKeys({
+    width: "w",
+    height: (data) => ["h", String(data + 1)],
+  });
+
+  // Set Image Src Transformer
+  initializers.setImageSrcTransformer((context) => {
+    const { src, params } = context;
+
+    const product = imageToProduct.get(src);
+
+    if (!product) {
+      return src;
+    }
+
+    return `https://picsum.photos/seed/${product.urlKey}/${params.w}`;
   });
 
   // Initialize Global Drop-ins
