@@ -572,8 +572,8 @@ export default async function decorate(block) {
         },
         isOpen: true,
         onChange: (values) => {
-          const syncAddress = !isFirstRenderShipping || !hasCartShippingAddress;
-          if (syncAddress) setShippingAddressOnCart(values);
+          const canSetShippingAddressOnCart = !isFirstRenderShipping || !hasCartShippingAddress;
+          if (canSetShippingAddressOnCart) setShippingAddressOnCart(values);
           if (!hasCartShippingAddress) estimateShippingCostOnCart(values);
           if (isFirstRenderShipping) isFirstRenderShipping = false;
         },
@@ -669,6 +669,11 @@ export default async function decorate(block) {
         placeOrderBtn: placeOrder,
       });
 
+      const estimateShippingCostOnCart = estimateShippingCost({
+        api: checkoutApi.estimateShippingMethods,
+        debounceMs: DEBOUNCE_TIME,
+      });
+
       shippingAddresses = await AccountProvider.render(Addresses, {
         addressFormTitle: 'Deliver to new address',
         defaultSelectAddressId: shippingAddressId,
@@ -679,6 +684,7 @@ export default async function decorate(block) {
         onAddressData: (values) => {
           const canSetShippingAddressOnCart = !isFirstRenderShipping || !hasCartShippingAddress;
           if (canSetShippingAddressOnCart) setShippingAddressOnCart(values);
+          if (!hasCartShippingAddress) estimateShippingCostOnCart(values);
           if (isFirstRenderShipping) isFirstRenderShipping = false;
         },
         selectable: true,
