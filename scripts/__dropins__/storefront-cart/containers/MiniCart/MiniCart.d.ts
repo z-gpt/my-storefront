@@ -21,6 +21,7 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
     showSavings?: boolean;
     enableItemRemoval?: boolean;
     enableQuantityUpdate?: boolean;
+    hideHeading?: boolean;
 }
 export declare const MiniCart: Container<MiniCartProps, CartModel | null>;
 //# sourceMappingURL=MiniCart.d.ts.map
