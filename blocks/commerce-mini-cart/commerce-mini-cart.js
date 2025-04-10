@@ -25,5 +25,6 @@ export default async function decorate(block) {
     showSavings: true,
     enableItemRemoval: true,
     enableQuantityUpdate: true,
+    hideHeading: true,
   })(block);
 }
