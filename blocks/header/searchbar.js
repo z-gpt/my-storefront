@@ -4,17 +4,14 @@ import SearchPopover from '@dropins/storefront-search/containers/SearchPopover.j
 import {
   setFetchGraphQlHeaders,
 } from '@dropins/storefront-search/api.js';
+import { rootLink } from '../../scripts/scripts.js';
 
 import { getConfigValue, getHeaders } from '../../scripts/configs.js';
 
-async function getStoreDetails() {
-  const [
-    apiUrl,
-    customerGroup,
-  ] = await Promise.all([
-    getConfigValue('commerce-endpoint'),
-    getConfigValue('commerce-customer-group'),
-  ]);
+function getStoreDetails() {
+  const apiUrl = getConfigValue('commerce-endpoint');
+  const customerGroup = getConfigValue('commerce-customer-group');
+
   return {
     apiUrl,
     config: {
@@ -32,9 +29,9 @@ async function getStoreDetails() {
     context: {
       customerGroup,
     },
-    route: ({ sku, urlKey }) => `/products/${urlKey}/${sku}`,
+    route: ({ sku, urlKey }) => rootLink(`/products/${urlKey}/${sku}`),
     searchRoute: {
-      route: '/search',
+      route: rootLink('/search'),
       query: 'q',
     },
   };
@@ -43,8 +40,8 @@ async function getStoreDetails() {
 export default async function initSearchPopover(headers) {
   import('../../scripts/initializers/search.js');
   try {
-    const storeDetails = await getStoreDetails();
-    const apiHeaders = await getHeaders('cs');
+    const storeDetails = getStoreDetails();
+    const apiHeaders = getHeaders('cs');
     setFetchGraphQlHeaders({ ...apiHeaders, ...headers });
     const rootElement = document.getElementById('search_autocomplete');
 

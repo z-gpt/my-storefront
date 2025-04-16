@@ -36,7 +36,7 @@ async function getStoreDetails() {
       }]);
     },
     route: {
-      route: '/search',
+      route: rootLink('/search'),
       query: 'q',
     },
   };
