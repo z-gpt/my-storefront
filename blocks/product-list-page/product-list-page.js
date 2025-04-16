@@ -1,74 +1,107 @@
+/* eslint-disable import/no-unresolved */
+import { ProductListingPage } from '@dropins/storefront-search/containers/ProductListingPage.js';
+import { render as provider } from '@dropins/storefront-search/render.js';
 import { readBlockConfig } from '../../scripts/aem.js';
-import { getConfigValue } from '../../scripts/configs.js';
+import { getConfigValue, getHeaders } from '../../scripts/configs.js';
 import { rootLink } from '../../scripts/scripts.js';
 
-export default async function decorate(block) {
-  // eslint-disable-next-line import/no-absolute-path, import/no-unresolved
-  await import('/scripts/widgets/search.js');
+// Initializer
+import('../../scripts/initializers/search.js');
 
-  const { category, urlpath, type } = readBlockConfig(block);
-  block.textContent = '';
+async function getStoreDetails() {
+  // PLP Config
+  const plpConfig = {
+    pageSize: 8,
+    perPageConfig: {
+      pageSizeOptions: '12, 24, 36',
+      defaultPageSizeOption: '12',
+    },
+    minQueryLength: '2',
+    currencySymbol: '$',
+    currencyRate: '1',
+    displayOutOfStock: true,
+    allowAllProducts: false,
+    imageCarousel: false,
+    optimizeImages: true,
+    imageBaseWidth: 200,
+    listview: false,
+    currentCategoryUrlPath: null,
+    displayMode: '',
+    addToCart: async (...args) => {
+      const { addProductsToCart } = await import('../../scripts/__dropins__/storefront-cart/api.js');
+      await addProductsToCart([{
+        sku: args[0],
+        options: args[1],
+        quantity: args[2],
+      }]);
+    },
+    route: {
+      route: '/search',
+      query: 'q',
+    },
+  };
 
-  const storeDetails = {
-    environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
-    environmentType: (getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
-    apiKey: getConfigValue('headers.cs.x-api-key'),
-    apiUrl: getConfigValue('commerce-endpoint'),
-    websiteCode: getConfigValue('headers.cs.Magento-Website-Code'),
-    storeCode: getConfigValue('headers.cs.Magento-Store-Code'),
-    storeViewCode: getConfigValue('headers.cs.Magento-Store-View-Code'),
-    config: {
-      pageSize: 8,
-      perPageConfig: {
-        pageSizeOptions: '12,24,36',
-        defaultPageSizeOption: '12',
-      },
-      minQueryLength: '2',
-      currencySymbol: '$',
-      currencyRate: '1',
-      displayOutOfStock: true,
-      allowAllProducts: false,
-      imageCarousel: false,
-      optimizeImages: true,
-      imageBaseWidth: 200,
-      listview: true,
-      displayMode: '', // "" for plp || "PAGE" for category/catalog
-      addToCart: async (...args) => {
-        const { addProductsToCart } = await import('../../scripts/__dropins__/storefront-cart/api.js');
-        await addProductsToCart([{
-          sku: args[0],
-          options: args[1],
-          quantity: args[2],
-        }]);
-      },
-    },
-    context: {
-      customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
-    },
+  // Get Config Values
+  const environmentId = getConfigValue('headers.cs.Magento-Environment-Id');
+  const apiKey = getConfigValue('headers.cs.x-api-key');
+  const apiUrl = getConfigValue('commerce-endpoint');
+  const websiteCode = getConfigValue('headers.cs.Magento-Website-Code');
+  const storeCode = getConfigValue('headers.cs.Magento-Store-Code');
+  const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
+  const customerGroup = getConfigValue('headers.cs.Magento-Customer-Group');
+  const configHeaders = getHeaders('cs');
+
+  // Store Config
+  const storeConfig = {
+    type: 'eds',
+    environmentId,
+    environmentType: getConfigValue('commerce-endpoint').includes('sandbox') ? 'testing' : '',
+    apiKey,
+    apiUrl,
+    websiteCode,
+    storeCode,
+    storeViewCode,
+    customerGroup,
     route: ({ sku, urlKey }) => {
       const a = new URL(window.location.origin);
       a.pathname = rootLink(`/products/${urlKey}/${sku}`);
       return a.toString();
     },
+    defaultHeaders: {
+      'Content-Type': 'application/json',
+      ...configHeaders,
+    },
+    config: plpConfig,
   };
+  return storeConfig;
+}
 
+export default async function decorate(block) {
+  const storeConfig = await getStoreDetails();
+  const { urlpath, category, type } = readBlockConfig(block);
+  block.textContent = '';
+
+  // for non search pages
   if (type !== 'search') {
-    storeDetails.config.categoryName = document.querySelector('.default-content-wrapper > h1')?.innerText;
-    storeDetails.config.currentCategoryId = category;
-    storeDetails.config.currentCategoryUrlPath = urlpath;
+    storeConfig.categoryName = document.querySelector('.default-content-wrapper > h1')?.innerText;
+    storeConfig.currentCategoryId = category;
+    storeConfig.currentCategoryUrlPath = urlpath;
 
     // Enable enrichment
     block.dataset.category = category;
   }
 
-  await new Promise((resolve) => {
-    const interval = setInterval(() => {
-      if (window.LiveSearchPLP) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, 200);
-  });
+  const widget = document.createElement('div');
+  widget.id = 'plp-widget-container';
+  block.appendChild(widget);
 
-  return window.LiveSearchPLP({ storeDetails, root: block });
+  const rootElement = document.getElementById('plp-widget-container');
+
+  if (rootElement) {
+    provider.render(ProductListingPage, { storeConfig })(
+      rootElement,
+    );
+  } else {
+    console.warn('Root element #plp-widget-container not found.');
+  }
 }
