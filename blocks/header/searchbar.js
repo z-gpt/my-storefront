@@ -37,12 +37,11 @@ function getStoreDetails() {
   };
 }
 
-export default async function initSearchPopover(headers) {
+export default async function initSearchPopover() {
   import('../../scripts/initializers/search.js');
   try {
     const storeDetails = getStoreDetails();
-    const apiHeaders = getHeaders('cs');
-    setFetchGraphQlHeaders({ ...apiHeaders, ...headers });
+    setFetchGraphQlHeaders(getHeaders('cs'));
     const rootElement = document.getElementById('search_autocomplete');
 
     if (rootElement) {
