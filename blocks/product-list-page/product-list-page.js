@@ -12,26 +12,17 @@ export default async function decorate(block) {
   const { urlpath, category, type } = readBlockConfig(block);
   block.textContent = '';
 
-  // Get Config Values
-  const environmentId = getConfigValue('headers.cs.Magento-Environment-Id');
-  const apiKey = getConfigValue('headers.cs.x-api-key');
-  const apiUrl = getConfigValue('commerce-endpoint');
-  const websiteCode = getConfigValue('headers.cs.Magento-Website-Code');
-  const storeCode = getConfigValue('headers.cs.Magento-Store-Code');
-  const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
-  const customerGroup = getConfigValue('headers.cs.Magento-Customer-Group');
-
   // Store Config
   const storeConfig = {
     type: 'eds',
-    environmentId,
+    environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
     environmentType: getConfigValue('analytics.environment').includes('Production') ? '' : 'testing',
-    apiKey,
-    apiUrl,
-    websiteCode,
-    storeCode,
-    storeViewCode,
-    customerGroup,
+    apiKey: getConfigValue('headers.cs.x-api-key'),
+    apiUrl: getConfigValue('commerce-endpoint'),
+    websiteCode: getConfigValue('headers.cs.Magento-Website-Code'),
+    storeCode: getConfigValue('headers.cs.Magento-Store-Code'),
+    storeViewCode: getConfigValue('headers.cs.Magento-Store-View-Code'),
+    customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
     route: ({ sku, urlKey }) => {
       const a = new URL(window.location.origin);
       a.pathname = rootLink(`/products/${urlKey}/${sku}`);

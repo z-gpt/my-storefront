@@ -8,39 +8,32 @@ import { rootLink } from '../../scripts/scripts.js';
 
 import { getConfigValue, getHeaders } from '../../scripts/configs.js';
 
-function getStoreDetails() {
-  const apiUrl = getConfigValue('commerce-endpoint');
-  const customerGroup = getConfigValue('commerce-customer-group');
-
-  return {
-    apiUrl,
-    config: {
-      pageSize: 8,
-      perPageConfig: {
-        pageSizeOptions: '12,24,36',
-        defaultPageSizeOption: '24',
-      },
-      minQueryLength: '2',
-      currencySymbol: '$',
-      currencyRate: '1',
-      displayOutOfStock: true,
-      allowAllProducts: false,
-    },
-    context: {
-      customerGroup,
-    },
-    route: ({ sku, urlKey }) => rootLink(`/products/${urlKey}/${sku}`),
-    searchRoute: {
-      route: rootLink('/search'),
-      query: 'q',
-    },
-  };
-}
-
 export default async function initSearchPopover() {
   import('../../scripts/initializers/search.js');
   try {
-    const storeDetails = getStoreDetails();
+    const storeDetails = {
+      apiUrl: getConfigValue('commerce-endpoint'),
+      config: {
+        pageSize: 8,
+        perPageConfig: {
+          pageSizeOptions: '12,24,36',
+          defaultPageSizeOption: '24',
+        },
+        minQueryLength: '2',
+        currencySymbol: '$',
+        currencyRate: '1',
+        displayOutOfStock: true,
+        allowAllProducts: false,
+      },
+      context: {
+        customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
+      },
+      route: ({ sku, urlKey }) => rootLink(`/products/${urlKey}/${sku}`),
+      searchRoute: {
+        route: rootLink('/search'),
+        query: 'q',
+      },
+    };
     setFetchGraphQlHeaders(getHeaders('cs'));
     const rootElement = document.getElementById('search_autocomplete');
 
