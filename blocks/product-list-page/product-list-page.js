@@ -15,13 +15,8 @@ export default async function decorate(block) {
   // Store Config
   const storeConfig = {
     type: 'eds',
-    environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
     environmentType: getConfigValue('analytics.environment').includes('Production') ? '' : 'testing',
-    apiKey: getConfigValue('headers.cs.x-api-key'),
     apiUrl: getConfigValue('commerce-endpoint'),
-    websiteCode: getConfigValue('headers.cs.Magento-Website-Code'),
-    storeCode: getConfigValue('headers.cs.Magento-Store-Code'),
-    storeViewCode: getConfigValue('headers.cs.Magento-Store-View-Code'),
     customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
     route: ({ sku, urlKey }) => {
       const a = new URL(window.location.origin);
