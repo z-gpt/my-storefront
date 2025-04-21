@@ -1,0 +1,5 @@
+mountpoints:
+  /: https://example.mountpoint.com/:f:/r/sites/myproject
+
+folders:
+  /products/: /products/default
