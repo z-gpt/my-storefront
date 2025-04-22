@@ -5,6 +5,7 @@
       "commerce-endpoint": "https://na1-stage.api.commerce.adobe.com/7axkwNT4vfXW4MAd1gUvd1/graphql",
       "headers": {
         "cs": {
+          "Magento-Customer-Group": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
           "AC-Channel-ID": "c32494de-b573-487e-81c7-214ec4af2440",
           "AC-Environment-ID": "7axkwNT4vfXW4MAd1gUvd1",
           "AC-Price-Book-ID": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
