@@ -341,10 +341,5 @@ export function mapProductAcdl(product) {
 }
 
 export function getProductSku() {
-  const metadataSku = getMetadata('sku');
-  if (metadataSku) {
-    return metadataSku;
-  }
-
-  return getSkuFromUrl();
+  return getMetadata('sku') || getSkuFromUrl();
 }
