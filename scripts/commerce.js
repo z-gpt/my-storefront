@@ -1,6 +1,75 @@
 /* eslint-disable import/prefer-default-export, import/no-cycle */
-import { getConfigValue } from './configs.js';
+import { getMetadata } from './aem.js';
+import {
+  getConfigValue,
+  getCookie,
+  getHeaders,
+  getRootPath,
+} from './configs.js';
 import { getConsent } from './scripts.js';
+
+/**
+ * Gets placeholders object.
+ * @param {string} [prefix] Location of placeholders
+ * @returns {object} Window placeholders object
+ */
+// eslint-disable-next-line import/prefer-default-export
+export async function fetchPlaceholders(prefix = 'default') {
+  const overrides = getMetadata('placeholders') || getRootPath().replace(/\/$/, '/placeholders.json') || '';
+  const [fallback, override] = overrides.split('\n');
+  window.placeholders = window.placeholders || {};
+
+  if (!window.placeholders[prefix]) {
+    window.placeholders[prefix] = new Promise((resolve) => {
+      const url = fallback || `${prefix === 'default' ? '' : prefix}/placeholders.json`;
+      Promise.all([fetch(url), override ? fetch(override) : Promise.resolve()])
+        // get json from sources
+        .then(async ([resp, oResp]) => {
+          if (resp.ok) {
+            if (oResp?.ok) {
+              return Promise.all([resp.json(), await oResp.json()]);
+            }
+            return Promise.all([resp.json(), {}]);
+          }
+          return [{}];
+        })
+        // process json from sources
+        .then(([json, oJson]) => {
+          const placeholders = {};
+
+          const allKeys = new Set([
+            ...(json.data?.map(({ Key }) => Key) || []),
+            ...(oJson?.data?.map(({ Key }) => Key) || []),
+          ]);
+
+          allKeys.forEach((Key) => {
+            if (!Key) return;
+            const keys = Key.split('.');
+            const originalValue = json.data?.find((item) => item.Key === Key)?.Value;
+            const overrideValue = oJson?.data?.find((item) => item.Key === Key)?.Value;
+            const finalValue = overrideValue ?? originalValue;
+            const lastKey = keys.pop();
+            const target = keys.reduce((obj, key) => {
+              obj[key] = obj[key] || {};
+              return obj[key];
+            }, placeholders);
+            target[lastKey] = finalValue;
+          });
+
+          window.placeholders[prefix] = placeholders;
+          resolve(placeholders);
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error('error loading placeholders', error);
+          // error loading placeholders
+          window.placeholders[prefix] = {};
+          resolve(window.placeholders[prefix]);
+        });
+    });
+  }
+  return window.placeholders[`${prefix}`];
+}
 
 /* Common query fragments */
 export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
@@ -19,101 +88,22 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
   }
 }`;
 
-/* Queries PDP */
-export const refineProductQuery = `query RefineProductQuery($sku: String!, $variantIds: [String!]!) {
-  refineProduct(
-    sku: $sku,
-    optionIds: $variantIds
-  ) {
-    images(roles: []) {
-      url
-      roles
-      label
-    }
-    ... on SimpleProductView {
-      price {
-        ...priceFields
-      }
-    }
-    addToCartAllowed
-  }
+export async function commerceEndpointWithQueryParams() {
+  const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
+  // Set some query parameters for use as a cache-buster. No other purpose.
+  urlWithQueryParams.searchParams.append('ac-storecode', getConfigValue('headers.cs.Magento-Store-Code'));
+  return urlWithQueryParams;
 }
-${priceFieldsFragment}`;
-
-export const productDetailQuery = `query ProductQuery($sku: String!) {
-  products(skus: [$sku]) {
-    __typename
-    id
-    externalId
-    sku
-    name
-    description
-    shortDescription
-    url
-    urlKey
-    inStock
-    metaTitle
-    metaKeyword
-    metaDescription
-    addToCartAllowed
-    images(roles: []) {
-      url
-      label
-      roles
-    }
-    attributes(roles: []) {
-      name
-      label
-      value
-      roles
-    }
-    ... on SimpleProductView {
-      price {
-        ...priceFields
-      }
-    }
-    ... on ComplexProductView {
-      options {
-        id
-        title
-        required
-        values {
-          id
-          title
-          inStock
-          ...on ProductViewOptionValueSwatch {
-            type
-            value
-          }
-        }
-      }
-      priceRange {
-        maximum {
-          ...priceFields
-        }
-        minimum {
-          ...priceFields
-        }
-      }
-    }
-  }
-}
-${priceFieldsFragment}`;
 
 /* Common functionality */
 
 export async function performCatalogServiceQuery(query, variables) {
   const headers = {
+    ...(getHeaders('cs')),
     'Content-Type': 'application/json',
-    'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
-    'Magento-Website-Code': await getConfigValue('commerce-website-code'),
-    'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
-    'Magento-Store-Code': await getConfigValue('commerce-store-code'),
-    'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
-    'x-api-key': await getConfigValue('commerce-x-api-key'),
   };
 
-  const apiCall = new URL(await getConfigValue('commerce-endpoint'));
+  const apiCall = await commerceEndpointWithQueryParams();
   apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
     .replace(/\s\s+/g, ' '));
   apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
@@ -133,16 +123,15 @@ export async function performCatalogServiceQuery(query, variables) {
 }
 
 export function getSignInToken() {
-  // TODO: Implement in project
-  return '';
+  return getCookie('auth_dropin_user_token');
 }
 
 export async function performMonolithGraphQLQuery(query, variables, GET = true, USE_TOKEN = false) {
-  const GRAPHQL_ENDPOINT = await getConfigValue('commerce-core-endpoint');
+  const GRAPHQL_ENDPOINT = getConfigValue('commerce-core-endpoint');
 
   const headers = {
     'Content-Type': 'application/json',
-    Store: await getConfigValue('commerce-store-view-code'),
+    Store: getConfigValue('headers.cs.Magento-Store-View-Code'),
   };
 
   if (USE_TOKEN) {
@@ -210,7 +199,7 @@ export function renderPrice(product, format, html = (strings, ...values) => stri
 
     if (finalMin.amount.value !== regularMin.amount.value) {
       return html`<${Fragment}>
-      <span class="price-final">${format(finalMin.amount.value)} - ${format(regularMin.amount.value)}</span> 
+      <span class="price-final">${format(finalMin.amount.value)} - ${format(regularMin.amount.value)}</span>
     </${Fragment}>`;
     }
 
@@ -228,24 +217,8 @@ export function getSkuFromUrl() {
   return result?.[1];
 }
 
-const productsCache = {};
-export async function getProduct(sku) {
-  // eslint-disable-next-line no-param-reassign
-  sku = sku.toUpperCase();
-  if (productsCache[sku]) {
-    return productsCache[sku];
-  }
-  const rawProductPromise = performCatalogServiceQuery(productDetailQuery, { sku });
-  const productPromise = rawProductPromise.then((productData) => {
-    if (!productData?.products?.[0]) {
-      return null;
-    }
-
-    return productData?.products?.[0];
-  });
-
-  productsCache[sku] = productPromise;
-  return productPromise;
+export function getOptionsUIDsFromUrl() {
+  return new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
 }
 
 export async function trackHistory() {
@@ -253,7 +226,7 @@ export async function trackHistory() {
     return;
   }
   // Store product view history in session storage
-  const storeViewCode = await getConfigValue('commerce-store-view-code');
+  const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
   window.adobeDataLayer.push((dl) => {
     dl.addEventListener('adobeDataLayer:change', (event) => {
       if (!event.productContext) {
@@ -292,4 +265,77 @@ export function setJsonLd(data, name) {
   script.innerHTML = JSON.stringify(data);
   script.dataset.name = name;
   document.head.appendChild(script);
+}
+
+export async function loadErrorPage(code = 404) {
+  const htmlText = await fetch(`/${code}.html`).then((response) => {
+    if (response.ok) {
+      return response.text();
+    }
+    throw new Error(`Error getting ${code} page`);
+  });
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlText, 'text/html');
+  document.body.innerHTML = doc.body.innerHTML;
+  // get dropin styles
+  document.head.querySelectorAll('style[data-dropin]').forEach((style) => {
+    doc.head.appendChild(style);
+  });
+  document.head.innerHTML = doc.head.innerHTML;
+
+  // https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript
+  // Point 2. prevent soft 404 errors
+  if (code === 404) {
+    const metaRobots = document.createElement('meta');
+    metaRobots.name = 'robots';
+    metaRobots.content = 'noindex';
+    document.head.appendChild(metaRobots);
+  }
+
+  // When moving script tags via innerHTML, they are not executed. They need to be re-created.
+  const notImportMap = (c) => c.textContent && c.type !== 'importmap';
+  Array.from(document.head.querySelectorAll('script'))
+    .filter(notImportMap)
+    .forEach((c) => c.remove());
+  Array.from(doc.head.querySelectorAll('script'))
+    .filter(notImportMap)
+    .forEach((oldScript) => {
+      const newScript = document.createElement('script');
+      Array.from(oldScript.attributes).forEach(({ name, value }) => {
+        newScript.setAttribute(name, value);
+      });
+      const scriptText = document.createTextNode(oldScript.innerHTML);
+      newScript.appendChild(scriptText);
+      document.head.appendChild(newScript);
+    });
+}
+
+export function mapProductAcdl(product) {
+  const regularPrice = product?.priceRange?.minimum?.regular?.amount.value
+    || product?.price?.regular?.amount.value || 0;
+  const specialPrice = product?.priceRange?.minimum?.final?.amount.value
+    || product?.price?.final?.amount.value;
+  // storefront-events-collector will use storefrontInstanceContext.storeViewCurrencyCode
+  // if undefined, no default value is necessary.
+  const currencyCode = product?.priceRange?.minimum?.final?.amount.currency
+    || product?.price?.final?.amount.currency || undefined;
+  const minimalPrice = product?.priceRange ? regularPrice : undefined;
+  const maximalPrice = product?.priceRange
+    ? product?.priceRange?.maximum?.regular?.amount.value : undefined;
+
+  return {
+    productId: parseInt(product.externalId, 10) || 0,
+    name: product?.name,
+    sku: product?.variantSku || product?.sku,
+    topLevelSku: product?.sku,
+    pricing: {
+      regularPrice,
+      minimalPrice,
+      maximalPrice,
+      specialPrice,
+      currencyCode,
+    },
+    canonicalUrl: new URL(`/products/${product.urlKey}/${product.sku}`, window.location.origin).toString(),
+    mainImageUrl: product?.images?.[0]?.url,
+  };
 }

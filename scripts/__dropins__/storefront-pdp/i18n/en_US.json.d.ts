@@ -34,6 +34,9 @@ declare const _default: {
     "Swatches": {
       "Required": {
         "label": "Required"
+      },
+      "ChooseOption": {
+        "label": "Choose an option"
       }
     },
     "Carousel": {
@@ -58,10 +61,15 @@ declare const _default: {
       "Close": {
         "label": "Close"
       }
+    },
+    "Zoom": {
+      "Close": {
+        "label": "Close"
+      }
     }
   },
   "Custom": {
-    "quantityLabel": "Passengers"
+    "quantityLabel": "Quantity"
   }
 }
 ;

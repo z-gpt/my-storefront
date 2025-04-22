@@ -1,6 +1,9 @@
+import { ProductType } from './acdl-models';
+
 export interface ProductModel {
     name: string;
     sku: string;
+    isBundle: boolean;
     addToCartAllowed: boolean;
     inStock: boolean | null;
     shortDescription?: string;
@@ -18,6 +21,7 @@ export interface ProductModel {
     externalId?: string;
     externalParentId?: string;
     variantSku?: string;
+    productType?: ProductType | undefined;
 }
 interface Image {
     url: string;
@@ -37,9 +41,9 @@ interface Prices {
     final: Price;
     visible: boolean;
 }
-interface Option {
+export interface Option {
     id: string;
-    type: 'text' | 'image' | 'color';
+    type: 'text' | 'image' | 'color' | 'dropdown';
     typename: 'ProductViewOptionValueProduct' | 'ProductViewOptionValueSwatch' | 'ProductViewOptionValueConfiguration';
     label: string;
     required: boolean;
@@ -52,6 +56,7 @@ interface OptionValue {
     inStock: boolean;
     value: string;
     selected: boolean;
+    product?: any;
 }
 interface Attribute {
     label: string;

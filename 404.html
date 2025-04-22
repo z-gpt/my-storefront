@@ -3,13 +3,58 @@
 
 <head>
   <title>Page not found</title>
+  <script type="importmap">
+    {
+        "imports": {
+            "@dropins/tools/": "/scripts/__dropins__/tools/",
+            "@dropins/storefront-cart/": "/scripts/__dropins__/storefront-cart/",
+            "@dropins/storefront-auth/": "/scripts/__dropins__/storefront-auth/"
+        }
+    }
+  </script>
   <script type="text/javascript">
     window.isErrorPage = true;
     window.errorCode = '404';
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta property="og:title" content="Page not found">
-  <script src="/scripts/scripts.js" type="module" crossorigin="use-credentials"></script>
+  <script type="module">
+    await fetch('/metadata.json')
+      .then((res) => res.json())
+      .then(({ data = [] }) => {
+        const currentUrl = window.location.pathname;
+        const match = data.find(entry => {
+          const { URL, root, placeholders } = entry;
+          const pattern = URL.replace("**", "(.*)");
+          const regex = new RegExp(`^${pattern}$`);
+          if (regex.test(currentUrl)) {
+            return { root, placeholders };
+          }
+        });
+
+        if (!match) return;
+
+        const { root, placeholders } = match;
+        
+        if (root) {
+          const rootMeta = document.createElement('meta');
+          rootMeta.name = 'root';
+          rootMeta.content = root;
+          document.head.appendChild(rootMeta);
+        }
+
+        if (placeholders) {
+          const placeholdersMeta = document.createElement('meta');
+          placeholdersMeta.name = 'placeholders';
+          placeholdersMeta.content = placeholders;
+          document.head.appendChild(placeholdersMeta);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  </script>
+  <script src="/scripts/scripts.js" type="module"></script>
   <script type="module">
     window.addEventListener('load', () => {
       if (document.referrer) {
@@ -33,9 +78,13 @@
   <link rel="stylesheet" href="/styles/styles.css">
   <style>
     main.error {
-      min-height: calc(100vh - var(--nav-height));
-      display: flex;
       align-items: center;
+      display: flex;
+      margin: 0 auto;
+      max-width: 1264px;
+      min-height: calc(100vh - var(--nav-height));
+      padding: 0 32px;
+      width: 100%;
     }
 
     main.error .error-number {
@@ -43,7 +92,7 @@
     }
 
     main.error .error-number text {
-      font-family: var(--type-fixed-font-family);
+      font-family: monospace;
     }
   </style>
   <link rel="stylesheet" href="/styles/lazy-styles.css">

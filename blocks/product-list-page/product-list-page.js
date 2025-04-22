@@ -1,5 +1,6 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/configs.js';
+import { rootLink } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
   // eslint-disable-next-line import/no-absolute-path, import/no-unresolved
@@ -9,12 +10,13 @@ export default async function decorate(block) {
   block.textContent = '';
 
   const storeDetails = {
-    environmentId: await getConfigValue('commerce-environment-id'),
-    environmentType: (await getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
-    apiKey: await getConfigValue('commerce-x-api-key'),
-    websiteCode: await getConfigValue('commerce-website-code'),
-    storeCode: await getConfigValue('commerce-store-code'),
-    storeViewCode: await getConfigValue('commerce-store-view-code'),
+    environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
+    environmentType: (getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
+    apiKey: getConfigValue('headers.cs.x-api-key'),
+    apiUrl: getConfigValue('commerce-endpoint'),
+    websiteCode: getConfigValue('headers.cs.Magento-Website-Code'),
+    storeCode: getConfigValue('headers.cs.Magento-Store-Code'),
+    storeViewCode: getConfigValue('headers.cs.Magento-Store-View-Code'),
     config: {
       pageSize: 8,
       perPageConfig: {
@@ -32,14 +34,22 @@ export default async function decorate(block) {
       listview: true,
       displayMode: '', // "" for plp || "PAGE" for category/catalog
       addToCart: async (...args) => {
-        const { cartApi } = await import('../../scripts/minicart/api.js');
-        return cartApi.addToCart(...args);
+        const { addProductsToCart } = await import('../../scripts/__dropins__/storefront-cart/api.js');
+        await addProductsToCart([{
+          sku: args[0],
+          options: args[1],
+          quantity: args[2],
+        }]);
       },
     },
     context: {
-      customerGroup: await getConfigValue('commerce-customer-group'),
+      customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
     },
-    route: ({ sku, urlKey }) => `/products/${urlKey}/${sku}`,
+    route: ({ sku, urlKey }) => {
+      const a = new URL(window.location.origin);
+      a.pathname = rootLink(`/products/${urlKey}/${sku}`);
+      return a.toString();
+    },
   };
 
   if (type !== 'search') {

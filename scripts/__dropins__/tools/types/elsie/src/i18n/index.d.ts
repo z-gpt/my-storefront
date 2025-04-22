@@ -1,3 +1,11 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 export type Lang = 'en_US';
 export declare const definition: {
     default: {
@@ -7,15 +15,38 @@ export declare const definition: {
                     label: string;
                 };
             };
+            Pagination: {
+                backwardButton: {
+                    ariaLabel: string;
+                };
+                forwardButton: {
+                    ariaLabel: string;
+                };
+            };
             Incrementer: {
                 decreaseLabel: string;
                 increaseLabel: string;
                 label: string;
+                errorMessage: string;
+                minQuantityMessage: string;
+                maxQuantityMessage: string;
             };
             Modal: {
                 Close: {
                     label: string;
                 };
+            };
+            InputPassword: {
+                placeholder: string;
+                floatingLabel: string;
+                buttonShowTitle: string;
+                buttonHideTitle: string;
+            };
+            PasswordStatusIndicator: {
+                chartTwoSymbols: string;
+                chartThreeSymbols: string;
+                chartFourSymbols: string;
+                messageLengthPassword: string;
             };
             InlineAlert: {
                 dismissLabel: string;
@@ -94,6 +125,9 @@ export declare const definition: {
             };
             CartItem: {
                 each: {
+                    label: string;
+                };
+                pricePerItem: {
                     label: string;
                 };
                 quantity: {
@@ -127,15 +161,38 @@ export declare const definition: {
                     label: string;
                 };
             };
+            Pagination: {
+                backwardButton: {
+                    ariaLabel: string;
+                };
+                forwardButton: {
+                    ariaLabel: string;
+                };
+            };
             Incrementer: {
                 decreaseLabel: string;
                 increaseLabel: string;
                 label: string;
+                errorMessage: string;
+                minQuantityMessage: string;
+                maxQuantityMessage: string;
             };
             Modal: {
                 Close: {
                     label: string;
                 };
+            };
+            InputPassword: {
+                placeholder: string;
+                floatingLabel: string;
+                buttonShowTitle: string;
+                buttonHideTitle: string;
+            };
+            PasswordStatusIndicator: {
+                chartTwoSymbols: string;
+                chartThreeSymbols: string;
+                chartFourSymbols: string;
+                messageLengthPassword: string;
             };
             InlineAlert: {
                 dismissLabel: string;
@@ -214,6 +271,9 @@ export declare const definition: {
             };
             CartItem: {
                 each: {
+                    label: string;
+                };
+                pricePerItem: {
                     label: string;
                 };
                 quantity: {
@@ -249,15 +309,38 @@ export declare const getDefinitionByLanguage: (lang: Lang) => {
                 label: string;
             };
         };
+        Pagination: {
+            backwardButton: {
+                ariaLabel: string;
+            };
+            forwardButton: {
+                ariaLabel: string;
+            };
+        };
         Incrementer: {
             decreaseLabel: string;
             increaseLabel: string;
             label: string;
+            errorMessage: string;
+            minQuantityMessage: string;
+            maxQuantityMessage: string;
         };
         Modal: {
             Close: {
                 label: string;
             };
+        };
+        InputPassword: {
+            placeholder: string;
+            floatingLabel: string;
+            buttonShowTitle: string;
+            buttonHideTitle: string;
+        };
+        PasswordStatusIndicator: {
+            chartTwoSymbols: string;
+            chartThreeSymbols: string;
+            chartFourSymbols: string;
+            messageLengthPassword: string;
         };
         InlineAlert: {
             dismissLabel: string;
@@ -336,6 +419,9 @@ export declare const getDefinitionByLanguage: (lang: Lang) => {
         };
         CartItem: {
             each: {
+                label: string;
+            };
+            pricePerItem: {
                 label: string;
             };
             quantity: {

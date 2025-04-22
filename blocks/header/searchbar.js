@@ -1,17 +1,19 @@
 import { loadScript } from '../../scripts/aem.js';
+import { rootLink } from '../../scripts/scripts.js';
 import { getConfigValue } from '../../scripts/configs.js';
 
 (async () => {
-  const widgetProd = '/scripts/widgets/LiveSearchAutocomplete.js';
+  const widgetProd = '/scripts/widgets/SearchAsYouType.js';
   await loadScript(widgetProd);
 
   const storeDetails = {
-    environmentId: await getConfigValue('commerce-environment-id'),
-    environmentType: (await getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
-    apiKey: await getConfigValue('commerce-x-api-key'),
-    websiteCode: await getConfigValue('commerce-website-code'),
-    storeCode: await getConfigValue('commerce-store-code'),
-    storeViewCode: await getConfigValue('commerce-store-view-code'),
+    environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
+    environmentType: (getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
+    apiKey: getConfigValue('headers.cs.x-api-key'),
+    apiUrl: getConfigValue('commerce-endpoint'),
+    websiteCode: getConfigValue('headers.cs.Magento-Website-Code'),
+    storeCode: getConfigValue('headers.cs.Magento-Store-Code'),
+    storeViewCode: getConfigValue('headers.cs.Magento-Store-View-Code'),
     config: {
       pageSize: 8,
       perPageConfig: {
@@ -25,11 +27,11 @@ import { getConfigValue } from '../../scripts/configs.js';
       allowAllProducts: false,
     },
     context: {
-      customerGroup: await getConfigValue('commerce-customer-group'),
+      customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
     },
-    route: ({ sku, urlKey }) => `/products/${urlKey}/${sku}`,
+    route: ({ sku, urlKey }) => rootLink(`/products/${urlKey}/${sku}`),
     searchRoute: {
-      route: '/search',
+      route: rootLink('/search'),
       query: 'q',
     },
   };

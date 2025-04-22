@@ -1,7 +1,13 @@
 /* eslint-disable no-underscore-dangle */
+import { addProductsToCart } from '@dropins/storefront-cart/api.js';
+import { Button, provider as UI } from '@dropins/tools/components.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery } from '../../scripts/commerce.js';
 import { getConfigValue } from '../../scripts/configs.js';
+
+// initialize dropins
+import '../../scripts/initializers/cart.js';
+import { rootLink } from '../../scripts/scripts.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
@@ -27,10 +33,10 @@ const recommendationsQuery = `query GetRecommendations(
       productsView {
         name
         sku
-        url
         images {
           url
         }
+        urlKey
         externalId
         __typename
       }
@@ -60,9 +66,10 @@ function renderPlaceholder(block) {
 }
 
 function renderItem(unitId, product) {
-  const urlKey = product.url.split('/').pop().replace('.html', '');
   let image = product.images[0]?.url;
-  image = image.replace('http://', '//');
+  if (image) {
+    image = image.replace('http://', '//');
+  }
 
   const clickHandler = () => {
     window.adobeDataLayer.push((dl) => {
@@ -70,17 +77,44 @@ function renderItem(unitId, product) {
     });
   };
 
+  const addToCartHandler = async () => {
+    // Always emit the add-to-cart event, regardless of product type.
+    window.adobeDataLayer.push((dl) => {
+      dl.push({ event: 'recs-item-add-to-cart', eventInfo: { ...dl.getState(), unitId, productId: parseInt(product.externalId, 10) || 0 } });
+    });
+    if (product.__typename === 'SimpleProductView') {
+      // Only add simple products directly to cart (no options selections needed)
+      try {
+        await addProductsToCart([{
+          sku: product.sku,
+          quantity: 1,
+        }]);
+      } catch (error) {
+        console.error('Error adding products to cart', error);
+      }
+    } else {
+      // Navigate to page for non-simple products
+      window.location.href = rootLink(`/products/${product.urlKey}/${product.sku}`);
+    }
+  };
+
+  const ctaText = product.__typename === 'SimpleProductView' ? 'Add to Cart' : 'Select Options';
   const item = document.createRange().createContextualFragment(`<div class="product-grid-item">
-    <a href="/products/${urlKey}/${product.sku.toLowerCase()}">
+    <a href="${rootLink(`/products/${product.urlKey}/${product.sku}`)}">
       <picture>
         <source type="image/webp" srcset="${image}?width=300&format=webply&optimize=medium" />
-        <img loading="lazy" alt="${product.name}" width="300" height="375" src="${image}?width=300&format=jpg&optimize=medium" />
+        <img loading="lazy" alt="Image of ${product.name}" width="300" height="375" src="${image}?width=300&format=jpg&optimize=medium" />
       </picture>
       <span>${product.name}</span>
     </a>
+    <span class="product-grid-cta"></span>
   </div>`);
   item.querySelector('a').addEventListener('click', clickHandler);
-
+  const buttonEl = item.querySelector('.product-grid-cta');
+  UI.render(Button, {
+    children: ctaText,
+    onClick: addToCartHandler,
+  })(buttonEl);
   return item;
 }
 
@@ -114,27 +148,39 @@ function renderItems(block, results) {
         window.adobeDataLayer.push((dl) => {
           dl.push({ event: 'recs-unit-view', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
         });
-        inViewObserver.disconnect();
       }
     });
-  });
+  }, { threshold: 0.5 });
   inViewObserver.observe(block);
 }
 
+const mapProduct = (product, index) => ({
+  rank: index,
+  score: 0,
+  sku: product.sku,
+  name: product.name,
+  productId: parseInt(product.externalId, 10) || 0,
+  type: product.__typename,
+  visibility: undefined,
+  categories: [],
+  weight: 0,
+  image: product.images.length > 0 ? product.images[0].url : undefined,
+  url: new URL(rootLink(`/products/${product.urlKey}/${product.sku}`), window.location.origin).toString(),
+  queryType: 'primary',
+});
+
 const mapUnit = (unit) => ({
-  ...unit,
+  unitId: unit.unitId,
+  unitName: unit.unitName,
   unitType: 'primary',
   searchTime: 0,
+  totalProducts: unit.totalProducts,
   primaryProducts: unit.totalProducts,
   backupProducts: 0,
-  products: unit.productsView.map((product, index) => ({
-    ...product,
-    rank: index,
-    score: 0,
-    productId: parseInt(product.externalId, 10) || 0,
-    type: '?',
-    queryType: product.__typename,
-  })),
+  products: unit.productsView.map(mapProduct),
+  pagePlacement: '',
+  typeId: unit.typeId,
+
 });
 
 async function loadRecommendation(block, context, visibility, filters) {
@@ -151,8 +197,13 @@ async function loadRecommendation(block, context, visibility, filters) {
     return;
   }
 
-  if (!unitsPromise) {
-    const storeViewCode = await getConfigValue('commerce-store-view-code');
+  const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
+
+  if (unitsPromise) {
+    return;
+  }
+
+  unitsPromise = new Promise((resolve, reject) => {
     // Get product view history
     try {
       const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
@@ -175,16 +226,19 @@ async function loadRecommendation(block, context, visibility, filters) {
       dl.push({ event: 'recs-api-request-sent', eventInfo: { ...dl.getState() } });
     });
 
-    unitsPromise = performCatalogServiceQuery(recommendationsQuery, context);
-    const { recommendations } = await unitsPromise;
-
-    window.adobeDataLayer.push((dl) => {
-      dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
-      dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
+    performCatalogServiceQuery(recommendationsQuery, context).then(({ recommendations }) => {
+      window.adobeDataLayer.push((dl) => {
+        dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
+        dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
+      });
+      resolve(recommendations);
+    }).catch((error) => {
+      console.error('Error fetching recommendations', error);
+      reject(error);
     });
-  }
+  });
 
-  let { results } = (await unitsPromise).recommendations;
+  let { results } = await unitsPromise;
   results = results.filter((unit) => (filters.typeId ? unit.typeId === filters.typeId : true));
 
   renderItems(block, results);
@@ -217,7 +271,9 @@ export default async function decorate(block) {
   }
 
   function handleCartChanges({ shoppingCartContext }) {
-    context.cartSkus = shoppingCartContext?.items?.map(({ product }) => product.sku);
+    context.cartSkus = shoppingCartContext?.totalQuantity === 0
+      ? []
+      : shoppingCartContext?.items?.map(({ product }) => product.sku);
     loadRecommendation(block, context, visibility, filters);
   }
 
