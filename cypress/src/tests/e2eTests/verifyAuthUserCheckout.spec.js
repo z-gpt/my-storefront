@@ -5,6 +5,7 @@ import {
   signUpUser,
   uncheckBillToShippingAddress,
   setPaymentMethod,
+  checkTermsAndConditions,
 } from '../../actions';
 import {
   assertCartSummaryProduct,
@@ -175,6 +176,7 @@ describe('Verify auth user can place order', () => {
     assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
     setPaymentMethod(paymentServicesCreditCard);
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 2);
+    checkTermsAndConditions();
     cy.wait(5000);
     placeOrder();
     assertOrderConfirmationCommonDetails(customerBillingAddress, paymentServicesCreditCard);
