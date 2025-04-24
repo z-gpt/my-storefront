@@ -1,13 +1,13 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-stage.api.commerce.adobe.com/7axkwNT4vfXW4MAd1gUvd1/graphql",
-      "commerce-endpoint": "https://na1-stage.api.commerce.adobe.com/7axkwNT4vfXW4MAd1gUvd1/graphql",
+      "commerce-core-endpoint": "https://na1-stage.api.commerce.adobe.com/J4Tyui5BEH6iCtXVvLJije/graphql",
+      "commerce-endpoint": "https://na1-stage.api.commerce.adobe.com/J4Tyui5BEH6iCtXVvLJije/graphql",
       "headers": {
         "cs": {
           "Magento-Customer-Group": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
-          "AC-Channel-ID": "c32494de-b573-487e-81c7-214ec4af2440",
-          "AC-Environment-ID": "7axkwNT4vfXW4MAd1gUvd1",
+          "AC-Channel-ID": "94a55c64-2044-4a4c-b26f-818dd904aa7b",
+          "AC-Environment-ID": "J4Tyui5BEH6iCtXVvLJije",
           "AC-Price-Book-ID": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
           "AC-Scope-Locale": "tx"
         }
