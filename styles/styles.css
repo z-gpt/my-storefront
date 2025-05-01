@@ -467,7 +467,6 @@ body.columns main > .section:empty {
   display: grid;
   overflow-y: scroll;
   padding: 0;
-  display: none;
 }
 
 .cart-mini-cart--open {
