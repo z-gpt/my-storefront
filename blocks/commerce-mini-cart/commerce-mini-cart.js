@@ -34,9 +34,7 @@ export default async function decorate(block) {
       events.emit('cart/data', cart);
       events.emit('cart/initialized', cart);
     }
-
     events.on('cart/updated', (cartData) => cartData && events.emit('cart/data', cartData), { eager: true });
-
   } catch (error) {
     console.error('Error initializing cart:', error);
     events.emit('cart/data', null);
