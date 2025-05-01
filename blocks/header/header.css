@@ -404,6 +404,18 @@ header nav .nav-tools .minicart-panel.nav-tools-panel--show ~ .nav-sections [ari
   display: none;
 }
 
+.overlay {
+  background-color: rgb(0 0 0 / 50%) !important;
+  display: none;
+  inset: 0;
+  position: fixed;
+  z-index: 2;
+}
+
+.overlay.show {
+  display: block;
+}
+
 /* Hide overlay when mini cart is open */
 header nav .nav-tools .minicart-panel.nav-tools-panel--show ~ .overlay.show {
   display: none;
@@ -564,18 +576,6 @@ li
 .grecaptcha-badge {
   margin-top: 20px;
   z-index: 3;
-}
-
-.overlay {
-  background-color: rgb(0 0 0 / 50%) !important;
-  display: none;
-  inset: 0;
-  position: fixed;
-  z-index: 2;
-}
-
-.overlay.show {
-  display: block;
 }
 
 @media (width < 900px) {
