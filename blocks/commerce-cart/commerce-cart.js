@@ -90,6 +90,7 @@ export default async function decorate(block) {
       routeProduct: (product) => {
         const path = `/products/${product.url.urlKey}/${product.topLevelSku}`;
         const url = new URL(rootLink(path), window.location.origin);
+        url.searchParams.set('updateCartItem', 'true');
         url.searchParams.set('itemUid', product.uid);
         return url.toString();
       },

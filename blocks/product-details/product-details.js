@@ -33,10 +33,13 @@ import { rootLink } from '../../scripts/scripts.js';
  * @returns {Object|null} The update info object or null
  */
 function getUpdateCartInfo() {
-  const itemUid = new URLSearchParams(window.location.search).get('itemUid');
-  return itemUid ? {
+  const urlParams = new URLSearchParams(window.location.search);
+  const itemUid = urlParams.get('itemUid');
+  const isUpdateMode = itemUid || urlParams.get('updateCartItem') === 'true';
+  
+  return isUpdateMode ? {
     isUpdating: true,
-    itemUid,
+    itemUid: itemUid || urlParams.get('cartItemId') || null,
   } : null;
 }
 
