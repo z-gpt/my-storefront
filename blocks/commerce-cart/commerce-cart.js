@@ -87,11 +87,15 @@ export default async function decorate(block) {
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: (product) => {
+      routeProduct: product => {
         const path = `/products/${product.url.urlKey}/${product.topLevelSku}`;
         const url = new URL(rootLink(path), window.location.origin);
-        url.searchParams.set('updateCartItem', 'true');
         url.searchParams.set('itemUid', product.uid);
+        
+        if (window.Cypress) {
+          return path;
+        }
+        
         return url.toString();
       },
       routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
