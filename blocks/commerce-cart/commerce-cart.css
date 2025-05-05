@@ -36,7 +36,6 @@
   display: flex;
   justify-content: space-between;
   position: relative;
-  /* align-self: center; */
 }
 
 .cart__notification .dropin-in-line-alert__content {

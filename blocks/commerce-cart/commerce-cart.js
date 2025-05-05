@@ -87,7 +87,7 @@ export default async function decorate(block) {
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: product => {
+      routeProduct: (product) => {
         const path = `/products/${product.url.urlKey}/${product.topLevelSku}`;
         const url = new URL(rootLink(path), window.location.origin);
         url.searchParams.set('itemUid', product.uid);
@@ -168,7 +168,7 @@ export default async function decorate(block) {
         const itemUid = urlParams.get('itemUid');
 
         if (itemUid && payload?.items?.length > 0) {
-          const updatedItem = payload.items.find(item => item.uid === itemUid);
+          const updatedItem = payload.items.find((item) => item.uid === itemUid);
 
           if (updatedItem) {
             const productName = updatedItem.name || updatedItem.product?.name || 'Product';
@@ -182,7 +182,9 @@ export default async function decorate(block) {
               icon: Icon({ source: 'CheckWithCircle' }),
               'aria-live': 'assertive',
               role: 'alert',
-              onDismiss: () => $notification.innerHTML = ''
+              onDismiss: () => {
+                $notification.innerHTML = '';
+              },
             })($notification);
           } else {
             console.warn('Could not find updated item in cart data for UID:', itemUid);
@@ -195,7 +197,7 @@ export default async function decorate(block) {
 
         isShownUpdateNotification = true;
       }
-      
+
       toggleEmptyCart(isCartEmpty(payload));
 
       if (!cartViewEventPublished) {
