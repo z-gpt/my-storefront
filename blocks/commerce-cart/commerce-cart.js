@@ -1,6 +1,7 @@
 import { events } from '@dropins/tools/event-bus.js';
 import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
+import { InLineAlert, Icon, provider as UI } from '@dropins/tools/components.js';
 
 // Dropin Containers
 import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
@@ -19,6 +20,7 @@ import '../../scripts/initializers/cart.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -33,12 +35,15 @@ export default async function decorate(block) {
     'checkout-url': checkoutURL = '',
   } = readBlockConfig(block);
 
+  const placeholders = await fetchPlaceholders();
+
   const cart = Cart.getCartDataFromCache();
 
   const isEmptyCart = isCartEmpty(cart);
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
+    <div class="cart__notification"></div>
     <div class="cart__wrapper">
       <div class="cart__left-column">
         <div class="cart__list"></div>
@@ -53,6 +58,7 @@ export default async function decorate(block) {
   `);
 
   const $wrapper = fragment.querySelector('.cart__wrapper');
+  const $notification = fragment.querySelector('.cart__notification');
   const $list = fragment.querySelector('.cart__list');
   const $summary = fragment.querySelector('.cart__order-summary');
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
@@ -60,6 +66,8 @@ export default async function decorate(block) {
 
   block.innerHTML = '';
   block.appendChild(fragment);
+
+  let isShownUpdateNotification = false;
 
   // Toggle Empty Cart
   function toggleEmptyCart(state) {
@@ -79,7 +87,12 @@ export default async function decorate(block) {
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
+      routeProduct: product => {
+        const path = `/products/${product.url.urlKey}/${product.topLevelSku}`;
+        const url = new URL(rootLink(path), window.location.origin);
+        url.searchParams.set('itemUid', product.uid);
+        return url.toString();
+      },
       routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
       attributesToHide: hideAttributes
@@ -150,6 +163,39 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (payload) => {
+      if (!isShownUpdateNotification) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemUid = urlParams.get('itemUid');
+
+        if (itemUid && payload?.items?.length > 0) {
+          const updatedItem = payload.items.find(item => item.uid === itemUid);
+
+          if (updatedItem) {
+            const productName = updatedItem.name || updatedItem.product?.name || 'Product';
+            const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
+              .replace('{product}', productName);
+
+            UI.render(InLineAlert, {
+              heading: message,
+              type: 'success',
+              variant: 'primary',
+              icon: Icon({ source: 'CheckWithCircle' }),
+              'aria-live': 'assertive',
+              role: 'alert',
+              onDismiss: () => $notification.innerHTML = ''
+            })($notification);
+          } else {
+            console.warn('Could not find updated item in cart data for UID:', itemUid);
+          }
+
+          if (window.location.search) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        }
+
+        isShownUpdateNotification = true;
+      }
+      
       toggleEmptyCart(isCartEmpty(payload));
 
       if (!cartViewEventPublished) {
