@@ -28,23 +28,10 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import { rootLink } from '../../scripts/scripts.js';
 
-/**
- * Checks if the current page is for updating a product in the cart
- * @returns {Object|null} The update info object or null
- */
-function getUpdateCartInfo() {
-  const itemUid = new URLSearchParams(window.location.search).get('itemUid');
-  return itemUid ? {
-    isUpdating: true,
-    itemUid,
-  } : null;
-}
-
 export default async function decorate(block) {
   // eslint-disable-next-line no-underscore-dangle
   const product = events._lastEvent?.['pdp/data']?.payload ?? null;
   const labels = await fetchPlaceholders();
-  const updateCartInfo = getUpdateCartInfo();
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -163,13 +150,6 @@ export default async function decorate(block) {
           if (valid) {
             const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
             await addProductsToCart([{ ...values }]);
-
-            if (updateCartInfo && product) {
-              const cartUrl = new URL(rootLink('/cart'), window.location.origin);
-              cartUrl.searchParams.append('itemUid', updateCartInfo.itemUid);
-
-              window.location.href = cartUrl.toString();
-            }
           }
 
           // reset any previous alerts if successful

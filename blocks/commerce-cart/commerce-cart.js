@@ -67,8 +67,6 @@ export default async function decorate(block) {
   block.innerHTML = '';
   block.appendChild(fragment);
 
-  let isShownUpdateNotification = false;
-
   // Toggle Empty Cart
   function toggleEmptyCart(state) {
     if (state) {
@@ -87,15 +85,7 @@ export default async function decorate(block) {
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: (product) => {
-        const path = `/products/${product.url.urlKey}/${product.topLevelSku}`;
-        const url = new URL(rootLink(path), window.location.origin);
-        url.searchParams.set('itemUid', product.uid);
-        if (window.Cypress) {
-          return path;
-        }
-        return url.toString();
-      },
+      routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
       routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
       attributesToHide: hideAttributes
@@ -166,39 +156,35 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (payload) => {
-      if (!isShownUpdateNotification) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const itemUid = urlParams.get('itemUid');
+      const urlParams = new URLSearchParams(window.location.search);
+      const itemUid = urlParams.get('itemUid');
 
-        if (itemUid && payload?.items?.length > 0) {
-          const updatedItem = payload.items.find((item) => item.uid === itemUid);
+      if (itemUid && payload?.items?.length > 0) {
+        const updatedItem = payload.items.find((item) => item.uid === itemUid);
 
-          if (updatedItem) {
-            const productName = updatedItem.name || updatedItem.product?.name || 'Product';
-            const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
-              .replace('{product}', productName);
+        if (updatedItem) {
+          const productName = updatedItem.name || updatedItem.product?.name || 'Product';
+          const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
+            .replace('{product}', productName);
 
-            UI.render(InLineAlert, {
-              heading: message,
-              type: 'success',
-              variant: 'primary',
-              icon: Icon({ source: 'CheckWithCircle' }),
-              'aria-live': 'assertive',
-              role: 'alert',
-              onDismiss: () => {
-                $notification.innerHTML = '';
-              },
-            })($notification);
-          } else {
-            console.warn('Could not find updated item in cart data for UID:', itemUid);
-          }
-
-          if (window.location.search) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }
+          UI.render(InLineAlert, {
+            heading: message,
+            type: 'success',
+            variant: 'primary',
+            icon: Icon({ source: 'CheckWithCircle' }),
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => {
+              $notification.innerHTML = '';
+            },
+          })($notification);
+        } else {
+          console.warn('Could not find updated item in cart data for UID:', itemUid);
         }
 
-        isShownUpdateNotification = true;
+        if (window.location.search) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
       }
 
       toggleEmptyCart(isCartEmpty(payload));
