@@ -159,10 +159,11 @@ export default async function decorate(block) {
       const urlParams = new URLSearchParams(window.location.search);
       const itemUid = urlParams.get('itemUid');
 
-      if (itemUid && payload?.items?.length > 0) {
-        const updatedItem = payload.items.find((item) => item.uid === itemUid);
-
-        if (updatedItem) {
+      if (itemUid && payload?.items) {
+        const itemExists = payload.items.some(item => item.uid === itemUid);
+        
+        if (itemExists) {
+          const updatedItem = payload.items.find(item => item.uid === itemUid);
           const productName = updatedItem.name || updatedItem.product?.name || 'Product';
           const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
             .replace('{product}', productName);
@@ -178,8 +179,6 @@ export default async function decorate(block) {
               $notification.innerHTML = '';
             },
           })($notification);
-        } else {
-          console.warn('Could not find updated item in cart data for UID:', itemUid);
         }
 
         if (window.location.search) {
