@@ -160,10 +160,9 @@ export default async function decorate(block) {
       const itemUid = urlParams.get('itemUid');
 
       if (itemUid && cartData?.items) {
-        const itemExists = cartData.items.some(item => item.uid === itemUid);
-        
+        const itemExists = cartData.items.some((item) => item.uid === itemUid);
         if (itemExists) {
-          const updatedItem = cartData.items.find(item => item.uid === itemUid);
+          const updatedItem = cartData.items.find((item) => item.uid === itemUid);
           const productName = updatedItem.name || updatedItem.product?.name || 'Product';
           const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
             .replace('{product}', productName);
