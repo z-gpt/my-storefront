@@ -155,15 +155,15 @@ export default async function decorate(block) {
   // Events
   events.on(
     'cart/data',
-    (payload) => {
+    (cartData) => {
       const urlParams = new URLSearchParams(window.location.search);
       const itemUid = urlParams.get('itemUid');
 
-      if (itemUid && payload?.items) {
-        const itemExists = payload.items.some(item => item.uid === itemUid);
+      if (itemUid && cartData?.items) {
+        const itemExists = cartData.items.some(item => item.uid === itemUid);
         
         if (itemExists) {
-          const updatedItem = payload.items.find(item => item.uid === itemUid);
+          const updatedItem = cartData.items.find(item => item.uid === itemUid);
           const productName = updatedItem.name || updatedItem.product?.name || 'Product';
           const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
             .replace('{product}', productName);
@@ -186,7 +186,7 @@ export default async function decorate(block) {
         }
       }
 
-      toggleEmptyCart(isCartEmpty(payload));
+      toggleEmptyCart(isCartEmpty(cartData));
 
       if (!cartViewEventPublished) {
         cartViewEventPublished = true;
