@@ -34,10 +34,10 @@ await initializeDropin(async () => {
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
-  // Use SSG data if available
+  // Use SSG data if available and refinement is needed based on optionsUIDs avalability
   let product;
-  if (window.product) {
-    product = window.product;
+  if (window.product && !optionsUIDs?.length) {
+    product = await preloadImageMiddleware(window.product);
   } else {
     product = await fetchProductData(sku, {
       optionsUIDs,
