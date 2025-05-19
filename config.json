@@ -9,12 +9,9 @@
           "AC-Environment-ID": "VJCE1JomSyRkt8bFeR8mjT",
           "AC-Price-Book-ID": "",
           "AC-Scope-Locale": "",
-          "Magento-Environment-ID": "VJCE1JomSyRkt8bFeR8mjT",
           "Magento-Website-Code": "base",
           "Magento-Store-Code": "main_website_store",
           "Magento-Store-View-Code": "default",
-          "X-Api-Key": "storefront-catalog-apollo",
-          "content-type": "application/json",
           "Magento-Customer-Group": "NLI"
         }
       },
