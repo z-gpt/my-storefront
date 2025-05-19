@@ -5,6 +5,10 @@
       "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/VJCE1JomSyRkt8bFeR8mjT/graphql",
       "headers": {
         "cs": {
+          "AC-Channel-ID": "",
+          "AC-Environment-ID": "VJCE1JomSyRkt8bFeR8mjT",
+          "AC-Price-Book-ID": "",
+          "AC-Scope-Locale": "",
           "Magento-Environment-ID": "VJCE1JomSyRkt8bFeR8mjT",
           "Magento-Website-Code": "base",
           "Magento-Store-Code": "main_website_store",
