@@ -5,14 +5,13 @@
       "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/VJCE1JomSyRkt8bFeR8mjT/graphql",
       "headers": {
         "cs": {
-          "Magento-Customer-Group": "NLI",
-          "AC-Channel-ID": "",
-          "AC-Environment-ID": "VJCE1JomSyRkt8bFeR8mjT",
-          "AC-Price-Book-ID": "",
-          "AC-Scope-Locale": "",
-          "Magento-Store-View-Code": "default",
+          "Magento-Environment-ID": "VJCE1JomSyRkt8bFeR8mjT",
+          "Magento-Website-Code": "base",
           "Magento-Store-Code": "main_website_store",
-          "Magento-Website-Code": "base"
+          "Magento-Store-View-Code": "default",
+          "X-Api-Key": "storefront-catalog-apollo",
+          "content-type": "application/json",
+          "Magento-Customer-Group": "NLI"
         }
       },
       "analytics": {
