@@ -380,6 +380,10 @@ async function parseSsgData() {
   return window.product;
 }
 
+/**
+ * Checks product __typename and returns the product type and typename
+ * @returns {Array} Array containing product type and typename
+ */
 function getProductTypeValues(parsedData) {
   const result = [];
   switch (parsedData.__typename) {
