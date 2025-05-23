@@ -244,158 +244,96 @@ function parseProductDescription(productDetails) {
   return description;
 }
 
+function getCurrencyCode(priceText) {
+  const currencySymbolToCode = {
+    '$': 'USD',
+    '€': 'EUR',
+    '£': 'GBP',
+    '¥': 'JPY',
+    '₹': 'INR',
+    '₩': 'KRW',
+    '₽': 'RUB',
+    '₫': 'VND',
+    '₪': 'ILS',
+    '₱': 'PHP',
+    '฿': 'THB',
+    '₦': 'NGN',
+    '₴': 'UAH',
+    '₭': 'LAK',
+    '₲': 'PYG',
+    '₡': 'CRC',
+    '₵': 'GHS',
+  };
+
+  const match = priceText.match(/[\p{Sc}]/u);
+  if (match) {
+    const symbol = match[0];
+    return currencySymbolToCode[symbol] || null;
+  }
+  return ''; // TODO: Should there be some other default value?
+}
+
 function parseProductPrice(productDetails) {
   const priceHeading = productDetails.querySelector('h2#price');
   const priceContainer = priceHeading?.closest('div');
   const priceDiv = priceContainer?.nextElementSibling;
   const priceText = priceDiv?.textContent?.trim();
+  const currencyCode = getCurrencyCode(priceText);
 
   if (!priceText) {
     return null;
   }
 
-  // TODO SSG: Parse currency symbol from price text instead of hardcoding USD
   if (priceText.includes('-')) {
     const [minPrice, maxPrice] = priceText.split('-').map((p) => parseFloat(p.replace(/[^0-9.]/g, '')));
     return {
       type: 'range',
       minimum: minPrice,
       maximum: maxPrice,
-      currency: 'USD',
+      currency: currencyCode,
     };
   }
 
   const value = parseFloat(priceText.replace(/[^0-9.]/g, ''));
-  if (isNaN(value)) {
+  if (Number.isNaN(value)) {
     return null;
   }
 
   return {
     type: 'simple',
     value,
-    currency: 'USD',
+    currency: currencyCode,
   };
-}
-
-// TODO SSG: Remove after testing
-function testPriceRangeParsing(productDetails) {
-  // Find the price heading and its container
-  const priceHeading = productDetails.querySelector('h2#price');
-  const priceContainer = priceHeading?.closest('div');
-
-  if (priceContainer) {
-    // Get the next sibling div that contains the price
-    const priceDiv = priceContainer.nextElementSibling;
-    if (priceDiv) {
-      // Modify the price text to be a range
-      priceDiv.textContent = '$33.00 - $44.00';
-      console.log('🧪 [Test] Modified price to range:', priceDiv.textContent);
-    }
-  }
-}
-
-// TODO SSG: Remove after testing
-function testOptionsParsing(productDetails) {
-  let optionsContainer = productDetails.querySelector('.product-options');
-  if (!optionsContainer) {
-    optionsContainer = document.createElement('div');
-    optionsContainer.className = 'product-options';
-    productDetails.appendChild(optionsContainer);
-  }
-
-  const testOption = {
-    id: 'color',
-    label: 'Color',
-    typename: 'ProductViewOptionValueConfiguration',
-    type: 'dropdown',
-    multiple: 'null',
-    required: 'true',
-    items: [
-      {
-        id: 'Y29uZmlndXJhYmxlLzI3OS8zOQ==',
-        label: 'red',
-        value: 'Y29uZmlndXJhYmxlLzI3OS8zOQ==',
-        selected: 'false',
-        inStock: 'true',
-      },
-      {
-        id: 'Y29uZmlndXJhYmxlLzI3OS80Mg==',
-        label: 'green',
-        value: 'Y29uZmlndXJhYmxlLzI3OS80Mg==',
-        selected: 'false',
-        inStock: 'true',
-      },
-      {
-        id: 'Y29uZmlndXJhYmxlLzI3OS80NQ==',
-        label: 'blue',
-        value: 'Y29uZmlndXJhYmxlLzI3OS80NQ==',
-        selected: 'false',
-        inStock: 'true',
-      },
-    ],
-  };
-
-  const optionHtml = `
-    <div class="option" 
-         data-id="${testOption.id}"
-         data-type="${testOption.type}"
-         data-typename="${testOption.typename}"
-         data-required="${testOption.required}"
-         data-multiple="${testOption.multiple}"
-         data-label="${testOption.label}">
-      <div class="option-header">
-        <span class="option-label">${testOption.label}</span>
-      </div>
-      <div class="option-items">
-        ${testOption.items.map((item) => `
-          <div class="option-item"
-               data-id="${item.id}"
-               data-label="${item.label}"
-               data-in-stock="${item.inStock}"
-               data-value="${item.value}"
-               data-selected="${item.selected}">
-            <span class="item-label">${item.label}</span>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-
-  optionsContainer.innerHTML = optionHtml;
-  console.log('🧪 [Test] Test options injected:', optionsContainer.innerHTML);
 }
 
 function parseProductOptions(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
+  const doc = html;
   const options = [];
-
-  doc.querySelectorAll('.option').forEach((optionElement) => {
+  doc.querySelectorAll('div:has(#options) > div > ul > li').forEach((optionElement) => {
+    const [title, id, required] = Array.from(optionElement.querySelectorAll(':scope > div')).map(div => div.innerText);
     const option = {
-      id: optionElement.dataset.id,
-      type: optionElement.dataset.type,
-      typename: optionElement.dataset.typename,
-      label: optionElement.dataset.label,
-      required: optionElement.dataset.required === 'true',
-      multiple: optionElement.dataset.multiple === 'null' ? null : optionElement.dataset.multiple === 'true',
+      id: id,
+      type: 'dropdown', // TODO: Is this always supposed to be a dropdown? If not, how do we figure out the type?
+      label: title,
+      required: required,
       items: [],
     };
-
-    optionElement.querySelectorAll('.option-item').forEach((itemElement) => {
+    
+    optionElement.querySelectorAll('ul > li').forEach((itemElement, idx) => {
+      const [title, id, inStock] = Array.from(itemElement.querySelectorAll(':scope > div')).map(div => div.innerText);
       const item = {
-        id: itemElement.dataset.id,
-        label: itemElement.dataset.label,
-        value: itemElement.dataset.value,
-        selected: itemElement.dataset.selected === 'true',
-        inStock: itemElement.dataset.inStock === 'true',
+        id: id,
+        label: title,
+        value: id,
+        selected: 'false',
+        inStock: inStock,
       };
       option.items.push(item);
     });
-
     options.push(option);
   });
 
-  return options;
+  return options.length > 0 ? options : [];
 }
 
 /**
@@ -407,21 +345,6 @@ async function parseSsgData() {
   if (!productDetails) {
     return null;
   }
-
-  // TODO SSG: Remove after testing
-  // Get test flags from URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const shouldTestPriceRange = urlParams.get('testPriceRange') === 'true';
-  const shouldTestOptions = urlParams.get('testOptions') === 'true';
-
-  if (shouldTestPriceRange) {
-    testPriceRangeParsing(productDetails);
-  }
-
-  if (shouldTestOptions) {
-    testOptionsParsing(productDetails);
-  }
-  // TODO SSG: Remove ^ end of test flags
 
   window.product = window.product || {};
 
@@ -437,18 +360,15 @@ async function parseSsgData() {
     name: parseProductName(productDetails),
     images: parseProductImages(productDetails),
     description: parseProductDescription(productDetails),
+    options: parseProductOptions(productDetails),
   };
 
-  // TODO SSG: Use SSG data as fallback or update template in aem-commerce-ssg?
+  // TODO: Use SSG data as fallback or update template in aem-commerce-ssg?
   const priceData = parseProductPrice(productDetails);
   if (priceData) {
     pageData.price = priceData;
-  }
-
-  // TODO SSG: Update template in aem-commerce-ssg
-  const options = parseProductOptions(productDetails.innerHTML);
-  if (options.length > 0) {
-    pageData.options = options;
+  } else {
+    // Make call to commerce API to get price data
   }
 
   window.product = {
@@ -457,6 +377,29 @@ async function parseSsgData() {
   };
 
   return window.product;
+}
+
+function setProductType(parsedData) {
+  const result = [];
+  switch (parsedData['__typename']) {
+    case 'SimpleProductView':
+      result.push('simple');
+      result.push('SimpleProductView');
+      break;
+    case 'ConfigurableProductView':
+      result.push('configurable');
+      result.push('ConfigurableProductView');
+      break;
+    case 'ComplexProductView':
+      result.push('complex');
+      result.push('ComplexProductView');
+      break;
+    default:
+      result.push('simple');
+      result.push('SimpleProductView');
+  }
+
+  return result;
 }
 
 /**
@@ -481,11 +424,9 @@ function transformToPdpFormat(parsedData) {
     urlKey: window.location.pathname.split('/')[2],
     url: window.location.href,
   };
+  [transformedData.productType, transformedData.__typename] = setProductType(parsedData);
 
-  // Set product type and price structure
   if (parsedData.price?.type === 'range') {
-    transformedData.productType = 'complex';
-    transformedData.__typename = 'ComplexProductView';
     transformedData.priceRange = {
       minimum: {
         regular: {
@@ -518,26 +459,22 @@ function transformToPdpFormat(parsedData) {
         roles: ['visible'],
       },
     };
-  } else {
-    transformedData.productType = 'simple';
-    transformedData.__typename = 'SimpleProductView';
-    if (parsedData.price) {
-      transformedData.price = {
-        roles: ['visible'],
-        regular: {
-          amount: {
-            value: parsedData.price.value || 0,
-            currency: parsedData.price.currency || 'USD',
-          },
+  } else if (parsedData.price) {
+    transformedData.price = {
+      roles: ['visible'],
+      regular: {
+        amount: {
+          value: parsedData.price.value || 0,
+          currency: parsedData.price.currency || 'USD',
         },
-        final: {
-          amount: {
-            value: parsedData.price.value || 0,
-            currency: parsedData.price.currency || 'USD',
-          },
+      },
+      final: {
+        amount: {
+          value: parsedData.price.value || 0,
+          currency: parsedData.price.currency || 'USD',
         },
-      };
-    }
+      },
+    };
   }
 
   if (parsedData.options?.length > 0) {
