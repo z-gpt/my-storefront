@@ -380,7 +380,7 @@ async function parseSsgData() {
   return window.product;
 }
 
-function setProductType(parsedData) {
+function getProductTypeValues(parsedData) {
   const result = [];
   switch (parsedData.__typename) {
     case 'SimpleProductView':
@@ -425,7 +425,7 @@ function transformToPdpFormat(parsedData) {
     urlKey: window.location.pathname.split('/')[2],
     url: window.location.href,
   };
-  [transformedData.productType, transformedData.__typename] = setProductType(parsedData);
+  [transformedData.productType, transformedData.__typename] = getProductTypeValues(parsedData);
 
   if (parsedData.price?.type === 'range') {
     transformedData.priceRange = {
