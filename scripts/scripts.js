@@ -271,7 +271,7 @@ function getCurrencyCode(priceText) {
     const symbol = match[0];
     return currencySymbolToCode[symbol] || null;
   }
-  return ''; // TODO: Should there be some other default value?
+  return ''; // TODO SSG: Should there be some other default value?
 }
 
 function parseProductPrice(productDetails) {
@@ -314,7 +314,7 @@ function parseProductOptions(html) {
     const [title, id, required] = Array.from(optionElement.querySelectorAll(':scope > div')).map((div) => div.innerText);
     const option = {
       id,
-      type: 'dropdown', // TODO: Is this always supposed to be a dropdown? If not, how do we figure out the type?
+      type: 'dropdown', //  SSG: Is this always supposed to be a dropdown? If not, how do we figure out the type?
       label: title,
       required,
       items: [],
@@ -364,7 +364,7 @@ async function parseSsgData() {
     options: parseProductOptions(productDetails),
   };
 
-  // TODO: Use SSG data as fallback or update template in aem-commerce-ssg?
+  // TODO SSG: Use SSG data as fallback or update template in aem-commerce-ssg?
   const priceData = parseProductPrice(productDetails);
   if (priceData) {
     pageData.price = priceData;
