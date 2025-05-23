@@ -310,23 +310,23 @@ function parseProductOptions(html) {
   const doc = html;
   const options = [];
   doc.querySelectorAll('div:has(#options) > div > ul > li').forEach((optionElement) => {
-    const [title, id, required] = Array.from(optionElement.querySelectorAll(':scope > div')).map(div => div.innerText);
+    const [title, id, required] = Array.from(optionElement.querySelectorAll(':scope > div')).map((div) => div.innerText);
     const option = {
-      id: id,
+      id,
       type: 'dropdown', // TODO: Is this always supposed to be a dropdown? If not, how do we figure out the type?
       label: title,
-      required: required,
+      required,
       items: [],
     };
     
     optionElement.querySelectorAll('ul > li').forEach((itemElement, idx) => {
       const [title, id, inStock] = Array.from(itemElement.querySelectorAll(':scope > div')).map(div => div.innerText);
       const item = {
-        id: id,
+        id,
         label: title,
         value: id,
         selected: 'false',
-        inStock: inStock,
+        inStock,
       };
       option.items.push(item);
     });
