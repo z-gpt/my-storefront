@@ -246,6 +246,7 @@ function parseProductDescription(productDetails) {
 
 function getCurrencyCode(priceText) {
   const currencySymbolToCode = {
+    // eslint-disable-next-line quote-props
     '$': 'USD',
     '€': 'EUR',
     '£': 'GBP',
@@ -318,13 +319,13 @@ function parseProductOptions(html) {
       required,
       items: [],
     };
-    
-    optionElement.querySelectorAll('ul > li').forEach((itemElement, idx) => {
-      const [title, id, inStock] = Array.from(itemElement.querySelectorAll(':scope > div')).map(div => div.innerText);
+
+    optionElement.querySelectorAll('ul > li').forEach((itemElement) => {
+      const [optionTitle, optionId, inStock] = Array.from(itemElement.querySelectorAll(':scope > div')).map((div) => div.innerText);
       const item = {
-        id,
-        label: title,
-        value: id,
+        id: optionId,
+        label: optionTitle,
+        value: optionId,
         selected: 'false',
         inStock,
       };
@@ -381,7 +382,7 @@ async function parseSsgData() {
 
 function setProductType(parsedData) {
   const result = [];
-  switch (parsedData['__typename']) {
+  switch (parsedData.__typename) {
     case 'SimpleProductView':
       result.push('simple');
       result.push('SimpleProductView');
