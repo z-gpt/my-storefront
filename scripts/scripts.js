@@ -321,7 +321,7 @@ function parseProductOptions(html) {
     };
 
     optionElement.querySelectorAll('ul > li').forEach((itemElement) => {
-      const [optionTitle, optionId, inStock] = Array.from(itemElement.querySelectorAll(':scope > div')).map((div) => div.innerText);
+      const [optionTitle, optionId, inStock] = Array.from(itemElement.querySelectorAll(':scope > p')).map((div) => div.innerText);
       const item = {
         id: optionId,
         label: optionTitle,
