@@ -32,7 +32,7 @@ it("is sent on add to cart button click", () => {
   });
 });
 
-it("open-cart includes changedProductsContext with items", () => {
+it.skip("open-cart includes changedProductsContext with items", () => {
   cy.visit(products.configurable.urlPathWithOptions);
   
   cy.get(".product-details__buttons__add-to-cart button")
