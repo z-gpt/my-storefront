@@ -144,7 +144,6 @@ export default async function decorate(block) {
           })(giftOptions);
 
           ctx.appendChild(giftOptions);
-
           // Wishlist Button
           // const $wishlistToggle = document.createElement('div');
           // $wishlistToggle.classList.add('cart__action--wishlist-toggle');
