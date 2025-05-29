@@ -11,7 +11,6 @@ import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 
 // Containers
-import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
 import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
 import ProductOptions from '@dropins/storefront-pdp/containers/ProductOptions.js';
@@ -42,6 +41,7 @@ export default async function decorate(block) {
       <div class="product-details__right-column">
         <div class="product-details__header"></div>
         <div class="product-details__price"></div>
+        <div class="product-details__banner"></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
         <div class="product-details__configuration">
@@ -70,8 +70,36 @@ export default async function decorate(block) {
   const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $banner = fragment.querySelector('.product-details__banner');
 
   block.appendChild(fragment);
+
+  // 💅 Customization 1
+  // we will create a custom title and sku for the product
+  // instead of using the ProductHeader fcontainer
+  const $title = document.createElement('h2');
+  $title.classList.add('product-details__title');
+  $header.appendChild($title);
+
+  const $sku = document.createElement('div');
+  $sku.classList.add('product-details__sku');
+  $header.appendChild($sku);
+
+  // 💥 I don't believe the product title or sku changes after making selections
+  // but for demo purposes, we will update the values if the data changes at any point
+  events.on('pdp/data', (data) => {
+    $title.textContent = data.name;
+    $sku.textContent = `🏷️ SKU: ${data.sku}`;
+  }, { eager: true }); // eager is true because we want to update the values immediately
+
+  // 💅 Customization 2
+  // we will add a custom banner under the price
+  $banner.textContent = '🛍️ Buy 1 get 1 free';
+
+  // let's remove the banner if the user select more than 1 item
+  events.on('pdp/values', (data) => {
+    $banner.classList.toggle('product-details__banner--hidden', data.quantity > 1);
+  }, { eager: true });
 
   // Alert
   let inlineAlert = null;
@@ -80,7 +108,6 @@ export default async function decorate(block) {
   const [
     _galleryMobile,
     _gallery,
-    _header,
     _price,
     _shortDescription,
     _options,
@@ -113,9 +140,6 @@ export default async function decorate(block) {
         ...IMAGES_SIZES,
       },
     })($gallery),
-
-    // Header
-    pdpRendered.render(ProductHeader, {})($header),
 
     // Price
     pdpRendered.render(ProductPrice, {})($price),

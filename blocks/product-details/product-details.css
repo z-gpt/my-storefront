@@ -73,6 +73,18 @@
   margin-top: var(--spacing-xsmall);
 }
 
+.product-details__banner {
+  background-color: var(--color-informational-500);
+  color: var(--color-neutral-50);
+  padding: var(--spacing-small);
+  margin-block: var(--spacing-small);
+  font-weight: 800;
+}
+
+.product-details__banner--hidden {
+  display: none;
+}
+
 @media (width >= 900px) {
   .product-details__wrapper {
     grid-template-columns: repeat(var(--grid-3-columns), 1fr);
