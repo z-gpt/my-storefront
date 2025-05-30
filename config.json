@@ -1,11 +1,11 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/VJCE1JomSyRkt8bFeR8mjT/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/VJCE1JomSyRkt8bFeR8mjT/graphql",
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/NhAanuPLamGZygKtezHUZY/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/NhAanuPLamGZygKtezHUZY/graphql",
       "headers": {
         "cs": {
-          "Magento-Environment-Id": "VJCE1JomSyRkt8bFeR8mjT",
+          "Magento-Environment-Id": "NhAanuPLamGZygKtezHUZY",
           "Magento-Website-Code": "base",
           "Magento-Store-Code": "main_website_store",
           "Magento-Store-View-Code": "default",
