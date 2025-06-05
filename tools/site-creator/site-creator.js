@@ -3,9 +3,35 @@
 import 'https://da.live/nx/public/sl/components.js';
 import getStyle from 'https://da.live/nx/utils/styles.js';
 import { LitElement, html, nothing } from 'da-lit';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js';
+import { getAnalytics } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js';
+import { getAuth, signInWithPopup, GithubAuthProvider } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import { createSite, SITE_CREATION_STATUS } from './create-site.js';
+import { createGitHubRepo, createOctokit } from './github-utils.js';
 
 const style = await getStyle(import.meta.url);
+
+// Firebase configuration
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: 'AIzaSyB9MzwnYDIl7G7OjOIDS94FxRQJWz9mF4w',
+  authDomain: 'rugh-gh-auth.firebaseapp.com',
+  projectId: 'rugh-gh-auth',
+  storageBucket: 'rugh-gh-auth.firebasestorage.app',
+  messagingSenderId: '1046226538217',
+  appId: '1:1046226538217:web:d04c52133c2d5c488cea78',
+  measurementId: 'G-7TBPY9SHWV',
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// eslint-disable-next-line no-unused-vars
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const githubProvider = new GithubAuthProvider();
+githubProvider.addScope('repo');
+githubProvider.addScope('workflow');
 
 class SiteCreator extends LitElement {
   static properties = {
@@ -14,11 +40,160 @@ class SiteCreator extends LitElement {
     _status: { state: true },
     _time: { state: true },
     _publishStatus: { state: true },
+    _githubToken: { state: true },
+    _githubUser: { state: true },
+    _repoCreated: { state: true },
+    _appInstalled: { state: true },
   };
 
   async connectedCallback() {
     super.connectedCallback();
     this.shadowRoot.adoptedStyleSheets = [style];
+
+    // Check for existing token in session storage
+    const savedToken = sessionStorage.getItem('github_token');
+    if (savedToken) {
+      this._githubToken = savedToken;
+      // Get user info with the saved token
+      try {
+        const octokit = createOctokit(savedToken);
+        const { data: user } = await octokit.request('GET /user');
+        this._githubUser = user;
+      } catch (error) {
+        // If token is invalid, clear it
+        sessionStorage.removeItem('github_token');
+        this._githubToken = null;
+        this._githubUser = null;
+      }
+    }
+
+    // Listen for auth state changes
+    auth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        // Only update token and user if we don't already have them
+        if (!this._githubToken) {
+          const credential = GithubAuthProvider.credentialFromResult(firebaseUser);
+          if (credential) {
+            this._githubToken = credential.accessToken;
+            sessionStorage.setItem('github_token', credential.accessToken);
+
+            // Get GitHub user info
+            const octokit = createOctokit(credential.accessToken);
+            const { data: user } = await octokit.request('GET /user');
+            this._githubUser = user;
+          }
+        }
+      }
+    });
+  }
+
+  static async handleGitHubLogin() {
+    try {
+      const result = await signInWithPopup(auth, githubProvider);
+      // Get the GitHub access token from the credential
+      const credential = GithubAuthProvider.credentialFromResult(result);
+      if (credential) {
+        this._githubToken = credential.accessToken;
+        // Save token to session storage
+        sessionStorage.setItem('github_token', credential.accessToken);
+
+        // Get GitHub user info
+        const octokit = createOctokit(credential.accessToken);
+        const { data: user } = await octokit.request('GET /user');
+        this._githubUser = user;
+      } else {
+        throw new Error('Failed to get GitHub access token');
+      }
+    } catch (error) {
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        // Handle the case where the user already has an account with a different provider
+        this._status = { type: 'error', message: 'An account already exists with the same email address but different sign-in credentials.' };
+      } else {
+        this._status = { type: 'error', message: 'Failed to authenticate with GitHub' };
+      }
+    }
+  }
+
+  async createGitHubRepo() {
+    try {
+      this._loading = true;
+      this._repoCreated = false;
+      this._appInstalled = false;
+
+      const setStatus = (status) => { this._status = status; };
+      const result = await createGitHubRepo(this._githubToken, setStatus);
+      this._repoCreated = result.repoCreated;
+      this._data = {
+        ...this._data,
+        org: result.owner,
+        repo: result.repo,
+      };
+      return result;
+    } catch (error) {
+      this._status = { type: 'error', message: `Failed to create GitHub repository: ${error.message}` };
+      throw error;
+    } finally {
+      this._loading = false;
+    }
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault();
+
+    if (!this._githubToken) {
+      SiteCreator.handleGitHubLogin();
+      return;
+    }
+
+    this._time = null;
+    this._loading = true;
+    let intervalId;
+
+    try {
+      const startTime = Date.now();
+      intervalId = setInterval(() => {
+        this._time = SiteCreator.calculateCrawlTime(startTime);
+      }, 100);
+
+      // Create GitHub repository
+      await this.createGitHubRepo();
+
+      this._status = { type: 'success', message: `Repository created in ${SiteCreator.calculateCrawlTime(startTime)}.` };
+    } catch (err) {
+      this._status = { type: 'error', message: err.message };
+    } finally {
+      this._loading = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    }
+  }
+
+  async handleAppInstallation() {
+    this._appInstalled = true;
+    // Continue with the rest of the process
+    this._time = null;
+    this._loading = true;
+    let intervalId;
+
+    try {
+      const startTime = Date.now();
+      intervalId = setInterval(() => {
+        this._time = SiteCreator.calculateCrawlTime(startTime);
+      }, 100);
+
+      const setStatus = (status) => { this._status = status; };
+
+      this._publishStatus = await createSite(this._data, setStatus);
+      this._status = { type: 'success', message: `Site creation completed in ${SiteCreator.calculateCrawlTime(startTime)}.` };
+    } catch (err) {
+      this._status = ({ type: 'error', message: err.message });
+    } finally {
+      this._loading = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    }
   }
 
   static calculateCrawlTime(startTime) {
@@ -45,58 +220,6 @@ class SiteCreator extends LitElement {
     }
   }
 
-  async handleSubmit(e) {
-    e.preventDefault();
-    this._time = null;
-    this._loading = true;
-    const formData = new FormData(e.target.closest('form'));
-    const entries = Object.fromEntries(formData.entries());
-
-    const empty = Object.keys(entries).some((key) => !entries[key]);
-    if (empty) {
-      this._status = { type: 'error', message: 'Some fields empty.' };
-      return;
-    }
-
-    try {
-      const url = new URL(entries.github.toLowerCase());
-      const org = url.pathname.split('/')[1];
-      const repo = url.pathname.split('/')[2];
-
-      if (!org || !repo || url.hostname !== 'github.com') {
-        this._status = { type: 'error', message: 'Invalid Github URL.' };
-        return;
-      }
-
-      this._data = {
-        repo,
-        org,
-      };
-    } catch (err) {
-      this._status = { type: 'error', message: `Invalid Github URL: ${err}` };
-      return;
-    }
-
-    const startTime = Date.now();
-    const getTime = setInterval(() => {
-      this._time = SiteCreator.calculateCrawlTime(startTime);
-    }, 100);
-
-    const setStatus = (status) => { this._status = status; };
-
-    try {
-      this._publishStatus = await createSite(this._data, setStatus);
-    } catch (err) {
-      this._status = ({ type: 'error', message: err });
-      throw err;
-    } finally {
-      this._loading = false;
-      clearTimeout(getTime);
-    }
-
-    this._status = { type: 'success', message: `Finished in ${SiteCreator.calculateCrawlTime(startTime)}.` };
-  }
-
   renderFstab() {
     return html`
       <code><pre>
@@ -109,6 +232,15 @@ mountpoints:
   }
 
   renderSiteComplete() {
+    if (!this._data?.org || !this._data?.repo) {
+      return html`
+        <div class="loading-panel">
+          <h2>Loading...</h2>
+          <p>Please wait while we prepare your site...</p>
+        </div>
+      `;
+    }
+
     return html`
       <div class="success-panel">
         <h2>Edit content</h2>
@@ -126,6 +258,15 @@ mountpoints:
   }
 
   renderNoCodeBus() {
+    if (!this._data?.org || !this._data?.repo) {
+      return html`
+        <div class="loading-panel">
+          <h2>Loading...</h2>
+          <p>Please wait while we prepare your site...</p>
+        </div>
+      `;
+    }
+
     return html`
       <div class="success-panel">
         <h2>Content copied successfully</h2>
@@ -144,6 +285,15 @@ mountpoints:
   }
 
   renderNoFstab() {
+    if (!this._data?.org || !this._data?.repo) {
+      return html`
+        <div class="loading-panel">
+          <h2>Loading...</h2>
+          <p>Please wait while we prepare your site...</p>
+        </div>
+      `;
+    }
+
     return html`
       <div class="success-panel">
         <h2>Content copied successfully</h2>
@@ -163,6 +313,15 @@ mountpoints:
   }
 
   renderSuccess() {
+    if (!this._data?.org || !this._data?.repo) {
+      return html`
+        <div class="loading-panel">
+          <h2>Loading...</h2>
+          <p>Please wait while we prepare your site...</p>
+        </div>
+      `;
+    }
+
     if (this._publishStatus === SITE_CREATION_STATUS.NO_CODE_BUS) {
       return this.renderNoCodeBus();
     }
@@ -175,45 +334,56 @@ mountpoints:
   renderForm() {
     return html`
       <form @submit=${this.handleSubmit}>
-        <div class="fieldgroup">
-          <label>Project Github URL</label>
-          <sl-input
-            @keyup=${(e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      this.handleSubmit(e);
-    } else {
-      this.formChanged(e);
-    }
-  }}
-            @changed=${this.formChanged}
-            type="text"
-            name="github"
-            placeholder="Enter Github URL">
-          </sl-input>
-          <p>Don't have a Github repo yet? <a target="_blank" href="https://github.com/hlxsites/aem-boilerplate-commerce">Start here.</a></p>
-        </div>
-        <div class="form-footer">
-          <div>
+        ${!this._githubToken ? html`
+          <div class="fieldgroup">
+            <h2>Connect with GitHub</h2>
+            <p>To create your site, you'll need to connect with GitHub first.</p>
+            <sl-button @click=${SiteCreator.handleGitHubLogin}>Connect with GitHub</sl-button>
           </div>
-          <div class="time-actions">
-            <p>${this._time}</p>
-            <sl-button ?disabled=${this._loading} @click=${this.handleSubmit}>Create site</sl-button>
+        ` : html`
+          <div class="fieldgroup">
+            <h2>Create Your Site</h2>
+            <p>Connected to GitHub as @${this._githubUser?.login}</p>
+            ${this._repoCreated ? html`
+              <div class="app-installation-panel">
+                <h3>Install AEM Code Sync App</h3>
+                <p>Your repository has been created. Please install the AEM Code Sync app to continue.</p>
+                <p><a href="https://github.com/apps/aem-code-sync/installations/select_target" target="_blank">Install AEM Code Sync App</a></p>
+                <sl-button
+                  ?disabled=${this._loading}
+                  @click=${this.handleAppInstallation}
+                  style="pointer-events: ${this._loading ? 'none' : 'auto'}"
+                >
+                  ${this._loading ? 'Processing...' : 'Continue'}
+                </sl-button>
+              </div>
+            ` : html`
+              <div class="form-footer">
+                <div class="time-actions">
+                  <p>${this._time}</p>
+                  <sl-button
+                    ?disabled=${this._loading}
+                    @click=${this.handleSubmit}
+                    style="pointer-events: ${this._loading ? 'none' : 'auto'}"
+                  >
+                    ${this._loading ? 'Creating site...' : 'Create site'}
+                  </sl-button>
+                </div>
+              </div>
+            `}
           </div>
-        </div>
-        ${this._data && !this._status ? html`
-          <h4 class="fstab-head">Please make sure your fstab is set to the following:</h4>
-          ${this.renderFstab()}
-        ` : nothing}
+        `}
         ${this._status ? html`<p class="status ${this._status?.type || 'note'}">${this._status?.message}</p>` : nothing}
       </form>
     `;
   }
 
   render() {
-    return html`
-      ${this._status?.type === 'success' ? this.renderSuccess() : this.renderForm()}
-    `;
+    // Only show success view if we have data AND a success status AND app is installed
+    if (this._data && this._status?.type === 'success' && this._appInstalled) {
+      return this.renderSuccess();
+    }
+    return this.renderForm();
   }
 }
 

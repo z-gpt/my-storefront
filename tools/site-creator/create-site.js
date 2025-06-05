@@ -67,8 +67,24 @@ async function fetchIndex() {
 }
 
 async function checkCodeBus(data) {
-  const res = await fetch(`${AEM_ORIGIN}/code/${data.org}/${data.repo}/main/scripts/aem.js`);
-  return res.ok;
+  const maxAttempts = 12; // 12 attempts * 5 seconds = 60 seconds total
+  const retryInterval = 5000; // 5 seconds
+
+  const attempt = async (currentAttempt) => {
+    const res = await fetch(`${AEM_ORIGIN}/code/${data.org}/${data.repo}/main/scripts/aem.js`);
+    if (res.ok) {
+      return true;
+    }
+
+    if (currentAttempt < maxAttempts) {
+      await new Promise((resolve) => { setTimeout(resolve, retryInterval); });
+      return attempt(currentAttempt + 1);
+    }
+
+    return false;
+  };
+
+  return attempt(1);
 }
 
 async function previewOrPublishPages(data, action, setStatus) {
