@@ -18,6 +18,21 @@ const createOctokit = (token) => new MyOctokit({
 
 const TEMPLATE_REPO = 'hlxsites/aem-boilerplate-commerce';
 
+async function checkExistingFork(octokit, user) {
+  try {
+    const { data: forks } = await octokit.request('GET /repos/{owner}/{repo}/forks', {
+      owner: TEMPLATE_REPO.split('/')[0],
+      repo: TEMPLATE_REPO.split('/')[1],
+      per_page: 100,
+    });
+
+    return forks.find((fork) => fork.owner.login === user.login);
+  } catch (error) {
+    console.error('Error checking for existing forks:', error);
+    return null;
+  }
+}
+
 export async function createGitHubRepo(githubToken, setStatus, siteName) {
   let user;
   let repoName;
@@ -29,6 +44,15 @@ export async function createGitHubRepo(githubToken, setStatus, siteName) {
     const { data: userData } = await octokit.request('GET /user');
     user = userData;
     repoName = siteName;
+
+    // Check for existing fork
+    const existingFork = await checkExistingFork(octokit, user);
+    if (existingFork) {
+      const error = new Error('EXISTING_FORK');
+      error.forkUrl = existingFork.html_url;
+      error.forkName = existingFork.name;
+      throw error;
+    }
 
     // Check if repo already exists
     try {

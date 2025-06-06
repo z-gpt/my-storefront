@@ -2,7 +2,9 @@
 
 import 'https://da.live/nx/public/sl/components.js';
 import getStyle from 'https://da.live/nx/utils/styles.js';
-import { LitElement, html, nothing } from 'da-lit';
+import {
+  LitElement, html, nothing,
+} from 'da-lit';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js';
 import { getAnalytics } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js';
 import { getAuth, signInWithPopup, GithubAuthProvider } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
@@ -135,7 +137,19 @@ class SiteCreator extends LitElement {
       };
       return result;
     } catch (error) {
-      this._status = { type: 'error', message: `Failed to create GitHub repository: ${error.message}` };
+      if (error.message === 'EXISTING_FORK') {
+        const forkUrl = error.forkUrl || 'UNKNOWN_FORK_URL';
+        this._status = {
+          type: 'error',
+          message: html`You already have a fork of this repository at <a href="${forkUrl}" target="_blank">${forkUrl}</a>. GitHub only allows one fork per user. You can either:<br>
+            <br>1. Use your existing fork at <a href="${forkUrl}" target="_blank">${forkUrl}</a>
+            <br>2. Delete your existing fork and try again
+            <br><br>To delete your fork, go to <a href="${forkUrl}/settings" target="_blank">${forkUrl}/settings</a> and scroll to the bottom to find the "Delete this repository" option.`,
+          isHtml: true,
+        };
+      } else {
+        this._status = { type: 'error', message: `Failed to create GitHub repository: ${error.message}` };
+      }
       throw error;
     } finally {
       this._loading = false;
@@ -165,7 +179,10 @@ class SiteCreator extends LitElement {
 
       this._status = { type: 'success', message: `Repository created in ${SiteCreator.calculateCrawlTime(startTime)}.` };
     } catch (err) {
-      this._status = { type: 'error', message: err.message };
+      // Don't set status here - it's already set in createGitHubRepo
+      if (err.message !== 'EXISTING_FORK') {
+        this._status = { type: 'error', message: err.message };
+      }
     } finally {
       this._loading = false;
       if (intervalId) {

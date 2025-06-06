@@ -41,6 +41,10 @@ sl-textarea {
     background-color: var(--s2-red-800);
   }
 
+  &.error a {
+    color: white;
+  }
+
   &.success {
     background-color: var(--s2-blue-800);
   }
