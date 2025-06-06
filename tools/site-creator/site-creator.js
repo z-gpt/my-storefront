@@ -47,6 +47,7 @@ class SiteCreator extends LitElement {
     _repoCreated: { state: true },
     _appInstalled: { state: true },
     _siteName: { state: true },
+    _orgName: { state: true },
   };
 
   async connectedCallback() {
@@ -62,13 +63,15 @@ class SiteCreator extends LitElement {
         const octokit = createOctokit(savedToken);
         const { data: user } = await octokit.request('GET /user');
         this._githubUser = user;
-        // Set initial site name based on username
-        this._siteName = `${user.login}-storefront`;
+        // Set initial site name and org name
+        this._siteName = 'my-storefront';
+        this._orgName = user.login;
       } catch (error) {
         // If token is invalid, clear it
         sessionStorage.removeItem('github_token');
         this._githubToken = null;
         this._githubUser = null;
+        console.warn('Invalid GitHub token', error);
       }
     }
 
@@ -86,8 +89,9 @@ class SiteCreator extends LitElement {
             const octokit = createOctokit(credential.accessToken);
             const { data: user } = await octokit.request('GET /user');
             this._githubUser = user;
-            // Set initial site name based on username
-            this._siteName = `${user.login}-storefront`;
+            // Set initial site name and org name
+            this._siteName = 'my-storefront';
+            this._orgName = user.login;
           }
         }
       }
@@ -128,7 +132,12 @@ class SiteCreator extends LitElement {
       this._appInstalled = false;
 
       const setStatus = (status) => { this._status = status; };
-      const result = await createGitHubRepo(this._githubToken, setStatus, this._siteName);
+      const result = await createGitHubRepo(
+        this._githubToken,
+        setStatus,
+        this._siteName,
+        this._orgName,
+      );
       this._repoCreated = result.repoCreated;
       this._data = {
         ...this._data,
@@ -141,12 +150,18 @@ class SiteCreator extends LitElement {
         const forkUrl = error.forkUrl || 'UNKNOWN_FORK_URL';
         this._status = {
           type: 'error',
-          message: html`You already have a fork of this repository at <a href="${forkUrl}" target="_blank">${forkUrl}</a>. GitHub only allows one fork per user. You can either:<br>
+          message: html`You already have a fork of this repository at
+            <a href="${forkUrl}" target="_blank">${forkUrl}</a>.
+            GitHub only allows one fork per user. You can either:<br>
             <br>1. Use your existing fork at <a href="${forkUrl}" target="_blank">${forkUrl}</a>
             <br>2. Delete your existing fork and try again
-            <br><br>To delete your fork, go to <a href="${forkUrl}/settings" target="_blank">${forkUrl}/settings</a> and scroll to the bottom to find the "Delete this repository" option.`,
+            <br><br>To delete your fork, go to
+            <a href="${forkUrl}/settings" target="_blank">${forkUrl}/settings</a>
+            and scroll to the bottom to find the "Delete this repository" option.`,
           isHtml: true,
         };
+      } else if (error.message === 'REPOSITORY_EXISTS' || error.message === 'PERMISSION_DENIED') {
+        // Status already set in the try block
       } else {
         this._status = { type: 'error', message: `Failed to create GitHub repository: ${error.message}` };
       }
@@ -380,6 +395,18 @@ mountpoints:
                 </sl-button>
               </div>
             ` : html`
+              <div class="fieldgroup">
+                <label for="orgName">Organization or Username</label>
+                <sl-input
+                  id="orgName"
+                  name="orgName"
+                  placeholder="Enter organization or username"
+                  value=${this._orgName || ''}
+                  @input=${(e) => { this._orgName = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'); }}
+                  required
+                ></sl-input>
+                <p>This will be used as the owner of your repository. Use only lowercase letters, numbers, and hyphens. If using an organization, you must have GitHub admin right to the org, and be able to create public repositories.</p>
+              </div>
               <div class="fieldgroup">
                 <label for="siteName">Site Name</label>
                 <sl-input

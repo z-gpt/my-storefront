@@ -7,9 +7,6 @@ import { retry } from 'https://esm.sh/@octokit/plugin-retry';
 const MyOctokit = Octokit.plugin(retry);
 const createOctokit = (token) => new MyOctokit({
   auth: token,
-  retry: {
-    doNotRetry: [400, 401, 403, 404, 410, 422, 451], // Default doNotRetry list
-  },
   request: {
     retries: 3, // Number of retries
     retryAfter: 1, // Delay between retries in seconds
@@ -33,7 +30,7 @@ async function checkExistingFork(octokit, user) {
   }
 }
 
-export async function createGitHubRepo(githubToken, setStatus, siteName) {
+export async function createGitHubRepo(githubToken, setStatus, siteName, orgName) {
   let user;
   let repoName;
 
@@ -45,35 +42,43 @@ export async function createGitHubRepo(githubToken, setStatus, siteName) {
     user = userData;
     repoName = siteName;
 
-    // Check for existing fork
-    const existingFork = await checkExistingFork(octokit, user);
-    if (existingFork) {
-      const error = new Error('EXISTING_FORK');
-      error.forkUrl = existingFork.html_url;
-      error.forkName = existingFork.name;
-      throw error;
+    // Check for existing fork if the username is the same as org name
+    if (user.login === orgName) {
+      const existingFork = await checkExistingFork(octokit, user);
+      if (existingFork) {
+        const error = new Error('EXISTING_FORK');
+        error.forkUrl = existingFork.html_url;
+        error.forkName = existingFork.name;
+        throw error;
+      }
     }
 
-    // Check if repo already exists
+    // Check if repo already exists in the target organization
     try {
       await octokit.request('GET /repos/{owner}/{repo}', {
-        owner: user.login,
+        owner: orgName,
         repo: repoName,
         request: { retries: 0 }, // Don't retry this check
       });
+      // If we get here, the repository exists
+      throw new Error('REPOSITORY_EXISTS');
     } catch (error) {
       if (error.status === 404) {
         // Repo doesn't exist, we'll create it
-      } else {
+      } else if (error.status === 403) {
+        // Permission denied
+        throw new Error('PERMISSION_DENIED');
+      } else if (error.message !== 'REPOSITORY_EXISTS') {
         throw error;
       }
     }
 
     // Create fork of template repository. hlxsites currently disallows templating via OAuth.
-    const { data: forkData } = await octokit.request('POST /repos/{owner}/{repo}/forks', {
+    await octokit.request('POST /repos/{owner}/{repo}/forks', {
       owner: TEMPLATE_REPO.split('/')[0],
       repo: TEMPLATE_REPO.split('/')[1],
       name: repoName,
+      organization: orgName, // Specify the target organization
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
       },
@@ -84,14 +89,14 @@ export async function createGitHubRepo(githubToken, setStatus, siteName) {
 
     // Get default branch
     const { data: repoData } = await octokit.request('GET /repos/{owner}/{repo}', {
-      owner: forkData.owner.login,
+      owner: orgName,
       repo: repoName,
     });
     const defaultBranch = repoData.default_branch;
 
     // Update fstab.yaml with retries
     const { data: fstabData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: forkData.owner.login,
+      owner: orgName,
       repo: repoName,
       path: 'default-fstab.yaml',
       request: { retries: 5, retryAfter: 2 }, // Override retry settings for this specific request
@@ -99,11 +104,11 @@ export async function createGitHubRepo(githubToken, setStatus, siteName) {
 
     const fstabContent = atob(fstabData.content);
     const updatedFstab = fstabContent
-      .replace(/{org}/g, forkData.owner.login)
+      .replace(/{org}/g, orgName)
       .replace(/{site}/g, repoName);
 
     await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-      owner: forkData.owner.login,
+      owner: orgName,
       repo: repoName,
       path: 'fstab.yaml',
       message: 'Update fstab.yaml with new repository path',
@@ -113,17 +118,17 @@ export async function createGitHubRepo(githubToken, setStatus, siteName) {
 
     // Update config.json with retries
     const { data: configData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: forkData.owner.login,
+      owner: orgName,
       repo: repoName,
       path: 'demo-config.json',
       request: { retries: 5, retryAfter: 2 }, // Override retry settings for this specific request
     });
 
     const configContent = atob(configData.content);
-    const updatedConfig = configContent.replace(/hlxsites\/aem-boilerplate-commerce/g, `${forkData.owner.login}/${repoName}`);
+    const updatedConfig = configContent.replace(/hlxsites\/aem-boilerplate-commerce/g, `${orgName}/${repoName}`);
 
     await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-      owner: forkData.owner.login,
+      owner: orgName,
       repo: repoName,
       path: 'config.json',
       message: 'Update config.json with new repository path',
@@ -133,16 +138,16 @@ export async function createGitHubRepo(githubToken, setStatus, siteName) {
 
     // Update sidekick config with retries
     const { data: sidekickData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: forkData.owner.login,
+      owner: orgName,
       repo: repoName,
       path: 'demo-sidekick.json',
       request: { retries: 5, retryAfter: 2 }, // Override retry settings for this specific request
     });
     const sidekickContent = atob(sidekickData.content);
-    const updatedSidekick = sidekickContent.replace(/hlxsites\/aem-boilerplate-commerce/g, `${forkData.owner.login}/${repoName}`);
+    const updatedSidekick = sidekickContent.replace(/hlxsites\/aem-boilerplate-commerce/g, `${orgName}/${repoName}`);
 
     await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-      owner: forkData.owner.login,
+      owner: orgName,
       repo: repoName,
       path: 'tools/sidekick/config.json',
       message: 'Update sidekick config with new repository path',
@@ -152,7 +157,7 @@ export async function createGitHubRepo(githubToken, setStatus, siteName) {
 
     return {
       repoCreated: true,
-      owner: forkData.owner.login,
+      owner: orgName,
       repo: repoName,
     };
   } catch (error) {
