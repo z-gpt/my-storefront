@@ -263,14 +263,15 @@ export async function createSite(data, setStatus) {
     verifyAuthentication();
   }
 
-  setStatus({ message: 'Copying content.' });
-  await copyContent(data, setStatus);
   setStatus({ message: 'Checking code bus.' });
   const codeBusSynced = await checkCodeBus(data);
 
   if (!codeBusSynced) {
     return SITE_CREATION_STATUS.NO_CODE_BUS;
   }
+
+  setStatus({ message: 'Copying content.' });
+  await copyContent(data, setStatus);
 
   setStatus({ message: 'Previewing pages.' });
   try {

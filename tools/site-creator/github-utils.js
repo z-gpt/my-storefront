@@ -74,15 +74,21 @@ export async function createGitHubRepo(githubToken, setStatus, siteName, orgName
     }
 
     // Create fork of template repository. hlxsites currently disallows templating via OAuth.
-    await octokit.request('POST /repos/{owner}/{repo}/forks', {
+    const forkParams = {
       owner: TEMPLATE_REPO.split('/')[0],
       repo: TEMPLATE_REPO.split('/')[1],
       name: repoName,
-      organization: orgName, // Specify the target organization
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
       },
-    });
+    };
+
+    // Only include organization if it's different from user's login
+    if (orgName !== user.login) {
+      forkParams.organization = orgName;
+    }
+
+    await octokit.request('POST /repos/{owner}/{repo}/forks', forkParams);
 
     // Add a small delay to allow fork to complete
     await new Promise((resolve) => { setTimeout(resolve, 2000); });
