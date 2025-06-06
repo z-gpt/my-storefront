@@ -44,6 +44,7 @@ class SiteCreator extends LitElement {
     _githubUser: { state: true },
     _repoCreated: { state: true },
     _appInstalled: { state: true },
+    _siteName: { state: true },
   };
 
   async connectedCallback() {
@@ -59,6 +60,8 @@ class SiteCreator extends LitElement {
         const octokit = createOctokit(savedToken);
         const { data: user } = await octokit.request('GET /user');
         this._githubUser = user;
+        // Set initial site name based on username
+        this._siteName = `${user.login}-storefront`;
       } catch (error) {
         // If token is invalid, clear it
         sessionStorage.removeItem('github_token');
@@ -81,6 +84,8 @@ class SiteCreator extends LitElement {
             const octokit = createOctokit(credential.accessToken);
             const { data: user } = await octokit.request('GET /user');
             this._githubUser = user;
+            // Set initial site name based on username
+            this._siteName = `${user.login}-storefront`;
           }
         }
       }
@@ -121,7 +126,7 @@ class SiteCreator extends LitElement {
       this._appInstalled = false;
 
       const setStatus = (status) => { this._status = status; };
-      const result = await createGitHubRepo(this._githubToken, setStatus);
+      const result = await createGitHubRepo(this._githubToken, setStatus, this._siteName);
       this._repoCreated = result.repoCreated;
       this._data = {
         ...this._data,
@@ -334,7 +339,7 @@ mountpoints:
   renderForm() {
     return html`
       <form @submit=${this.handleSubmit}>
-        ${!this._githubToken ? html`
+        ${!this._githubUser ? html`
           <div class="fieldgroup">
             <h2>Connect with GitHub</h2>
             <p>To create your site, you'll need to connect with GitHub first.</p>
@@ -358,13 +363,24 @@ mountpoints:
                 </sl-button>
               </div>
             ` : html`
+              <div class="fieldgroup">
+                <label for="siteName">Site Name</label>
+                <sl-input
+                  id="siteName"
+                  name="siteName"
+                  placeholder="Enter your site name"
+                  value=${this._siteName || ''}
+                  @input=${(e) => { this._siteName = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'); }}
+                  required
+                ></sl-input>
+                <p>This will be used as your repository name. Use only lowercase letters, numbers, and hyphens.</p>
+              </div>
               <div class="form-footer">
                 <div class="time-actions">
                   <p>${this._time}</p>
                   <sl-button
                     ?disabled=${this._loading}
                     @click=${this.handleSubmit}
-                    style="pointer-events: ${this._loading ? 'none' : 'auto'}"
                   >
                     ${this._loading ? 'Creating site...' : 'Create site'}
                   </sl-button>

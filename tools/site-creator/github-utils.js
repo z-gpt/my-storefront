@@ -18,43 +18,38 @@ const createOctokit = (token) => new MyOctokit({
 
 const TEMPLATE_REPO = 'hlxsites/aem-boilerplate-commerce';
 
-export async function createGitHubRepo(githubToken, setStatus) {
-  let _newlyCreatedRepo = false;
+export async function createGitHubRepo(githubToken, setStatus, siteName) {
   let user;
-  let defaultRepoName;
+  let repoName;
 
   try {
     const octokit = createOctokit(githubToken);
 
-    // Get user info to determine default repo name
+    // Get user info
     const { data: userData } = await octokit.request('GET /user');
     user = userData;
-    defaultRepoName = `${user.login}-commerce`;
+    repoName = siteName;
 
     // Check if repo already exists
     try {
       await octokit.request('GET /repos/{owner}/{repo}', {
         owner: user.login,
-        repo: defaultRepoName,
+        repo: repoName,
         request: { retries: 0 }, // Don't retry this check
       });
-      // If we get here, repo exists - don't mark as newly created
-      _newlyCreatedRepo = false;
     } catch (error) {
       if (error.status === 404) {
         // Repo doesn't exist, we'll create it
-        _newlyCreatedRepo = true;
       } else {
         throw error;
       }
     }
 
-    // Create fork of template repository
+    // Create fork of template repository. hlxsites currently disallows templating via OAuth.
     const { data: forkData } = await octokit.request('POST /repos/{owner}/{repo}/forks', {
       owner: TEMPLATE_REPO.split('/')[0],
       repo: TEMPLATE_REPO.split('/')[1],
-      name: defaultRepoName,
-      default_branch_only: true,
+      name: repoName,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
       },
@@ -66,14 +61,14 @@ export async function createGitHubRepo(githubToken, setStatus) {
     // Get default branch
     const { data: repoData } = await octokit.request('GET /repos/{owner}/{repo}', {
       owner: forkData.owner.login,
-      repo: defaultRepoName,
+      repo: repoName,
     });
     const defaultBranch = repoData.default_branch;
 
     // Update fstab.yaml with retries
     const { data: fstabData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: forkData.owner.login,
-      repo: defaultRepoName,
+      repo: repoName,
       path: 'default-fstab.yaml',
       request: { retries: 5, retryAfter: 2 }, // Override retry settings for this specific request
     });
@@ -81,11 +76,11 @@ export async function createGitHubRepo(githubToken, setStatus) {
     const fstabContent = atob(fstabData.content);
     const updatedFstab = fstabContent
       .replace(/{org}/g, forkData.owner.login)
-      .replace(/{site}/g, defaultRepoName);
+      .replace(/{site}/g, repoName);
 
     await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
       owner: forkData.owner.login,
-      repo: defaultRepoName,
+      repo: repoName,
       path: 'fstab.yaml',
       message: 'Update fstab.yaml with new repository path',
       content: btoa(updatedFstab),
@@ -95,17 +90,17 @@ export async function createGitHubRepo(githubToken, setStatus) {
     // Update config.json with retries
     const { data: configData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: forkData.owner.login,
-      repo: defaultRepoName,
+      repo: repoName,
       path: 'demo-config.json',
       request: { retries: 5, retryAfter: 2 }, // Override retry settings for this specific request
     });
 
     const configContent = atob(configData.content);
-    const updatedConfig = configContent.replace(/hlxsites\/aem-boilerplate-commerce/g, `${forkData.owner.login}/${defaultRepoName}`);
+    const updatedConfig = configContent.replace(/hlxsites\/aem-boilerplate-commerce/g, `${forkData.owner.login}/${repoName}`);
 
     await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
       owner: forkData.owner.login,
-      repo: defaultRepoName,
+      repo: repoName,
       path: 'config.json',
       message: 'Update config.json with new repository path',
       content: btoa(updatedConfig),
@@ -115,16 +110,16 @@ export async function createGitHubRepo(githubToken, setStatus) {
     // Update sidekick config with retries
     const { data: sidekickData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: forkData.owner.login,
-      repo: defaultRepoName,
+      repo: repoName,
       path: 'demo-sidekick.json',
       request: { retries: 5, retryAfter: 2 }, // Override retry settings for this specific request
     });
     const sidekickContent = atob(sidekickData.content);
-    const updatedSidekick = sidekickContent.replace(/hlxsites\/aem-boilerplate-commerce/g, `${forkData.owner.login}/${defaultRepoName}`);
+    const updatedSidekick = sidekickContent.replace(/hlxsites\/aem-boilerplate-commerce/g, `${forkData.owner.login}/${repoName}`);
 
     await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
       owner: forkData.owner.login,
-      repo: defaultRepoName,
+      repo: repoName,
       path: 'tools/sidekick/config.json',
       message: 'Update sidekick config with new repository path',
       content: btoa(updatedSidekick),
@@ -133,9 +128,8 @@ export async function createGitHubRepo(githubToken, setStatus) {
 
     return {
       repoCreated: true,
-      newlyCreatedRepo: _newlyCreatedRepo,
       owner: forkData.owner.login,
-      repo: defaultRepoName,
+      repo: repoName,
     };
   } catch (error) {
     setStatus({ type: 'error', message: `Failed to create GitHub repository: ${error.message}` });
