@@ -395,7 +395,8 @@ mountpoints:
               .value=${this._orgName || ''}
               placeholder=${this._repoMode === 'existing' ? 'my-org' : ''}
               @input=${(e) => { this._orgName = e.target.value; }}
-              required>
+              required
+              ?disabled=${this._loading}>
           </div>
 
           <div class="form-group">
@@ -404,10 +405,11 @@ mountpoints:
               .value=${this._siteName || ''}
               placeholder=${this._repoMode === 'existing' ? 'my-storefront' : ''}
               @input=${(e) => { this._siteName = e.target.value; }}
-              required>
+              required
+              ?disabled=${this._loading}>
           </div>
 
-          ${this._repoCreated ? html`
+          ${(this._repoCreated && !this._appInstalled) ? html`
             <div class="app-installation-panel">
               <h3>Install AEM Code Sync App</h3>
               <p>Your repository has been created. Please install the AEM Code Sync app to continue. Make sure to select "Only select repositories"!</p>
