@@ -209,6 +209,7 @@ class SiteCreator extends LitElement {
         const setStatus = (status) => { this._status = status; };
         this._publishStatus = await createSite(this._data, setStatus);
         this._status = { type: 'success', message: 'Site created successfully!' };
+        this._appInstalled = true; // Set app installed to true for existing repository mode
       }
     } catch (err) {
       if (err.message !== 'EXISTING_FORK') {
