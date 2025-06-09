@@ -32,8 +32,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const githubProvider = new GithubAuthProvider();
-githubProvider.addScope('repo');
-githubProvider.addScope('workflow');
+githubProvider.addScope('public_repo');
 
 class SiteCreator extends LitElement {
   static properties = {
