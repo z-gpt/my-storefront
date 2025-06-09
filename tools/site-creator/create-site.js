@@ -273,6 +273,9 @@ export async function createSite(data, setStatus) {
   setStatus({ message: 'Copying content.' });
   await copyContent(data, setStatus);
 
+  // Wait a couple seconds to ensure content is available.
+  await new Promise((resolve) => { setTimeout(resolve, 2000); });
+
   setStatus({ message: 'Previewing pages.' });
   try {
     await previewOrPublishPages(data, 'preview', setStatus);

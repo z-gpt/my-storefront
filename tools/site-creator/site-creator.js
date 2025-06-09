@@ -357,12 +357,9 @@ mountpoints:
                 ?checked=${this._repoMode === 'new'}
                 @change=${(e) => {
     this._repoMode = e.target.value;
-    if (this._repoMode === 'new' && this._githubUser) {
+    if (this._githubUser) {
       this._orgName = this._githubUser.login;
       this._siteName = 'my-storefront';
-    } else if (this._repoMode === 'existing') {
-      this._orgName = '';
-      this._siteName = '';
     }
   }}>
               Create New Repository
@@ -372,12 +369,9 @@ mountpoints:
                 ?checked=${this._repoMode === 'existing'}
                 @change=${(e) => {
     this._repoMode = e.target.value;
-    if (this._repoMode === 'new' && this._githubUser) {
+    if (this._githubUser) {
       this._orgName = this._githubUser.login;
       this._siteName = 'my-storefront';
-    } else if (this._repoMode === 'existing') {
-      this._orgName = '';
-      this._siteName = '';
     }
   }}>
               Use Existing Repository
