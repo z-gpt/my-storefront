@@ -41,8 +41,8 @@ async function initAnalytics() {
       );
 
       // Load events SDK and collector
-      import('./__/@adobe/magento-storefront-events-sdk/dist/index.js');
-      import('./__/@adobe/magento-storefront-event-collector/dist/index.js');
+      import('./__/__adobe/magento-storefront-events-sdk/dist/index.js');
+      import('./__/__adobe/magento-storefront-event-collector/dist/index.js');
     }
   } catch (error) {
     console.warn('Error initializing analytics', error);

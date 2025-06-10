@@ -38,7 +38,9 @@ async function copyLibrary(library) {
     return;
   }
 
-  const targetPath = path.join(librariesDir, libraryName);
+  // Replace @ symbol with __ for CDN compatibility
+  const sanitizedLibraryName = libraryName.replace('@', '__');
+  const targetPath = path.join(librariesDir, sanitizedLibraryName);
 
   // Ensure target directory exists
   fs.mkdirSync(targetPath, { recursive: true });
