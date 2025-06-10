@@ -110,14 +110,21 @@ npm install your-library-name@^1.0.0
 ```json
 {
   "libraries": [
-    "your-library-name"
+    {
+      "name": "your-library-name",
+      "include": ["dist/**/*"]
+    }
   ]
 }
 ```
 
+**Configuration Options:**
+- `name`: The npm package name (must match the name in dependencies)
+- `include`: Array of glob patterns for files to include (supports globbing like `**/*`, `dist/*.js`, etc.)
+
 **Copy front-end libraries:**
 
-The `postinstall` script automatically copies files from `node_modules` to the specified path in the libraries configuration, making them available for Edge Delivery Services to serve. This replaces the manual copying process used with drop-in dependencies.
+The `postinstall` script automatically copies specified files from `node_modules` to `scripts/__/[package-name]/` making them available for Edge Delivery Services to serve. This gives you fine-grained control over which files are copied.
 
 ```bash
 npm run postinstall
@@ -126,7 +133,7 @@ npm run postinstall
 **Import and use in your code:**
 
 ```javascript
-import { someFunction } from '/scripts/__/your-library-name/index.js';
+import { someFunction } from './scripts/__/your-library-name/dist/index.js';
 ```
 
 ## Updating Drop-in dependencies
