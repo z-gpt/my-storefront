@@ -48,12 +48,14 @@ class SiteCreator extends LitElement {
     _siteName: { state: true },
     _orgName: { state: true },
     _repoMode: { state: true },
+    _installLinkClicked: { state: true },
   };
 
   async connectedCallback() {
     super.connectedCallback();
     this.shadowRoot.adoptedStyleSheets = [style];
     this._repoMode = 'new'; // Default to new repository mode
+    this._installLinkClicked = false;
 
     // Check for existing token in session storage
     const savedToken = sessionStorage.getItem('github_token');
@@ -408,10 +410,10 @@ mountpoints:
             <div class="app-installation-panel">
               <h3>Install AEM Code Sync App</h3>
               <p>Your repository has been created. Please install the AEM Code Sync app to continue. Make sure to select "Only select repositories"!</p>
-              <p><a href="https://github.com/apps/aem-code-sync/installations/select_target" target="_blank">Install AEM Code Sync App</a></p>
+              <p><a href="https://github.com/apps/aem-code-sync/installations/select_target" target="_blank" @click=${() => { this._installLinkClicked = true; }}>Install AEM Code Sync App</a></p>
               <button
                 type="button"
-                ?disabled=${this._loading}
+                ?disabled=${this._loading || !this._installLinkClicked}
                 @click=${this.handleAppInstallation}
               >
                 ${this._loading ? 'Processing...' : 'Continue'}
