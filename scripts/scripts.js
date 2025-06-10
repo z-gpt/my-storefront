@@ -337,7 +337,7 @@ async function loadLazy(doc) {
     loadFooter(doc.querySelector('footer')),
     loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`),
     loadFonts(),
-    import('./acdl/adobe-client-data-layer.min.js'),
+    import('./__/@adobe/adobe-client-data-layer/dist/adobe-client-data-layer.min.js'),
   ]);
 
   if (sessionStorage.getItem('acdl:debug')) {

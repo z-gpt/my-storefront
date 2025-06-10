@@ -32,6 +32,7 @@
     "@dropins/storefront-pdp",
     "@dropins/storefront-wishlist",
     "@dropins/tools",
+    "@adobe/adobe-client-data-layer",
     "@adobe/magento-storefront-event-collector",
     "@adobe/magento-storefront-events-sdk"
   ],
@@ -46,6 +47,7 @@
     "stylelint-config-standard": "36.0.1"
   },
   "dependencies": {
+    "@adobe/adobe-client-data-layer": "^2.0.2",
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
     "@dropins/storefront-account": "~1.0.6",

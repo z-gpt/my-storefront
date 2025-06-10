@@ -99,28 +99,35 @@ npm i
 
 To add a new front-end NPM dependency:
 
-1. **Add the dependency to the libraries section in `package.json`:**
-   ```json
-   {
-     "libraries": [
-       "your-library-name"
-     ]
-   }
-   ```
+**Install the dependency:**
 
-2. **Install the dependency:**
-  
-   ```bash
-   npm install your-library-name@^1.0.0
-   ```
+```bash
+npm install your-library-name@^1.0.0
+```
 
-3. **Import and use in your code:**
-   ```javascript
-   import { someFunction } from '/scripts/lib/your-library-name/index.js';
-   ```
+**Add the dependency to the libraries section in `package.json`:**
 
-**Note:** The `postinstall` script automatically copies files from `node_modules` to the specified path in the libraries configuration, making them available for Edge Delivery Services to serve. This replaces the manual copying process used with drop-in dependencies.
+```json
+{
+  "libraries": [
+    "your-library-name"
+  ]
+}
+```
 
+**Copy front-end libraries:**
+
+The `postinstall` script automatically copies files from `node_modules` to the specified path in the libraries configuration, making them available for Edge Delivery Services to serve. This replaces the manual copying process used with drop-in dependencies.
+
+```bash
+npm run postinstall
+```
+
+**Import and use in your code:**
+
+```javascript
+import { someFunction } from '/scripts/__/your-library-name/index.js';
+```
 
 ## Updating Drop-in dependencies
 
