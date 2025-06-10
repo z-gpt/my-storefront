@@ -95,13 +95,40 @@ After you onboard to config service you can delete fstab.yaml and [other files](
 npm i
 ```
 
+## Adding a new front-end NPM dependency
+
+To add a new front-end NPM dependency:
+
+1. **Add the dependency to the libraries section in `package.json`:**
+   ```json
+   {
+     "libraries": [
+       "your-library-name"
+     ]
+   }
+   ```
+
+2. **Install the dependency:**
+  
+   ```bash
+   npm install your-library-name@^1.0.0
+   ```
+
+3. **Import and use in your code:**
+   ```javascript
+   import { someFunction } from '/scripts/lib/your-library-name/index.js';
+   ```
+
+**Note:** The `postinstall` script automatically copies files from `node_modules` to the specified path in the libraries configuration, making them available for Edge Delivery Services to serve. This replaces the manual copying process used with drop-in dependencies.
+
+
 ## Updating Drop-in dependencies
 
-You may need to update one of the drop-in components, or `@adobe/magento-storefront-event-collector` or `@adobe/magento-storefront-events-sdk` to a new version. Besides checking the release notes for any breaking changes, ensure you also execute the `postinstall` script so that the dependenices in your `scripts/__dropins__` directory are updated to the latest build. This should be run immediately after you update the component, for example:
+You may need to update one of the drop-in components to a new version. Besides checking the release notes for any breaking changes, ensure you also execute the `postinstall` script so that the dependenices in your `scripts/__` directory are updated to the latest build. This should be run immediately after you update the component, for example:
 
 ```
 npm install @dropins/storefront-cart@2.0. # Updates the storefront-cart dependency in node_modules/
-npm run postinstall # Copies scripts from node_modules into scripts/__dropins__
+npm run postinstall # Copies scripts from node_modules into scripts/__
 ```
 
 This is a custom script which copies files out of `node_modules` and into a local directory which EDS can serve. You must manually run `postinstall` due to a design choice in `npm` which does not execute `postinstall` after you install a _specific_ package.

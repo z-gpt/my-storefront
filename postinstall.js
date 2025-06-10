@@ -1,43 +1,54 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import/extensions, no-console */
 const fs = require('fs');
 const path = require('path');
-const { dependencies } = require('./package.json');
+const { dependencies, libraries } = require('./package.json');
 
-// Define the dropins folder
-const dropinsDir = path.join('scripts', '__dropins__');
+// Define the libraries folder
+const librariesDir = path.join('scripts', '__');
 
-// Remove existing dropins folder
-if (fs.existsSync(dropinsDir)) {
-  fs.rmSync(dropinsDir, { recursive: true });
+// Remove existing libraries folder
+if (fs.existsSync(librariesDir)) {
+  fs.rmSync(librariesDir, { recursive: true });
 }
 
-// Create scripts/__dropins__ directory if not exists
-fs.mkdirSync(dropinsDir, { recursive: true });
+// Create scripts/__ directory if not exists
+fs.mkdirSync(librariesDir, { recursive: true });
 
-// Copy specified files from node_modules/@dropins to scripts/__dropins__
-fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) => {
-  // Skip if package is not in package.json dependencies / skip devDependencies
-  if (!dependencies[`@dropins/${file.name}`]) {
+/**
+ * Copies a library package to the libraries directory
+ * @param {string} libraryName - The package name (e.g., '@dropins/storefront-cart')
+ */
+function copyLibrary(libraryName) {
+  // Skip if package is not in package.json dependencies
+  if (!dependencies[libraryName]) {
+    console.warn(`⚠️  Library ${libraryName} not found in dependencies, skipping...`);
     return;
   }
 
-  // Skip if is not folder
-  if (!file.isDirectory()) {
+  const packagePath = path.join('node_modules', libraryName);
+
+  // Check if the package exists in node_modules
+  if (!fs.existsSync(packagePath)) {
+    console.warn(`⚠️  Package ${libraryName} not found in node_modules, skipping...`);
     return;
   }
-  fs.cpSync(path.join('node_modules', '@dropins', file.name), path.join(dropinsDir, file.name), {
+
+  // Copy entire package directory to maintain full structure
+  const targetPath = path.join(librariesDir, libraryName);
+  fs.cpSync(packagePath, targetPath, {
     recursive: true,
     filter: (src) => (!src.endsWith('package.json')),
   });
-});
+  console.log(`✅ Copied ${libraryName} to ${targetPath}`);
+}
 
-// Other files to copy
-[
-  { from: '@adobe/magento-storefront-event-collector/dist/index.js', to: 'commerce-events-collector.js' },
-  { from: '@adobe/magento-storefront-events-sdk/dist/index.js', to: 'commerce-events-sdk.js' },
-].forEach((file) => {
-  fs.copyFileSync(path.resolve(__dirname, 'node_modules', file.from), path.resolve(__dirname, 'scripts', file.to));
-});
+// Process all libraries from configuration
+if (libraries && Array.isArray(libraries)) {
+  console.log('📦 Processing configured libraries...\n');
+  libraries.forEach(copyLibrary);
+} else {
+  console.warn('⚠️  No libraries configuration found in package.json');
+}
 
 function checkPackageLockForArtifactory() {
   return new Promise((resolve, reject) => {
@@ -76,7 +87,7 @@ checkSourceMaps();
 checkPackageLockForArtifactory()
   .then((found) => {
     if (!found) {
-      console.info('✅ Drop-ins installed successfully!', '\n');
+      console.info('🎉 Drop-ins installed successfully!', '\n');
       process.exit(0);
     } else {
       console.error('🚨 Fix artifactory references before committing! 🚨');

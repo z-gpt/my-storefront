@@ -240,16 +240,16 @@ async function loadEager(doc) {
     await import('./initializers/pdp.js');
 
     // Preload PDP Dropins assets
-    preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductHeader.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductPrice.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductShortDescription.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductOptions.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductQuantity.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/api.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/render.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/containers/ProductHeader.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/containers/ProductPrice.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/containers/ProductShortDescription.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/containers/ProductOptions.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/containers/ProductQuantity.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/containers/ProductDescription.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/containers/ProductAttributes.js', 'script');
+    preloadFile('/scripts/__/@dropins/storefront-pdp/containers/ProductGallery.js', 'script');
   } else if (document.body.querySelector('main .product-list-page')) {
     pageType = 'Category';
     preloadFile('/scripts/widgets/search.js', 'script');
