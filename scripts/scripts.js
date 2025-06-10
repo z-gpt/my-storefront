@@ -311,7 +311,7 @@ function parseProductOptions(html) {
   const doc = html;
   const options = [];
   doc.querySelectorAll('div:has(#options) > div > ul > li').forEach((optionElement) => {
-    const [title, id, required] = Array.from(optionElement.querySelectorAll(':scope > ul > li > p')).map((p) => p.innerText);
+    const [title, id, required] = Array.from(optionElement.querySelectorAll(':scope > p')).map((p) => p.innerText);
     const option = {
       id,
       type: 'dropdown', //  SSG: Is this always supposed to be a dropdown? If not, how do we figure out the type?
