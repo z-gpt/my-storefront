@@ -267,6 +267,28 @@ export default async function decorate(block) {
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
 
+  // Handle option changes
+  events.on('pdp/values', () => {
+    if (wishlistToggleBtn) {
+      const configValues = pdpApi.getProductConfigurationValues();
+
+      // Check URL parameter for empty optionsUIDs
+      const urlOptionsUIDs = urlParams.get('optionsUIDs');
+
+      // If URL has empty optionsUIDs parameter, treat as base product (no options)
+      const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
+
+      // Re-render the WishlistToggle with updated product
+      wishlistToggleBtn.innerHTML = '';
+      wishlistRender.render(WishlistToggle, {
+        product: {
+          ...product,
+          optionUIDs: optionUIDs,
+        },
+      })($wishlistToggleBtn);
+    }
+  }, { eager: true });
+
   events.on('cart/updated', async (data) => {
     const item = getWishlistItemFromStorage(product.sku);
     if (!item) {
