@@ -21,7 +21,7 @@ import {
   loadCSS,
   sampleRUM,
 } from './aem.js';
-import { trackHistory } from './commerce.js';
+import { getProductPrice, trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 import { removeHashTags } from './api/hashtags/parser.js';
 import { initializeConfig, getRootPath, getListOfRootPaths } from './configs.js';
@@ -364,12 +364,30 @@ async function parseSsgData() {
     options: parseProductOptions(productDetails),
   };
 
-  // TODO SSG: Use SSG data as fallback or update template in aem-commerce-ssg?
   const priceData = parseProductPrice(productDetails);
   if (priceData) {
     pageData.price = priceData;
   } else {
-    // Make call to commerce API to get price data
+    if (!window.getProductPromise) {
+      window.getProductPromise = getProductPrice(metaData.sku);
+    }
+    const product = await window.getProductPromise;
+    console.log('SSG product data', product);
+    if (product.price)  {
+      pageData.price = {
+        type: 'simple', 
+        value: Math.min(product.price.regular.amount.value, product.price.final.amount.value), 
+        currency: product.price.regular.amount.currency,
+      };
+    }
+    if (product.priceRange) {
+      pageData.price = {
+        type: 'range',
+        minimum: Math.min(product.priceRange.minimum.regular.amount.value, product.priceRange.minimum.final.amount.value),
+        maximum: Math.min(product.priceRange.maximum.regular.amount.value, product.priceRange.maximum.final.amount.value),
+        currency: product.priceRange.minimum.regular.amount.currency,
+      };
+    }
   }
 
   window.product = {

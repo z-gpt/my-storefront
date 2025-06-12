@@ -88,6 +88,27 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
   }
 }`;
 
+export const productDetailPriceQuery = `query ProductQuery($sku: String!) {
+  products(skus: [$sku]) {
+    ... on SimpleProductView {
+      price {
+        ...priceFields
+      }
+    }
+    ... on ComplexProductView {
+      priceRange {
+        maximum {
+          ...priceFields
+        }
+        minimum {
+          ...priceFields
+        }
+      }
+    }
+  }
+}
+${priceFieldsFragment}`;
+
 export async function commerceEndpointWithQueryParams() {
   const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
   // Set some query parameters for use as a cache-buster. No other purpose.
@@ -342,4 +363,24 @@ export function mapProductAcdl(product) {
 
 export function getProductSku() {
   return getMetadata('sku') || getSkuFromUrl();
+}
+
+const productsCache = {};
+export async function getProductPrice(sku) {
+  // eslint-disable-next-line no-param-reassign
+  sku = sku.toUpperCase();
+  if (productsCache[sku]) {
+    return productsCache[sku];
+  }
+  const rawProductPromise = performCatalogServiceQuery(productDetailPriceQuery, { sku });
+  const productPromise = rawProductPromise.then((productData) => {
+    if (!productData?.products?.[0]) {
+      return null;
+    }
+    
+    return productData?.products?.[0];
+  });
+
+  productsCache[sku] = productPromise;
+  return productPromise;
 }
