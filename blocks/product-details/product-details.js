@@ -283,7 +283,7 @@ export default async function decorate(block) {
       wishlistRender.render(WishlistToggle, {
         product: {
           ...product,
-          optionUIDs: optionUIDs,
+          optionUIDs,
         },
       })($wishlistToggleBtn);
     }
