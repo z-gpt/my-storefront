@@ -1,3 +1,4 @@
+import { initializeConfig, getRootPath, getListOfRootPaths } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import {
   buildBlock,
@@ -14,9 +15,8 @@ import {
   loadSections,
   loadCSS,
 } from './aem.js';
-import { trackHistory } from './commerce.js';
+import { getConfigFromSession, trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
-import { initializeConfig, getRootPath, getListOfRootPaths } from './configs.js';
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -209,8 +209,16 @@ async function loadEager(doc) {
     const { category, urlpath } = readBlockConfig(plpBlock);
 
     if (category && urlpath) {
-      const { preloadCategory } = await import('../blocks/product-list-page-custom/product-list-page-custom.js');
-      preloadCategory({ id: category, urlPath: urlpath });
+      try {
+        const module = await import('../blocks/product-list-page-custom/product-list-page-custom.js');
+        if (module.preloadCategory && typeof module.preloadCategory === 'function') {
+          module.preloadCategory({ id: category, urlPath: urlpath });
+        } else {
+          console.warn('preloadCategory function not found in product-list-page-custom module');
+        }
+      } catch (error) {
+        console.error('Failed to import or execute preloadCategory:', error);
+      }
     }
   } else if (document.body.querySelector('main .commerce-cart')) {
     pageType = 'Cart';
@@ -372,7 +380,7 @@ export function getConsent(topic) {
 }
 
 async function loadPage() {
-  await initializeConfig();
+  await initializeConfig(await getConfigFromSession());
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
