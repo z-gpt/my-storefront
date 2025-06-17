@@ -20,7 +20,7 @@
         "environment": "Production",
         "store-id": 1,
         "store-name": "Main Website Store",
-        "store-url": "https://main--commerce-eds--shiftedreality.aem.live",
+        "store-url": "https://commerce-demo--aem-boilerplate-commerce--hlxsites.aem.live/",
         "store-view-id": 1,
         "store-view-name": "Default Store View",
         "website-id": 1,
