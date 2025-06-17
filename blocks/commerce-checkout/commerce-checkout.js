@@ -212,7 +212,6 @@ export default async function decorate(block) {
           <div class="checkout__block checkout__bill-to-shipping"></div>
           <div class="checkout__block checkout__delivery"></div>
           <div class="checkout__block checkout__payment-methods"></div>
-          <div class="checkout__block checkout__adyen-card" id="card-container"></div>
           <div class="checkout__block checkout__billing-form"></div>
           <div class="checkout__block checkout__terms-and-conditions"></div>
           <div class="checkout__block checkout__place-order"></div>
@@ -384,15 +383,11 @@ export default async function decorate(block) {
           "adyen_cc": {
             autoSync: false,
             render: async (ctx) => {
-              // TODO card container should be a slot
-              const $adyen = document.createElement('div');
-              ctx.replaceHTML($adyen);
+              const $adyenCardContainer = document.createElement('div');
+              $adyenCardContainer.id = 'card-container';
               const checkout = await AdyenCheckout({
                 ...globalConfiguration,
                 onSubmit: async (state, component) => {
-                  console.log('state', state);
-                  console.log('component', component);
-                  // Handler for when the payment form is submitted
                   const additionalData = {
                     stateData: JSON.stringify(state.data),
                   };
@@ -416,7 +411,10 @@ export default async function decorate(block) {
                   }
                 },
               });
-              adyenCard = new Card(checkout, { showPayButton: false }).mount('#card-container');
+              setTimeout(() => {
+                adyenCard = new Card(checkout, { showPayButton: false }).mount('#card-container');
+              }, 0);
+              ctx.replaceHTML($adyenCardContainer);
             },
           },
           [PaymentMethodCode.CREDIT_CARD]: {
