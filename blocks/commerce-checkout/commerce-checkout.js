@@ -416,7 +416,7 @@ export default async function decorate(block) {
                   }
                 },
               });
-              adyenCard = new Card(checkout).mount('#card-container');
+              adyenCard = new Card(checkout, { showPayButton: false }).mount('#card-container');
             },
           },
           [PaymentMethodCode.CREDIT_CARD]: {
