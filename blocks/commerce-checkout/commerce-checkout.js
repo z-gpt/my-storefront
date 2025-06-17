@@ -64,6 +64,14 @@ import CreditCard from '@dropins/storefront-payment-services/containers/CreditCa
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
+import { AdyenCheckout, Dropin } from '@adyen/adyen-web/auto/auto.js';
+
+
+
+// Adyen Node API Library v18.0.0
+// Require the parts of the module you want to use
+import { Client, CheckoutAPI, Types } from "@adyen/api-library";
+
 // Block-level
 import createModal from '../modal/modal.js';
 
@@ -78,11 +86,39 @@ import {
 
 import { authPrivacyPolicyConsentSlot, SUPPORT_PATH, fetchPlaceholders } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { loadCSS } from '../../scripts/aem.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
+
+
+function createAdyenCheckoutSession() {
+  // Initialize the client object
+  // For the live environment, additionally include your liveEndpointUrlPrefix.
+  const client = new Client({apiKey: "AQExhmfxJorLbBNKw0m/n3Q5qf3VaY9CD5ZrW2ZZ03a/xjMYfOcZqYhyX5xEnGlXyTEbhBDBXVsNvuR83LVYjEgiTGAH-ZWb2SB7UAm5MHDfn5q4oIq+6xyZL/pbiwdFyAYqIGZw=-LR%L^:b:>;[5j;Y7", environment: "TEST"});
+
+  // Create the request object(s)
+  const amount = {
+    currency: "EUR",
+    value: 1000
+  };
+
+  const createCheckoutSessionRequest = {
+    reference: "12345",
+    amount: amount,
+    merchantAccount: "AdobeAccount853",
+    countryCode: "US",
+    returnUrl: "https://localhost:3000/order-details?orderRef=12345"
+  };
+
+  // Send the request
+  const checkoutAPI = new CheckoutAPI(client);
+  const response = checkoutAPI.PaymentsApi.sessions(createCheckoutSessionRequest, { idempotencyKey: "UUID" });
+  console.log('adyen response', response);
+  return response;
+}
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -117,9 +153,12 @@ function setMetaTags(dropin) {
   createMetaTag('og:url', window.location.href, 'property');
 }
 
+
 export default async function decorate(block) {
   setMetaTags('Checkout');
   document.title = 'Checkout';
+
+  loadCSS('/scripts/@1adyen/adyen-web/styles/adyen.css');
 
   events.on('order/placed', () => {
     setMetaTags('Order Confirmation');
@@ -133,6 +172,18 @@ export default async function decorate(block) {
   const SHIPPING_ADDRESS_DATA_KEY = `${SHIPPING_FORM_NAME}_addressData`;
   const BILLING_ADDRESS_DATA_KEY = `${BILLING_FORM_NAME}_addressData`;
   const TERMS_AND_CONDITIONS_FORM_NAME = 'checkout-terms-and-conditions__form';
+
+  const globalConfiguration = {
+    clientKey: 'test_UJLHEXDC5JDOZBLAHE7EB4XCAEANSI6H',
+    locale: 'en_US',
+    environment: 'test',
+    countryCode: 'US',
+    session: {id: '1234567890', sessionData: {}},
+    amount: {
+      value: 10000,
+      currency: 'USD',
+    },
+  };
 
   // Define the Layout for the Checkout
   const checkoutFragment = document.createRange().createContextualFragment(`
@@ -317,6 +368,16 @@ export default async function decorate(block) {
     CheckoutProvider.render(PaymentMethods, {
       slots: {
         Methods: {
+          "adyen_cc": {
+            render: async (ctx) => {
+              const $adyen = document.createElement('div');
+              const { AdyenCheckout, Dropin, Card, GooglePay, PayPal  } = window.AdyenWeb;
+              // const response = await createAdyenCheckoutSession();
+              const checkout = await AdyenCheckout(globalConfiguration);
+              console.log('checkout', checkout);
+              ctx.replaceHTML($adyen);
+            },
+          },
           [PaymentMethodCode.CREDIT_CARD]: {
             render: (ctx) => {
               const $creditCard = document.createElement('div');
