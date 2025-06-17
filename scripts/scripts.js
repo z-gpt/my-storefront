@@ -231,8 +231,8 @@ function parseProductName(productDetails) {
 function parseProductImages(productDetails) {
   const imagesHeading = productDetails.querySelector('h2#images');
   const imagesList = imagesHeading?.closest('div')?.nextElementSibling?.querySelector('ul');
-  const images = Array.from(imagesList?.querySelectorAll('li a') || [])
-    .map((link) => link.href);
+  const images = Array.from(imagesList?.querySelectorAll('li img') || [])
+    .map((img) => img.src);
   return images;
 }
 
