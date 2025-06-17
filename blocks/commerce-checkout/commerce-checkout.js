@@ -64,13 +64,7 @@ import CreditCard from '@dropins/storefront-payment-services/containers/CreditCa
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
-import { AdyenCheckout, Dropin } from '@adyen/adyen-web/auto/auto.js';
-
-
-
-// Adyen Node API Library v18.0.0
-// Require the parts of the module you want to use
-import { Client, CheckoutAPI, Types } from "@adyen/api-library";
+import { AdyenCheckout, Card } from '@adyen/adyen-web/auto/auto.js';
 
 // Block-level
 import createModal from '../modal/modal.js';
@@ -93,32 +87,6 @@ import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
-
-function createAdyenCheckoutSession() {
-  // Initialize the client object
-  // For the live environment, additionally include your liveEndpointUrlPrefix.
-  const client = new Client({apiKey: "AQExhmfxJorLbBNKw0m/n3Q5qf3VaY9CD5ZrW2ZZ03a/xjMYfOcZqYhyX5xEnGlXyTEbhBDBXVsNvuR83LVYjEgiTGAH-ZWb2SB7UAm5MHDfn5q4oIq+6xyZL/pbiwdFyAYqIGZw=-LR%L^:b:>;[5j;Y7", environment: "TEST"});
-
-  // Create the request object(s)
-  const amount = {
-    currency: "EUR",
-    value: 1000
-  };
-
-  const createCheckoutSessionRequest = {
-    reference: "12345",
-    amount: amount,
-    merchantAccount: "AdobeAccount853",
-    countryCode: "US",
-    returnUrl: "https://localhost:3000/order-details?orderRef=12345"
-  };
-
-  // Send the request
-  const checkoutAPI = new CheckoutAPI(client);
-  const response = checkoutAPI.PaymentsApi.sessions(createCheckoutSessionRequest, { idempotencyKey: "UUID" });
-  console.log('adyen response', response);
-  return response;
-}
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -158,7 +126,7 @@ export default async function decorate(block) {
   setMetaTags('Checkout');
   document.title = 'Checkout';
 
-  loadCSS('/scripts/@1adyen/adyen-web/styles/adyen.css');
+  loadCSS('/scripts/@adyen/adyen-web/styles/adyen.css');
 
   events.on('order/placed', () => {
     setMetaTags('Order Confirmation');
@@ -178,12 +146,55 @@ export default async function decorate(block) {
     locale: 'en_US',
     environment: 'test',
     countryCode: 'US',
-    session: {id: '1234567890', sessionData: {}},
-    amount: {
-      value: 10000,
-      currency: 'USD',
+    paymentMethodsConfiguration: {
+      card: {
+        hasHolderName: true,
+        holderNameRequired: true,
+      },
     },
+    paymentMethodsResponse: {
+      paymentMethods: [
+        {
+          name: "Cards",
+          type: "scheme",
+          brand: null,
+          brands: [
+            "visa",
+            "mc",
+            "amex",
+            "discover",
+            "cup",
+            "diners"
+          ],
+          configuration: null
+        }
+      ]
+    }
   };
+
+
+  const setPaymentMethodAndPlaceOrderMutation = `
+    mutation setPaymentMethodAndPlaceOrder($cartId: String!, $paymentMethod: PaymentMethodInput!) {
+      setPaymentMethodOnCart(
+      input: {
+        cart_id: $cartId
+        payment_method: $paymentMethod
+      }) {
+        cart  {
+          selected_payment_method {
+            code
+            title
+          }
+        }
+      }
+      placeOrder(input: {cart_id: $cartId}) {
+        orderV2 {
+          number
+          status
+        }
+      }
+    }
+  `;
 
   // Define the Layout for the Checkout
   const checkoutFragment = document.createRange().createContextualFragment(`
@@ -201,6 +212,7 @@ export default async function decorate(block) {
           <div class="checkout__block checkout__bill-to-shipping"></div>
           <div class="checkout__block checkout__delivery"></div>
           <div class="checkout__block checkout__payment-methods"></div>
+          <div class="checkout__block checkout__adyen-card" id="card-container"></div>
           <div class="checkout__block checkout__billing-form"></div>
           <div class="checkout__block checkout__terms-and-conditions"></div>
           <div class="checkout__block checkout__place-order"></div>
@@ -262,6 +274,7 @@ export default async function decorate(block) {
   let billingForm;
   let shippingAddresses;
   let billingAddresses;
+  let adyenCard;
 
   const shippingFormRef = { current: null };
   const billingFormRef = { current: null };
@@ -369,13 +382,41 @@ export default async function decorate(block) {
       slots: {
         Methods: {
           "adyen_cc": {
+            autoSync: false,
             render: async (ctx) => {
+              // TODO card container should be a slot
               const $adyen = document.createElement('div');
-              const { AdyenCheckout, Dropin, Card, GooglePay, PayPal  } = window.AdyenWeb;
-              // const response = await createAdyenCheckoutSession();
-              const checkout = await AdyenCheckout(globalConfiguration);
-              console.log('checkout', checkout);
               ctx.replaceHTML($adyen);
+              const checkout = await AdyenCheckout({
+                ...globalConfiguration,
+                onSubmit: async (state, component) => {
+                  console.log('state', state);
+                  console.log('component', component);
+                  // Handler for when the payment form is submitted
+                  const additionalData = {
+                    stateData: JSON.stringify(state.data),
+                  };
+                  try {
+                    const paymentMethod = {
+                      code: 'adyen_cc',
+                      'adyen_additional_data_cc': additionalData,
+                    };
+                    //await checkoutApi.setPaymentMethod(paymentMethod);
+                    const response = await checkoutApi.fetchGraphQl(setPaymentMethodAndPlaceOrderMutation, {
+                      variables: {
+                        cartId: ctx.cartId,
+                        paymentMethod,
+                      },
+                    });
+                    console.log('response', response);
+                  } catch (e) {
+                    // TODO handle server error
+                    console.error('adyen error', e);
+                    component.setStatus('ready');
+                  }
+                },
+              });
+              adyenCard = new Card(checkout).mount('#card-container');
             },
           },
           [PaymentMethodCode.CREDIT_CARD]: {
@@ -559,6 +600,21 @@ export default async function decorate(block) {
       handlePlaceOrder: async ({ cartId, code }) => {
         await displayOverlaySpinner();
         try {
+          if (code === 'adyen_cc') {
+            if (!adyenCard) {
+              console.error('Adyen card not rendered.');
+              return;
+            }
+            // TODO validate card
+            // if (!adyenCard.validate()) {
+            //   // Adyen card invalid; abort order placement
+            //   return;
+            // }
+
+            // TODO submit card
+            await adyenCard.submit();
+            return;
+          }
           // Payment Services credit card
           if (code === PaymentMethodCode.CREDIT_CARD) {
             if (!creditCardFormRef.current) {
