@@ -413,7 +413,9 @@ export function checkIsAuthenticated() {
  */
 export async function loadThemeConfig() {
   // TODO: only fetch if theme overrides enabled, ie config.themesEnabled?
-  const config = await fetch(`${window.location.origin}/theme.json?sheet=default&sheet=blocks&`).then((res) => res.json());
+  const config = await fetch(`${window.location.origin}/theme.json?sheet=default&sheet=blocks&`).then((res) => res.json()).catch((err) => {
+    console.warn(err);
+  });
   if (config) {
     const tokens = config.data || config.default.data;
 
