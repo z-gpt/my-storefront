@@ -409,16 +409,24 @@ export default async function decorate(block) {
                           paymentMethod,
                         },
                       });
+
                       console.log('response', response);
+
                       if (response.data.placeOrder.errors.length > 0) {
                         throw new Error(
                           response.data.placeOrder.errors[0].message,
                         );
                       }
-                    } catch (e) {
+                      
+                      // Resolve the promise in handlePlaceOrder
+                      adyenCard._orderPromise.resolve();
+                    } catch (error) {
                       // TODO handle server error
-                      console.error('adyen error', e);
-                      component.setStatus('ready');
+                      console.error('adyen error', error);
+                      component.setStatus('error');
+                      
+                      // Reject the promise in handlePlaceOrder
+                      adyenCard._orderPromise.reject(error);
                     }
                   },
                 });
@@ -614,15 +622,13 @@ export default async function decorate(block) {
               console.error('Adyen card not rendered.');
               return;
             }
-            // TODO validate card
-            // if (!adyenCard.validate()) {
-            //   // Adyen card invalid; abort order placement
-            //   return;
-            // }
 
-            // TODO submit card
-            await adyenCard.submit().catch((error) => {
-              throw error;
+            // Create a promise that resolves/rejects based on the onSubmit callback
+            await new Promise((resolve, reject) => {
+              // Store the resolve/reject functions so onSubmit can call them
+              adyenCard._orderPromise = { resolve, reject };
+              
+              adyenCard.submit();
             });
             return;
           }
@@ -645,7 +651,7 @@ export default async function decorate(block) {
           console.error(error);
           throw error;
         } finally {
-          await removeOverlaySpinner();
+          removeOverlaySpinner();
         }
       },
     })($placeOrder),
