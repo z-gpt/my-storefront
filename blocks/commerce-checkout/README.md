@@ -57,10 +57,30 @@ import { AdyenCheckout, Dropin } from '@adyen/adyen-web/auto/auto.js';
 
 ### Step 6: Configure Payment Methods
 
-In your checkout block:
+In your checkout block, locate the `CheckoutProvider.render(PaymentMethods, {...})` call and add the Adyen payment method (`adyen_cc`) to the slots structure:
 
-1. Locate the payment methods container render: `CheckoutProvider.render(PaymentMethods, {...})`
-2. Add `adyen_cc` as a new payment method in the `slots > Methods` path
+```javascript
+CheckoutProvider.render(PaymentMethods, {
+  slots: {
+    Methods: {
+      adyen_cc: {
+        autoSync: false,
+        render: async (ctx) => {
+          // Adyen implementation goes here
+          // (see Step 8 for the complete pattern)
+        },
+      },
+      // ... other payment methods
+    },
+  },
+})
+```
+
+**Key points:**
+
+- **Path**: `slots > Methods > adyen_cc > render`
+- **autoSync: false**: Prevents automatic form synchronization since Adyen handles its own state
+- **render function**: Where you implement the Adyen Card component (detailed in Step 8)
 
 ### Step 7: Setup Adyen Session and Configuration
 
@@ -191,6 +211,49 @@ await new Promise((resolve, reject) => {
 - ✅ Consistent user experience with other payment methods
 - ✅ Proper async flow coordination
 
+### Step 10: Implement the onSubmit Callback
+
+The `onSubmit` callback is where the actual payment processing happens. Here's the complete sample implementation you need:
+
+```javascript
+const checkout = await AdyenCheckout({
+  ...globalConfiguration,
+  onSubmit: async (state, component) => {
+    const additionalData = {
+      stateData: JSON.stringify(state.data),
+    };
+    try {
+      const paymentMethod = {
+        code: 'adyen_cc',
+        adyen_additional_data_cc: additionalData,
+      };
+
+      await orderApi.setPaymentMethodAndPlaceOrder(ctx.cartId, paymentMethod);
+
+      // Resolve the promise in handlePlaceOrder
+      adyenCard._orderPromise.resolve();
+    } catch (error) {
+      component.setStatus('error');
+
+      // Reject the promise in handlePlaceOrder
+      adyenCard._orderPromise.reject(error);
+    }
+  },
+});
+
+// Mount the Adyen Card component
+adyenCard = new Card(checkout, { showPayButton: false }).mount($adyenCardContainer);
+```
+
+#### What This Implementation Does
+
+1. **Extract Payment Data**: `state.data` contains the encrypted card information from Adyen
+2. **Prepare Backend Payload**: Format the data as `adyen_additional_data_cc` for your Commerce backend
+3. **Process Payment**: Call `orderApi.setPaymentMethodAndPlaceOrder()` to set payment method and place the order
+4. **Handle Success**: Resolve the Promise bridge to signal completion to `handlePlaceOrder`
+5. **Handle Errors**: Set component status to 'error', reject the Promise bridge to trigger error handling
+6. **Mount Component**: Create and mount the Adyen Card component with `showPayButton: false` to hide the Adyen submit button in favor of the checkout place order button
+
 ## Verification
 
-After completing both parts, test the integration by navigating to `/checkout` and confirming that Adyen appears as an available payment method.
+After completing both parts, test the integration by navigating to `/checkout` and confirming that Adyen appears as an available payment method. Fill out the payment form with either fake or real card details, click "Place Order", and check the browser console. You should see either success logs when the promise resolves, or error logs like "adyen error" and "On submit error" when the promise rejects.
