@@ -384,47 +384,52 @@ export default async function decorate(block) {
     CheckoutProvider.render(PaymentMethods, {
       slots: {
         Methods: {
-          "adyen_cc": {
+          adyen_cc: {
             autoSync: false,
             render: async (ctx) => {
               const $adyenCardContainer = document.createElement('div');
-              $adyenCardContainer.id = 'card-container';
-              const checkout = await AdyenCheckout({
-                ...globalConfiguration,
-                onSubmit: async (state, component) => {
-                  const additionalData = {
-                    stateData: JSON.stringify(state.data),
-                  };
-                  try {
-                    const paymentMethod = {
-                      code: 'adyen_cc',
-                      'adyen_additional_data_cc': additionalData,
+              $adyenCardContainer.className = 'adyen-card-container';
+
+              // Add the container to the slot
+              ctx.appendChild($adyenCardContainer);
+
+              // Use onRender to wait for the DOM to be updated before mounting Adyen
+              ctx.onRender(async () => {
+                const checkout = await AdyenCheckout({
+                  ...globalConfiguration,
+                  onSubmit: async (state, component) => {
+                    const additionalData = {
+                      stateData: JSON.stringify(state.data),
                     };
-                    //await checkoutApi.setPaymentMethod(paymentMethod);
-                    const response = await checkoutApi.fetchGraphQl(setPaymentMethodAndPlaceOrderMutation, {
-                      variables: {
-                        cartId: ctx.cartId,
-                        paymentMethod,
-                      },
-                    });
-                    console.log('response', response);
-                    if (response.data.placeOrder.errors.length > 0) {
-                      throw new Error(
-                        response.data.placeOrder.errors[0].message
-                      );
+                    try {
+                      const paymentMethod = {
+                        code: 'adyen_cc',
+                        adyen_additional_data_cc: additionalData,
+                      };
+                      // await checkoutApi.setPaymentMethod(paymentMethod);
+                      const response = await checkoutApi.fetchGraphQl(setPaymentMethodAndPlaceOrderMutation, {
+                        variables: {
+                          cartId: ctx.cartId,
+                          paymentMethod,
+                        },
+                      });
+                      console.log('response', response);
+                      if (response.data.placeOrder.errors.length > 0) {
+                        throw new Error(
+                          response.data.placeOrder.errors[0].message
+                        );
+                      }
+                    } catch (e) {
+                      // TODO handle server error
+                      console.error('adyen error', e);
+                      component.setStatus('ready');
                     }
-                  } catch (e) {
-                    // TODO handle server error
-                    console.error('adyen submit error', e);
-                    component.setStatus('ready');
-                    throw e;
-                  }
-                },
+                  },
+                });
+
+                // Now the container should be in the DOM, mount Adyen
+                new Card(checkout, { showPayButton: false }).mount($adyenCardContainer);
               });
-              setTimeout(() => {
-                adyenCard = new Card(checkout, { showPayButton: false }).mount('#card-container');
-              }, 0);
-              ctx.replaceHTML($adyenCardContainer);
             },
           },
           [PaymentMethodCode.CREDIT_CARD]: {
