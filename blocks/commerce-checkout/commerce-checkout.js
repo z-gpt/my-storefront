@@ -192,6 +192,10 @@ export default async function decorate(block) {
           number
           status
         }
+        errors {
+          code
+          message
+        }
       }
     }
   `;
@@ -404,10 +408,16 @@ export default async function decorate(block) {
                       },
                     });
                     console.log('response', response);
+                    if (response.data.placeOrder.errors.length > 0) {
+                      throw new Error(
+                        response.data.placeOrder.errors[0].message
+                      );
+                    }
                   } catch (e) {
                     // TODO handle server error
-                    console.error('adyen error', e);
+                    console.error('adyen submit error', e);
                     component.setStatus('ready');
+                    throw e;
                   }
                 },
               });
@@ -610,7 +620,9 @@ export default async function decorate(block) {
             // }
 
             // TODO submit card
-            await adyenCard.submit();
+            await adyenCard.submit().catch((error) => {
+              throw error;
+            });
             return;
           }
           // Payment Services credit card
