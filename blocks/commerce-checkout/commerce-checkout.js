@@ -403,28 +403,23 @@ export default async function decorate(block) {
                         adyen_additional_data_cc: additionalData,
                       };
                       // await checkoutApi.setPaymentMethod(paymentMethod);
-                      const response = await checkoutApi.fetchGraphQl(setPaymentMethodAndPlaceOrderMutation, {
-                        variables: {
-                          cartId: ctx.cartId,
-                          paymentMethod,
-                        },
-                      });
+                      const response = await orderApi.setPaymentMethodAndPlaceOrder(ctx.cartId, paymentMethod);
+                      // const response = await checkoutApi.fetchGraphQl(setPaymentMethodAndPlaceOrderMutation, {
+                      //   variables: {
+                      //     cartId: ctx.cartId,
+                      //     paymentMethod,
+                      //   },
+                      // });
 
                       console.log('response', response);
 
-                      if (response.data.placeOrder.errors.length > 0) {
-                        throw new Error(
-                          response.data.placeOrder.errors[0].message,
-                        );
-                      }
-                      
                       // Resolve the promise in handlePlaceOrder
                       adyenCard._orderPromise.resolve();
                     } catch (error) {
                       // TODO handle server error
                       console.error('adyen error', error);
                       component.setStatus('error');
-                      
+
                       // Reject the promise in handlePlaceOrder
                       adyenCard._orderPromise.reject(error);
                     }
@@ -627,7 +622,7 @@ export default async function decorate(block) {
             await new Promise((resolve, reject) => {
               // Store the resolve/reject functions so onSubmit can call them
               adyenCard._orderPromise = { resolve, reject };
-              
+
               adyenCard.submit();
             });
             return;
@@ -819,7 +814,9 @@ export default async function decorate(block) {
         },
         isOpen: true,
         onChange: (values) => {
-          const canSetBillingAddressOnCart = !isFirstRenderBilling || !hasCartBillingAddress;
+          console.log('billing values', values);
+          const canSetBillingAddressOnCart = !isFirstRenderBilling ||  !hasCartBillingAddress;
+          console.log('canSetBillingAddressOnCart', canSetBillingAddressOnCart, data);
           if (canSetBillingAddressOnCart) setBillingAddressOnCart(values);
           if (isFirstRenderBilling) isFirstRenderBilling = false;
         },
