@@ -62,8 +62,8 @@ import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
-import { AdyenCheckout, Card } from '@adyen/adyen-web/auto/auto.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+import { loadCSS, loadScript } from '../../scripts/aem.js';
 
 // Block-level
 import createModal from '../modal/modal.js';
@@ -79,7 +79,6 @@ import {
 
 import { authPrivacyPolicyConsentSlot, SUPPORT_PATH, fetchPlaceholders } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
-import { loadCSS } from '../../scripts/aem.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
@@ -122,8 +121,6 @@ function setMetaTags(dropin) {
 export default async function decorate(block) {
   setMetaTags('Checkout');
   document.title = 'Checkout';
-
-  loadCSS('/scripts/@adyen/adyen-web/styles/adyen.css');
 
   events.on('order/placed', () => {
     setMetaTags('Order Confirmation');
@@ -364,6 +361,18 @@ export default async function decorate(block) {
 
               // Use onRender to wait for the DOM to be updated before mounting Adyen
               ctx.onRender(async () => {
+                // Load Adyen CSS from CDN if not already loaded
+                await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
+                // Dynamically import Adyen Web v6.x as an ES module
+                await loadScript("https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js");
+
+                const { AdyenCheckout, Card } = window?.AdyenWeb;
+
+                if (!AdyenCheckout) {
+                  console.error('AdyenCheckout not available after import.');
+                  return;
+                }
+
                 const checkout = await AdyenCheckout({
                   ...globalConfiguration,
                   onSubmit: async (state, component) => {
