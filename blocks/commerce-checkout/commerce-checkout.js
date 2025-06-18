@@ -192,6 +192,10 @@ export default async function decorate(block) {
           number
           status
         }
+        errors {
+          code
+          message
+        }
       }
     }
   `;
