@@ -169,33 +169,6 @@ export default async function decorate(block) {
     },
   };
 
-  const setPaymentMethodAndPlaceOrderMutation = `
-    mutation setPaymentMethodAndPlaceOrder($cartId: String!, $paymentMethod: PaymentMethodInput!) {
-      setPaymentMethodOnCart(
-      input: {
-        cart_id: $cartId
-        payment_method: $paymentMethod
-      }) {
-        cart  {
-          selected_payment_method {
-            code
-            title
-          }
-        }
-      }
-      placeOrder(input: {cart_id: $cartId}) {
-        orderV2 {
-          number
-          status
-        }
-        errors {
-          code
-          message
-        }
-      }
-    }
-  `;
-
   // Define the Layout for the Checkout
   const checkoutFragment = document.createRange().createContextualFragment(`
     <div class="checkout__wrapper">
@@ -402,22 +375,12 @@ export default async function decorate(block) {
                         code: 'adyen_cc',
                         adyen_additional_data_cc: additionalData,
                       };
-                      // await checkoutApi.setPaymentMethod(paymentMethod);
-                      const response = await orderApi.setPaymentMethodAndPlaceOrder(ctx.cartId, paymentMethod);
-                      // const response = await checkoutApi.fetchGraphQl(setPaymentMethodAndPlaceOrderMutation, {
-                      //   variables: {
-                      //     cartId: ctx.cartId,
-                      //     paymentMethod,
-                      //   },
-                      // });
 
-                      console.log('response', response);
+                      await orderApi.setPaymentMethodAndPlaceOrder(ctx.cartId, paymentMethod);
 
                       // Resolve the promise in handlePlaceOrder
                       adyenCard._orderPromise.resolve();
                     } catch (error) {
-                      // TODO handle server error
-                      console.error('adyen error', error);
                       component.setStatus('error');
 
                       // Reject the promise in handlePlaceOrder
