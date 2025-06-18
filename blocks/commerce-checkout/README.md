@@ -101,14 +101,14 @@ When integrating 3rd party components like Adyen within dropin slots, you **must
 - **`ctx.onRender()` ensures proper timing**: This callback runs after the slot's DOM has been updated
 - **Framework handles cleanup automatically**: When users switch payment methods, the slot system automatically cleans up and re-renders
 
-#### ❌ Don't Do This (Won't Work):
+#### ❌ Don't Do This (Won't Work)
 
 ```javascript
 ctx.appendChild($container);
 new Card(checkout).mount($container); // ← Container not in DOM yet!
 ```
 
-#### ✅ Do This (Correct):
+#### ✅ Do This (Correct)
 
 ```javascript
 ctx.appendChild($container);
@@ -116,6 +116,80 @@ ctx.onRender(() => {
   new Card(checkout).mount($container); // ← Container is now in DOM
 });
 ```
+
+### Step 9: Handle Async Payment Processing
+
+Adyen uses an asynchronous callback pattern that requires special handling to integrate with the synchronous `handlePlaceOrder` flow. You need to create a Promise bridge:
+
+```javascript
+// In handlePlaceOrder function
+if (code === 'adyen_cc') {
+  // Create a promise that resolves/rejects based on the onSubmit callback
+  await new Promise((resolve, reject) => {
+    // Store the resolve/reject functions so onSubmit can call them
+    adyenCard._orderPromise = { resolve, reject };
+    
+    adyenCard.submit();
+  });
+  return;
+}
+
+// In the Adyen onSubmit callback
+onSubmit: async (state, component) => {
+  try {
+    // ... payment processing logic ...
+    
+    // Resolve the promise in handlePlaceOrder
+    adyenCard._orderPromise.resolve();
+  } catch (error) {
+    console.error('adyen error', error);
+    component.setStatus('ready');
+    
+    // Reject the promise in handlePlaceOrder
+    adyenCard._orderPromise.reject(error);
+  }
+}
+```
+
+#### Why This Promise Bridge is Required
+
+**The Problem**: Adyen's payment flow is fundamentally different from other payment methods:
+
+- **Other payment methods**: Synchronous flow where `handlePlaceOrder` can `await` the payment directly
+- **Adyen payment method**: Asynchronous callback flow where `adyenCard.submit()` returns immediately, but the actual payment processing happens later in the `onSubmit` callback
+
+**Without the Promise bridge**:
+
+```javascript
+// This doesn't work properly:
+adyenCard.submit(); // Returns immediately
+return; // handlePlaceOrder exits immediately
+// ... later, onSubmit callback runs but handlePlaceOrder is long gone
+```
+
+**Result**:
+
+- ❌ Spinner gets removed too early
+- ❌ Errors don't bubble up to the main error handler
+- ❌ Inconsistent user experience
+
+**With the Promise bridge**:
+
+```javascript
+// This works correctly:
+await new Promise((resolve, reject) => {
+  adyenCard._orderPromise = { resolve, reject };
+  adyenCard.submit();
+});
+// handlePlaceOrder waits here until onSubmit calls resolve/reject
+```
+
+**Result**:
+
+- ✅ Spinner stays visible during payment processing
+- ✅ Errors bubble up to the main error handler
+- ✅ Consistent user experience with other payment methods
+- ✅ Proper async flow coordination
 
 ## Verification
 
