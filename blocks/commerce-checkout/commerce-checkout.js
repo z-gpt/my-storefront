@@ -424,7 +424,7 @@ export default async function decorate(block) {
                 });
 
                 // Now the container should be in the DOM, mount Adyen
-                new Card(checkout, { showPayButton: false }).mount($adyenCardContainer);
+                adyenCard =new Card(checkout, { showPayButton: false }).mount($adyenCardContainer);
               });
             },
           },
