@@ -62,9 +62,8 @@ import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-
 import { AdyenCheckout, Card } from '@adyen/adyen-web/auto/auto.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block-level
 import createModal from '../modal/modal.js';
@@ -86,7 +85,6 @@ import { loadCSS } from '../../scripts/aem.js';
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
-
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -121,7 +119,6 @@ function setMetaTags(dropin) {
   createMetaTag('og:url', window.location.href, 'property');
 }
 
-
 export default async function decorate(block) {
   setMetaTags('Checkout');
   document.title = 'Checkout';
@@ -155,23 +152,22 @@ export default async function decorate(block) {
     paymentMethodsResponse: {
       paymentMethods: [
         {
-          name: "Cards",
-          type: "scheme",
+          name: 'Cards',
+          type: 'scheme',
           brand: null,
           brands: [
-            "visa",
-            "mc",
-            "amex",
-            "discover",
-            "cup",
-            "diners"
+            'visa',
+            'mc',
+            'amex',
+            'discover',
+            'cup',
+            'diners',
           ],
-          configuration: null
-        }
-      ]
-    }
+          configuration: null,
+        },
+      ],
+    },
   };
-
 
   const setPaymentMethodAndPlaceOrderMutation = `
     mutation setPaymentMethodAndPlaceOrder($cartId: String!, $paymentMethod: PaymentMethodInput!) {
@@ -416,7 +412,7 @@ export default async function decorate(block) {
                       console.log('response', response);
                       if (response.data.placeOrder.errors.length > 0) {
                         throw new Error(
-                          response.data.placeOrder.errors[0].message
+                          response.data.placeOrder.errors[0].message,
                         );
                       }
                     } catch (e) {
