@@ -18,13 +18,21 @@ composer require adyen/module-payment
 
 > **Note**: This integration has been tested with Adyen version 9.18.1
 
-### Step 1: Install Adyen Checkout Components
+### Step 1: Install Checkout Dropin
 
-Install the recommended Adyen Checkout dropin version v2.0.0 following the [official Adyen documentation](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#install-adyen-web).
+Install the Adobe Commerce Checkout dropin `@dropins/storefront-checkout` in your AEM site. The recommended version for this integration is **v2.0.0**:
+
+```bash
+npm install @dropins/storefront-checkout@2.0.0 --save
+```
+
+> This dropin provides the core checkout containers and infrastructure that the Adyen payment method will plug into.
 
 ### Step 2: Setup Adyen Web Package
 
-1. Install the Adyen Web Node package
+Follow the [official Adyen documentation](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#install-adyen-web):
+
+1. Install the [Adyen Web Node package](https://www.npmjs.com/package/@adyen/adyen-web)
 2. Since `node_modules` is not exported, move the package to the `scripts` folder
 3. Update `head.html` with the following alias for imports:
 
