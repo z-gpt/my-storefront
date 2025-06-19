@@ -32,11 +32,13 @@
     { "name": "@dropins/storefront-payment-services", "include": ["**/*"] },
     { "name": "@dropins/storefront-pdp", "include": ["**/*"] },
     { "name": "@dropins/storefront-wishlist", "include": ["**/*"] },
-    { "name": "@dropins/tools", "include": ["**/*"] },
     { "name": "@dropins/storefront-personalization", "include": ["**/*"] },
+    { "name": "@dropins/storefront-product-discovery", "include": ["**/*"] },
+    { "name": "@dropins/storefront-recommendations", "include": ["**/*"] },
     { "name": "@adobe/adobe-client-data-layer", "include": ["dist/adobe-client-data-layer.min.js"] },
     { "name": "@adobe/magento-storefront-event-collector", "include": ["dist/index.js"] },
     { "name": "@adobe/magento-storefront-events-sdk", "include": ["dist/index.js"] },
+    { "name": "@dropins/tools", "include": ["**/*"] },
     { "name": "ajv", "include": ["dist/2020.js"] }
   ],
   "devDependencies": {
