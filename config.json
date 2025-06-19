@@ -1,8 +1,8 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/861iUXRfBWuoGqNcwajH4c/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/861iUXRfBWuoGqNcwajH4c/graphql",
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
       "headers": {
         "all": {
           "Store": "default"
@@ -17,18 +17,18 @@
       },
       "analytics": {
         "base-currency-code": "USD",
-        "environment": "Production",
-        "environment-id": "861iUXRfBWuoGqNcwajH4c",
-        "store-code": "main_website_store",
+        "environment": "Testing",
+        "environment-id": "LnjXjuam6uWmo5d2JLEgbA",
+        "store-code": "STORE_CODE",
         "store-id": 1,
-        "store-name": "Main Website Store",
-        "store-url": "https://www.aemshop.net",
-        "store-view-code": "default",
+        "store-name": "STORE",
+        "store-url": "https://comopt-418-qaaco--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-view-code": "tx",
         "store-view-id": 1,
-        "store-view-name": "Default Store View",
-        "website-code": "base",
+        "store-view-name": "tx",
+        "website-code": "WEBSITE_CODE",
         "website-id": 1,
-        "website-name": "Main Website"
+        "website-name": "WEBSITE"
       },
       "plugins": {
         "picker": {
