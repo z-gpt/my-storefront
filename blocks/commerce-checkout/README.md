@@ -74,7 +74,7 @@ The assets are fetched directly from the CDN at runtime via `loadScript`/`loadCS
 - **autoSync: false**: To not automatically sync the selected payment-method with the backend.
 - **render function**: Where you implement the Adyen Card component (detailed in Step 6)
 
-### Step 4: Setup Adyen Session and Configuration
+### Step 4: Setup Adyen Global Configuration
 
 **Create Global Configuration**: Follow the [Adyen documentation to set up a global configuration object](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#id552021099)
 
