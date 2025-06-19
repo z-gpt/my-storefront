@@ -28,8 +28,13 @@ async function initAnalytics() {
             websiteId: parseInt(analyticsConfig['website-id'], 10),
             websiteName: analyticsConfig['website-name'],
           },
+          // https://github.com/adobe/commerce-events/blob/79f2d6cdba8c8bea96872c7843e2f57465f4c2c8/packages/storefront-events-sdk/src/contexts.ts#L2
+          aepContext: {
+            imsOrgId: 'DEDB2A52641B1D460A495F8E@AdobeOrg',
+            datastreamId: '7ffbfcb1-368c-4a18-9bc7-40c1a0f08059',
+          },
         },
-        { eventForwardingContext: { commerce: true, aep: false } },
+        { eventForwardingContext: { commerce: true, aep: true } },
         {
           shopperContext: {
             shopperId: getUserTokenCookie() ? 'logged-in' : 'guest',
