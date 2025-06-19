@@ -279,40 +279,32 @@ CheckoutProvider.render(PlaceOrder, {
     // ... your existing validation logic
   },
   handlePlaceOrder: async ({ cartId, code }) => {
+    const isAdyen = code === 'adyen_cc';
+
+    // Validate Adyen component before any network activity
+    if (isAdyen) {
+      if (!adyenCard) {
+        console.error('Adyen card not rendered.');
+        return;
+      }
+      if (!adyenCard.state?.isValid) {
+        adyenCard.showValidation?.();
+        return; // Stop if card fields are invalid
+      }
+    }
+
+    // --- Show spinner and perform network calls ---------------------------
     await displayOverlaySpinner();
     try {
-      if (code === 'adyen_cc') {
-        if (!adyenCard) {
-          console.error('Adyen card not rendered.');
-          return;
-        }
-
-        // Create a promise that resolves/rejects based on the onSubmit callback
+      if (isAdyen) {
+        // Promise bridge: wait until onSubmit resolves/rejects
         await new Promise((resolve, reject) => {
-          // Store the resolve/reject functions so onSubmit can call them
           adyenCard._orderPromise = { resolve, reject };
-
           adyenCard.submit();
         });
-        // Continue to placeOrder call below - required for Adyen as well
       }
-      
-      // Handle other payment methods...
-      // Payment Services credit card
-      if (code === PaymentMethodCode.CREDIT_CARD) {
-        if (!creditCardFormRef.current) {
-          console.error('Credit card form not rendered.');
-          return;
-        }
-        if (!creditCardFormRef.current.validate()) {
-          // Credit card form invalid; abort order placement
-          return;
-        }
-        // Submit Payment Services credit card form
-        await creditCardFormRef.current.submit();
-      }
-      
-      // Place order - required for all payment methods including Adyen
+
+      // Create the order in Commerce (required for every payment method)
       await orderApi.placeOrder(cartId);
     } catch (error) {
       console.error(error);
@@ -326,22 +318,16 @@ CheckoutProvider.render(PlaceOrder, {
 
 #### Key Configuration Points
 
-1. **Check for Adyen Payment Method**: `if (code === 'adyen_cc')` identifies when the Adyen payment method is selected
-2. **Validate Adyen Component**: Ensure the `adyenCard` component is properly initialized before proceeding
-3. **Promise Bridge Pattern**: Use the Promise bridge to coordinate between the synchronous `handlePlaceOrder` flow and Adyen's asynchronous `onSubmit` callback
-4. **Two-Step Order Process**: For Adyen, payment method is set in `onSubmit` callback, but order placement still happens in `handlePlaceOrder`
-5. **Error Handling**: Proper error handling ensures the spinner is removed and errors are propagated correctly
-6. **Consistent Flow**: All payment methods, including Adyen, require the final `orderApi.placeOrder(cartId)` call
+1. **Early Validation**: Adyen card fields are validated before any network activity or spinner display.
+2. **Promise Bridge Pattern**: Adyen requires the Promise bridge between `adyenCard.submit()` and the main flow.
+3. **Single Spinner**: `displayOverlaySpinner()` is called once—after validation and before asynchronous work—creating a consistent UX.
+4. **Consistent Order Creation**: `orderApi.placeOrder(cartId)` is executed for every payment method (including Adyen) to create the order and fire the `order/placed` event.
+5. **Robust Error Handling**: Any error is caught, logged, re-thrown, and the spinner is removed in the `finally` block.
 
 #### Important Notes
 
-- **Two-Phase Process**: Adyen payments use a two-phase approach:
-  1. **Payment Method Setup**: The `onSubmit` callback calls `orderApi.setPaymentMethodAndPlaceOrder()` to set the payment method with Adyen data
-  2. **Order Creation**: The main `handlePlaceOrder` function still calls `orderApi.placeOrder(cartId)` to create the order in Commerce and trigger the `order/placed` event
-- **Event Triggering**: The `orderApi.placeOrder(cartId)` call is essential for triggering the `order/placed` event that shows the order confirmation page
-- **Spinner Management**: The overlay spinner stays visible until both the Adyen promise resolves and the order is successfully placed
-- **Error Propagation**: Errors from either the Adyen flow or the order placement are properly caught and re-thrown to maintain consistent error handling
-
-## Verification
-
-After completing both parts, test the integration by navigating to `/checkout` and confirming that Adyen appears as an available payment method. Fill out the payment form with either fake or [test card numbers](https://docs.adyen.com/development-resources/testing/test-card-numbers/), click "Place Order", and check the browser console. You should see either success logs when the promise resolves and the order confirmation page, or error logs like "adyen error" and "On submit error" when the promise rejects.
+- **Two-Phase Process (Adyen)**:
+  1. **Payment Method Setup** happens in the `onSubmit` callback via `orderApi.setPaymentMethodAndPlaceOrder()`.
+  2. **Order Creation** happens in `handlePlaceOrder` via `orderApi.placeOrder(cartId)`.
+- **Spinner Management**: The overlay spinner is displayed only when the flow is ready to perform network operations and is removed regardless of success/failure.
+- **Validation UX**: `adyenCard.showValidation()` highlights any missing or invalid fields for the shopper.
