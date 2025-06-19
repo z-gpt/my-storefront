@@ -135,31 +135,6 @@ export default async function decorate(block) {
   const BILLING_ADDRESS_DATA_KEY = `${BILLING_FORM_NAME}_addressData`;
   const TERMS_AND_CONDITIONS_FORM_NAME = 'checkout-terms-and-conditions__form';
 
-  const globalConfiguration = {
-    clientKey: 'test_UJLHEXDC5JDOZBLAHE7EB4XCAEANSI6H',
-    locale: 'en_US',
-    environment: 'test',
-    countryCode: 'US',
-    paymentMethodsResponse: {
-      paymentMethods: [
-        {
-          name: 'Cards',
-          type: 'scheme',
-          brand: null,
-          brands: [
-            'visa',
-            'mc',
-            'amex',
-            'discover',
-            'cup',
-            'diners',
-          ],
-          configuration: null,
-        },
-      ],
-    },
-  };
-
   // Define the Layout for the Checkout
   const checkoutFragment = document.createRange().createContextualFragment(`
     <div class="checkout__wrapper">
@@ -369,7 +344,28 @@ export default async function decorate(block) {
                 }
 
                 const checkout = await AdyenCheckout({
-                  ...globalConfiguration,
+                  clientKey: 'test_UJLHEXDC5JDOZBLAHE7EB4XCAEANSI6H',
+                  locale: 'en_US',
+                  environment: 'test',
+                  countryCode: 'US',
+                  paymentMethodsResponse: {
+                    paymentMethods: [
+                      {
+                        name: 'Cards',
+                        type: 'scheme',
+                        brand: null,
+                        brands: [
+                          'visa',
+                          'mc',
+                          'amex',
+                          'discover',
+                          'cup',
+                          'diners',
+                        ],
+                        configuration: null,
+                      },
+                    ],
+                  },
                   onSubmit: async (state, component) => {
                     const additionalData = {
                       stateData: JSON.stringify(state.data),
