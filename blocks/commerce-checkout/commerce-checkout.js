@@ -364,9 +364,10 @@ export default async function decorate(block) {
                 // Load Adyen CSS from CDN if not already loaded
                 await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
                 // Dynamically import Adyen Web v6.x as an ES module
-                await loadScript("https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js");
+                await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js');
 
-                const { AdyenCheckout, Card } = window?.AdyenWeb;
+                // Access AdyenWeb safely without optional-chaining to satisfy ESLint
+                const { AdyenCheckout, Card } = (window.AdyenWeb) || {};
 
                 if (!AdyenCheckout) {
                   console.error('AdyenCheckout not available after import.');
@@ -398,8 +399,9 @@ export default async function decorate(block) {
                   },
                 });
 
-                // Now the container should be in the DOM, mount Adyen
-                adyenCard = new Card(checkout, { showPayButton: false }).mount($adyenCardContainer);
+                // Now the container should be in the DOM, create and mount Adyen card
+                adyenCard = new Card(checkout, { showPayButton: false });
+                adyenCard.mount($adyenCardContainer);
               });
             },
           },
@@ -620,8 +622,8 @@ export default async function decorate(block) {
               adyenCard._orderPromise = { resolve, reject };
               adyenCard.submit();
             });
-          } 
-          
+          }
+
           if (isPaymentServices) {
             await creditCardFormRef.current.submit();
           }
@@ -801,7 +803,7 @@ export default async function decorate(block) {
         isOpen: true,
         onChange: (values) => {
           console.log('billing values', values);
-          const canSetBillingAddressOnCart = !isFirstRenderBilling ||  !hasCartBillingAddress;
+          const canSetBillingAddressOnCart = !isFirstRenderBilling || !hasCartBillingAddress;
           console.log('canSetBillingAddressOnCart', canSetBillingAddressOnCart, data);
           if (canSetBillingAddressOnCart) setBillingAddressOnCart(values);
           if (isFirstRenderBilling) isFirstRenderBilling = false;
