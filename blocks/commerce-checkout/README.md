@@ -28,42 +28,17 @@ npm install @dropins/storefront-checkout@2.0.0 --save
 
 > This dropin provides the core checkout containers and infrastructure that the Adyen payment method will plug into.
 
-### Step 2: Load the Adyen Script and Styles
-
-Follow the [official Adyen documentation](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#install-adyen-web) for full SDK details. The Checkout block loads the Adyen Drop-in assets directly from Adyen's CDN:
-
-```javascript
-// Load the Adyen JS and CSS when the payment-method slot is rendered
-await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});
-await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
-
-// Access AdyenWeb safely without optional-chaining to satisfy ESLint
-const { AdyenCheckout, Card } = (window.AdyenWeb) || {};
-
-if (!AdyenCheckout) {
-  console.error('AdyenCheckout not available after import.');
-  return;
-}
-```
-
-The assets are fetched directly from the CDN at runtime via `loadScript`/`loadCSS`, keeping your bundle lean and always on the specified SDK version.
-
-### Step 3: Verify Integration
+### Step 2: Verify Integration
 
 1. Navigate to `/checkout`
 2. Check the browser console for the `checkout/initialized` event
 3. Verify that `adyen_cc` appears in the `availablePaymentMethods` object
 
-### Step 4: Configure Payment Methods
+### Step 3: Load the Adyen Assets and Styles and Configure the Payment Method slot
 
-First, declare the `adyenCard` variable at the block level so it can be accessed by both the payment method slot and the `handlePlaceOrder` function:
+Follow the [official Adyen documentation](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#install-adyen-web) for full SDK details. The Checkout block loads the Adyen Drop-in assets directly from Adyen's CDN:
 
-```javascript
-// Add this declaration at the block level
-let adyenCard;
-```
-
-Then, in your checkout block, locate the `CheckoutProvider.render(PaymentMethods, {...})` call and add the Adyen payment method (`adyen_cc`) to the slots structure:
+In your checkout block, locate the `CheckoutProvider.render(PaymentMethods, {...})` call and add the Adyen payment method (`adyen_cc`) to the slots structure:
 
 ```javascript
 CheckoutProvider.render(PaymentMethods, {
@@ -72,8 +47,17 @@ CheckoutProvider.render(PaymentMethods, {
       adyen_cc: {
         autoSync: false,
         render: async (ctx) => {
+          // Load the Adyen JS and CSS when the payment-method slot is rendered
+          await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});
+          await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
+
+          const { AdyenCheckout, Card } = (window.AdyenWeb) || {};
+
+          if (!AdyenCheckout) {
+            console.error('AdyenCheckout not available after import.');
+            return;
+          }
           // Adyen implementation goes here
-          // (see Step 6 for the complete pattern)
         },
       },
       // ... other payment methods
@@ -82,21 +66,30 @@ CheckoutProvider.render(PaymentMethods, {
 })
 ```
 
+The assets are fetched directly from the CDN at runtime via `loadScript`/`loadCSS`, keeping your bundle lean and always on the specified SDK version.
+
 **Key points:**
 
 - **Path**: `slots > Methods > adyen_cc > render`
-- **autoSync: false**: Prevents automatic form synchronization since Adyen handles its own state
+- **autoSync: false**: To not automatically sync the selected payment-method with the backend.
 - **render function**: Where you implement the Adyen Card component (detailed in Step 6)
 
-### Step 5: Setup Adyen Session and Configuration
+### Step 4: Setup Adyen Session and Configuration
 
-1. **Create a Session**: Follow the [Adyen documentation to create a session](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#create-payment-session)
+**Create Global Configuration**: Follow the [Adyen documentation to set up a global configuration object](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#id552021099)
 
-2. **Create Global Configuration**: Follow the [Adyen documentation to set up a global configuration object](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#id552021099)
-
-### Step 6: Important - 3rd Party Component Integration Pattern
+### Step 5: Important - 3rd Party Component Integration Pattern
 
 When integrating 3rd party components like Adyen within dropin slots, you **must** follow this specific pattern:
+
+First, declare the `adyenCard` variable at the block level so it can be accessed by both the payment method slot and the `handlePlaceOrder` function:
+
+```javascript
+// Add this declaration at the block level
+let adyenCard;
+```
+
+Locate the `CheckoutProvider.render(PaymentMethods, {...})` and mount the Adyen component once the slot is in the DOM:
 
 ```javascript
 adyen_cc: {
@@ -142,7 +135,7 @@ ctx.onRender(() => {
 });
 ```
 
-### Step 7: Handle Async Payment Processing
+### Step 6: Handle Async Payment Processing
 
 Adyen uses an asynchronous callback pattern that requires special handling to integrate with the synchronous `handlePlaceOrder` flow. You need to create a Promise bridge:
 
@@ -220,14 +213,14 @@ await new Promise((resolve, reject) => {
 - ✅ Consistent user experience with other payment methods
 - ✅ Proper async flow coordination
 
-### Step 8: Implement the onSubmit Callback
+### Step 7: Implement the onSubmit Callback
 
 The `onSubmit` callback is where the actual payment processing happens. Here's the complete sample implementation you need:
 
 ```javascript
 const checkout = await AdyenCheckout({
   ...globalConfiguration,
-  onSubmit: async (state) => {
+  onSubmit: async (state, component) => {
     const additionalData = {
       stateData: JSON.stringify(state.data),
     };
@@ -242,6 +235,7 @@ const checkout = await AdyenCheckout({
       // Resolve the promise in handlePlaceOrder
       adyenCard._orderPromise.resolve();
     } catch (error) {
+      component.setStatus('ready');
       // Reject the promise in handlePlaceOrder
       adyenCard._orderPromise.reject(error);
     }
@@ -262,7 +256,7 @@ adyenCard.mount($adyenCardContainer);
 5. **Handles Errors** cleanly—any exception rejects the bridge promise so `handlePlaceOrder` can react.
 6. **Mounts the Component** with `showPayButton: false` so the primary Checkout button controls submission.
 
-### Step 9: Configure PlaceOrder Container
+### Step 8: Configure PlaceOrder Container
 
 ```javascript
 CheckoutProvider.render(PlaceOrder, {
@@ -307,9 +301,7 @@ CheckoutProvider.render(PlaceOrder, {
 
 #### Important Notes
 
-- **Two-Phase Process (Adyen)**:
-  1. **Payment Method Setup** happens in the `onSubmit` callback via `orderApi.setPaymentMethodAndPlaceOrder()`.
-  2. **Order Creation** happens in `handlePlaceOrder` via `orderApi.placeOrder(cartId)`.
+- **Order Creation** happens in the `onSubmit` callback via `orderApi.setPaymentMethodAndPlaceOrder()`.
 - **Spinner Management**: The overlay spinner is displayed only when the flow is ready to perform network operations and is removed regardless of success/failure.
 - **Validation UX**: `adyenCard.showValidation()` highlights any missing or invalid fields for the shopper.
 
