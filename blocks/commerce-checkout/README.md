@@ -10,6 +10,8 @@ This guide walks you through integrating Adyen payments with Adobe Commerce and 
 composer require adyen/module-payment
 ```
 
+> **Note**: At the time of this integration, the installed version was 9.18.1.
+
 ## Step 2: Verify Payment Method
 
 1. Navigate to your Commerce admin panel
