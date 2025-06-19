@@ -28,42 +28,33 @@ npm install @dropins/storefront-checkout@2.0.0 --save
 
 > This dropin provides the core checkout containers and infrastructure that the Adyen payment method will plug into.
 
-### Step 2: Setup Adyen Web Package
+### Step 2: Load the Adyen Script and Styles
 
-Follow the [official Adyen documentation](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#install-adyen-web):
-
-1. Install the [Adyen Web Node package](https://www.npmjs.com/package/@adyen/adyen-web)
-2. Since `node_modules` is not exported, move the package to the `scripts` folder
-3. Update `head.html` with the following alias for imports:
-
-   ```html
-   "@adyen/adyen-web/": "/scripts/@adyen/adyen-web/"
-   ```
-
-### Step 3: Import Adyen Components
-
-In your `commerce-checkout.js` file, add:
+Follow the [official Adyen documentation](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#install-adyen-web) for full SDK details. The Checkout block loads the Adyen Drop-in assets directly from Adyen's CDN:
 
 ```javascript
-import { AdyenCheckout, Dropin } from '@adyen/adyen-web/auto/auto.js';
+// Load the Adyen JS and CSS when the payment-method slot is rendered
+await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});
+await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
+
+// Access AdyenWeb safely without optional-chaining to satisfy ESLint
+const { AdyenCheckout, Card } = (window.AdyenWeb) || {};
+
+if (!AdyenCheckout) {
+  console.error('AdyenCheckout not available after import.');
+  return;
+}
 ```
 
-### Step 4: Load Adyen Styles
+The assets are fetched directly from the CDN at runtime via `loadScript`/`loadCSS`, keeping your bundle lean and always on the specified SDK version.
 
-1. Import the `loadCSS` function from `aem.js` script
-2. Load the Adyen CSS file:
-
-   ```javascript
-   loadCSS('/scripts/@adyen/adyen-web/styles/adyen.css');
-   ```
-
-### Step 5: Verify Integration
+### Step 3: Verify Integration
 
 1. Navigate to `/checkout`
 2. Check the browser console for the `checkout/initialized` event
 3. Verify that `adyen_cc` appears in the `availablePaymentMethods` object
 
-### Step 6: Configure Payment Methods
+### Step 4: Configure Payment Methods
 
 First, declare the `adyenCard` variable at the block level so it can be accessed by both the payment method slot and the `handlePlaceOrder` function:
 
@@ -82,7 +73,7 @@ CheckoutProvider.render(PaymentMethods, {
         autoSync: false,
         render: async (ctx) => {
           // Adyen implementation goes here
-          // (see Step 8 for the complete pattern)
+          // (see Step 6 for the complete pattern)
         },
       },
       // ... other payment methods
@@ -95,23 +86,20 @@ CheckoutProvider.render(PaymentMethods, {
 
 - **Path**: `slots > Methods > adyen_cc > render`
 - **autoSync: false**: Prevents automatic form synchronization since Adyen handles its own state
-- **render function**: Where you implement the Adyen Card component (detailed in Step 8)
+- **render function**: Where you implement the Adyen Card component (detailed in Step 6)
 
-### Step 7: Setup Adyen Session and Configuration
+### Step 5: Setup Adyen Session and Configuration
 
-1. **Create a Session**: Follow the [Adyen documentation to create a session](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#create-payment-session):
-   - If needed, install `@adyen/api-library` package
-   - Move it to the `scripts` folder
-   - Update `head.html` with the alias: `"@adyen/api-library"`
+1. **Create a Session**: Follow the [Adyen documentation to create a session](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#create-payment-session)
 
 2. **Create Global Configuration**: Follow the [Adyen documentation to set up a global configuration object](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#id552021099)
 
-### Step 8: Important - 3rd Party Component Integration Pattern
+### Step 6: Important - 3rd Party Component Integration Pattern
 
 When integrating 3rd party components like Adyen within dropin slots, you **must** follow this specific pattern:
 
 ```javascript
-"adyen_cc": {
+adyen_cc: {
   render: async (ctx) => {
     // 1. Create the container element
     const $container = document.createElement('div');
@@ -123,7 +111,8 @@ When integrating 3rd party components like Adyen within dropin slots, you **must
     ctx.onRender(async () => {
       // 4. Now mount the 3rd party component to the DOM-connected element
       const checkout = await AdyenCheckout(config);
-      new Card(checkout, options).mount($container);
+      adyenCard = new Card(checkout, options);
+      adyenCard.mount($container);
     });
   }
 }
@@ -148,27 +137,16 @@ new Card(checkout).mount($container); // ← Container not in DOM yet!
 ```javascript
 ctx.appendChild($container);
 ctx.onRender(() => {
-  adyenCard = new Card(checkout).mount($container); // ← Container is now in DOM
+  adyenCard = new Card(checkout, options);
+  adyenCard.mount($container); // ← Container is now in DOM
 });
 ```
 
-### Step 9: Handle Async Payment Processing
+### Step 7: Handle Async Payment Processing
 
 Adyen uses an asynchronous callback pattern that requires special handling to integrate with the synchronous `handlePlaceOrder` flow. You need to create a Promise bridge:
 
 ```javascript
-// In handlePlaceOrder function
-if (code === 'adyen_cc') {
-  // Create a promise that resolves/rejects based on the onSubmit callback
-  await new Promise((resolve, reject) => {
-    // Store the resolve/reject functions so onSubmit can call them
-    adyenCard._orderPromise = { resolve, reject };
-    
-    adyenCard.submit();
-  });
-  return;
-}
-
 // In the Adyen onSubmit callback
 onSubmit: async (state, component) => {
   try {
@@ -183,6 +161,23 @@ onSubmit: async (state, component) => {
     // Reject the promise in handlePlaceOrder
     adyenCard._orderPromise.reject(error);
   }
+}
+
+// In handlePlaceOrder function of the PlaceOrder container
+const isAdyen = code === 'adyen_cc';
+
+try {
+  if (isAdyen) {
+    // Create a promise that resolves/rejects based on the onSubmit callback
+    await new Promise((resolve, reject) => {
+      // Store the resolve/reject functions so onSubmit can call them
+      adyenCard._orderPromise = { resolve, reject };
+      
+      adyenCard.submit();
+    });
+  }
+} catch () {
+  // Catch error
 }
 ```
 
@@ -226,14 +221,14 @@ await new Promise((resolve, reject) => {
 - ✅ Consistent user experience with other payment methods
 - ✅ Proper async flow coordination
 
-### Step 10: Implement the onSubmit Callback
+### Step 8: Implement the onSubmit Callback
 
 The `onSubmit` callback is where the actual payment processing happens. Here's the complete sample implementation you need:
 
 ```javascript
 const checkout = await AdyenCheckout({
   ...globalConfiguration,
-  onSubmit: async (state, component) => {
+  onSubmit: async (state) => {
     const additionalData = {
       stateData: JSON.stringify(state.data),
     };
@@ -248,8 +243,6 @@ const checkout = await AdyenCheckout({
       // Resolve the promise in handlePlaceOrder
       adyenCard._orderPromise.resolve();
     } catch (error) {
-      component.setStatus('error');
-
       // Reject the promise in handlePlaceOrder
       adyenCard._orderPromise.reject(error);
     }
@@ -257,72 +250,63 @@ const checkout = await AdyenCheckout({
 });
 
 // Mount the Adyen Card component
-adyenCard = new Card(checkout, { showPayButton: false }).mount($adyenCardContainer);
+adyenCard = new Card(checkout, { showPayButton: false });
+adyenCard.mount($adyenCardContainer);
 ```
 
 #### What This Implementation Does
 
-1. **Extract Payment Data**: `state.data` contains the encrypted card information from Adyen
-2. **Prepare Backend Payload**: Format the data as `adyen_additional_data_cc` for your Commerce backend
-3. **Process Payment**: Call `orderApi.setPaymentMethodAndPlaceOrder()` to set payment method and place the order
-4. **Handle Success**: Resolve the Promise bridge to signal completion to `handlePlaceOrder`
-5. **Handle Errors**: Set component status to 'error', reject the Promise bridge to trigger error handling
-6. **Mount Component**: Create and mount the Adyen Card component with `showPayButton: false` to hide the Adyen submit button in favor of the checkout place order button
+1. **Extracts Payment Data** from the Drop-in (`state.data`).
+2. **Prepares Backend Payload** as `adyen_additional_data_cc`.
+3. **Sets Payment Method & Places Order** via `orderApi.setPaymentMethodAndPlaceOrder()`.
+4. **Bridges Async Flow** by resolving / rejecting the Promise stored in `adyenCard._orderPromise`.
+5. **Handles Errors** cleanly—any exception rejects the bridge promise so `handlePlaceOrder` can react.
+6. **Mounts the Component** with `showPayButton: false` so the primary Checkout button controls submission.
 
-### Step 11: Configure PlaceOrder Container
-
-In your `CheckoutProvider.render(PlaceOrder, {...})` call, you need to configure the `handlePlaceOrder` function to handle Adyen payments specifically. Add this logic to your PlaceOrder container configuration:
+### Step 9: Configure PlaceOrder Container
 
 ```javascript
 CheckoutProvider.render(PlaceOrder, {
-  handleValidation: () => {
-    // ... your existing validation logic
-  },
   handlePlaceOrder: async ({ cartId, code }) => {
     const isAdyen = code === 'adyen_cc';
 
-    // Validate Adyen component before any network activity
     if (isAdyen) {
       if (!adyenCard) {
         console.error('Adyen card not rendered.');
         return;
       }
+
       if (!adyenCard.state?.isValid) {
         adyenCard.showValidation?.();
-        return; // Stop if card fields are invalid
+        return;
       }
     }
 
-    // --- Show spinner and perform network calls ---------------------------
     await displayOverlaySpinner();
+    
     try {
       if (isAdyen) {
-        // Promise bridge: wait until onSubmit resolves/rejects
         await new Promise((resolve, reject) => {
           adyenCard._orderPromise = { resolve, reject };
           adyenCard.submit();
         });
       }
 
-      // Create the order in Commerce (required for every payment method)
       await orderApi.placeOrder(cartId);
-    } catch (error) {
-      console.error(error);
-      throw error;
     } finally {
       removeOverlaySpinner();
     }
   },
-})($placeOrder)
+})($placeOrder);
 ```
 
 #### Key Configuration Points
 
-1. **Early Validation**: Adyen card fields are validated before any network activity or spinner display.
-2. **Promise Bridge Pattern**: Adyen requires the Promise bridge between `adyenCard.submit()` and the main flow.
-3. **Single Spinner**: `displayOverlaySpinner()` is called once—after validation and before asynchronous work—creating a consistent UX.
-4. **Consistent Order Creation**: `orderApi.placeOrder(cartId)` is executed for every payment method (including Adyen) to create the order and fire the `order/placed` event.
-5. **Robust Error Handling**: Any error is caught, logged, re-thrown, and the spinner is removed in the `finally` block.
+1. **Early Validation**: Ensures the shopper can't proceed until the card fields are valid.
+2. **Promise Bridge**: Keeps the spinner up while Adyen's async `onSubmit` finishes.
+3. **Single Spinner**: Shown once for the whole sequence, hidden in `finally`.
+4. **Universal Order Creation**: `orderApi.placeOrder(cartId)` is executed for every payment method (including Adyen) to create the order and fire the `order/placed` event.
+5. **Error Safety**: Any error re-throws after the spinner is dismissed.
 
 #### Important Notes
 
@@ -331,3 +315,5 @@ CheckoutProvider.render(PlaceOrder, {
   2. **Order Creation** happens in `handlePlaceOrder` via `orderApi.placeOrder(cartId)`.
 - **Spinner Management**: The overlay spinner is displayed only when the flow is ready to perform network operations and is removed regardless of success/failure.
 - **Validation UX**: `adyenCard.showValidation()` highlights any missing or invalid fields for the shopper.
+
+That completes the Adyen Drop-in integration steps.

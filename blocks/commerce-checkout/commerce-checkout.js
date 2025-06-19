@@ -361,10 +361,10 @@ export default async function decorate(block) {
 
               // Use onRender to wait for the DOM to be updated before mounting Adyen
               ctx.onRender(async () => {
+                // Dynamically import Adyen Web v6.x as an ES module
+                await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});
                 // Load Adyen CSS from CDN if not already loaded
                 await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
-                // Dynamically import Adyen Web v6.x as an ES module
-                await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js');
 
                 // Access AdyenWeb safely without optional-chaining to satisfy ESLint
                 const { AdyenCheckout, Card } = (window.AdyenWeb) || {};
@@ -376,7 +376,7 @@ export default async function decorate(block) {
 
                 const checkout = await AdyenCheckout({
                   ...globalConfiguration,
-                  onSubmit: async (state, component) => {
+                  onSubmit: async (state) => {
                     const additionalData = {
                       stateData: JSON.stringify(state.data),
                     };
@@ -391,8 +391,6 @@ export default async function decorate(block) {
                       // Resolve the promise in handlePlaceOrder
                       adyenCard._orderPromise.resolve();
                     } catch (error) {
-                      component.setStatus('error');
-
                       // Reject the promise in handlePlaceOrder
                       adyenCard._orderPromise.reject(error);
                     }
@@ -802,9 +800,7 @@ export default async function decorate(block) {
         },
         isOpen: true,
         onChange: (values) => {
-          console.log('billing values', values);
           const canSetBillingAddressOnCart = !isFirstRenderBilling || !hasCartBillingAddress;
-          console.log('canSetBillingAddressOnCart', canSetBillingAddressOnCart, data);
           if (canSetBillingAddressOnCart) setBillingAddressOnCart(values);
           if (isFirstRenderBilling) isFirstRenderBilling = false;
         },
