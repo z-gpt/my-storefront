@@ -1,24 +1,22 @@
 # Adyen Integration Guide
 
-## Part 1: Commerce Instance Setup (PaaS)
+This guide walks you through integrating Adyen payments with Adobe Commerce and AEM Commerce Checkout. The integration covers both backend Commerce configuration and frontend checkout implementation.
 
-### Step 1: Install Adyen Extension
+> **Note**: This integration has been tested with Adyen version 9.18.1
+
+## Step 1: Install and Setup Adyen Extension in the Commerce Instance
 
 ```bash
 composer require adyen/module-payment
 ```
 
-### Step 2: Configure Payment Method
+## Step 2: Verify Payment Method
 
 1. Navigate to your Commerce admin panel
 2. Configure the Adyen payment method settings
-3. Verify installation by visiting `/checkout` - Adyen should appear in the payment methods list
+3. Verify installation by visiting `/checkout` - Adyen should appear in the payment methods list if enabled.
 
-## Part 2: Boilerplate Implementation
-
-> **Note**: This integration has been tested with Adyen version 9.18.1
-
-### Step 1: Install Checkout Dropin
+## Step 3: Install Checkout Dropin
 
 Install the Adobe Commerce Checkout dropin `@dropins/storefront-checkout` in your AEM site. The recommended version for this integration is **v2.0.0**:
 
@@ -28,15 +26,17 @@ npm install @dropins/storefront-checkout@2.0.0 --save
 
 > This dropin provides the core checkout containers and infrastructure that the Adyen payment method will plug into.
 
-### Step 2: Verify Integration
+## Step 4: Verify Integration
+
+> **Note**: This step assumes your AEM boilerplate has a `commerce-checkout.js` block already implemented and configured.
 
 1. Navigate to `/checkout`
 2. Check the browser console for the `checkout/initialized` event
 3. Verify that `adyen_cc` appears in the `availablePaymentMethods` object
 
-### Step 3: Load the Adyen Assets and Styles and Configure the Payment Method slot
+## Step 5: Load the Adyen Assets, Styles and Configure the Payment Method slot
 
-Follow the [official Adyen documentation](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#install-adyen-web) for full SDK details. The Checkout block loads the Adyen Drop-in assets directly from Adyen's CDN:
+Follow the [official Adyen documentation](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#install-adyen-web) for full SDK details. The Checkout block loads the Adyen Drop-in assets directly from Adyen's CDN.
 
 In your checkout block, locate the `CheckoutProvider.render(PaymentMethods, {...})` call and add the Adyen payment method (`adyen_cc`) to the slots structure:
 
@@ -71,14 +71,14 @@ The assets are fetched directly from the CDN at runtime via `loadScript`/`loadCS
 **Key points:**
 
 - **Path**: `slots > Methods > adyen_cc > render`
-- **autoSync: false**: To not automatically sync the selected payment-method with the backend.
-- **render function**: Where you implement the Adyen Card component (detailed in Step 6)
+- **autoSync: false**: Prevents the payment method from automatically syncing its state with the backend when selected.
+- **render function**: Where you implement the Adyen Card component (detailed in Step 8)
 
-### Step 4: Setup Adyen Global Configuration
+## Step 6: Setup Adyen Global Configuration
 
 **Create Global Configuration**: Follow the [Adyen documentation to set up a global configuration object](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in&version=6.16.0#id552021099)
 
-### Step 5: Important - 3rd Party Component Integration Pattern
+## Step 7: Important - 3rd Party Component Integration Pattern
 
 When integrating 3rd party components like Adyen within dropin slots, you **must** follow this specific pattern:
 
@@ -111,7 +111,7 @@ adyen_cc: {
 }
 ```
 
-#### Why This Pattern is Required
+### Why This Pattern is Required
 
 - **Slot methods are asynchronous**: `ctx.appendChild()`, `ctx.replaceWith()`, etc. don't immediately update the DOM - they queue changes
 - **3rd party components need DOM-connected elements**: Adyen (and most other components) require mounting to elements that are already in the document
@@ -135,7 +135,7 @@ ctx.onRender(() => {
 });
 ```
 
-### Step 6: Handle Async Payment Processing
+## Step 8: Handle Async Payment Processing
 
 Adyen uses an asynchronous callback pattern that requires special handling to integrate with the synchronous `handlePlaceOrder` flow. You need to create a Promise bridge:
 
@@ -173,7 +173,7 @@ try {
 }
 ```
 
-#### Why This Promise Bridge is Required
+### Why This Promise Bridge is Required
 
 **The Problem**: Adyen's payment flow is fundamentally different from other payment methods:
 
@@ -213,7 +213,7 @@ await new Promise((resolve, reject) => {
 - ✅ Consistent user experience with other payment methods
 - ✅ Proper async flow coordination
 
-### Step 7: Implement the onSubmit Callback
+## Step 9: Implement the onSubmit Callback
 
 The `onSubmit` callback is where the actual payment processing happens. Here's the complete sample implementation you need:
 
@@ -247,7 +247,7 @@ adyenCard = new Card(checkout, { showPayButton: false });
 adyenCard.mount($adyenCardContainer);
 ```
 
-#### What This Implementation Does
+### What This Implementation Does
 
 1. **Extracts Payment Data** from the Drop-in (`state.data`).
 2. **Prepares Backend Payload** as `adyen_additional_data_cc`.
@@ -256,7 +256,7 @@ adyenCard.mount($adyenCardContainer);
 5. **Handles Errors** cleanly—any exception rejects the bridge promise so `handlePlaceOrder` can react.
 6. **Mounts the Component** with `showPayButton: false` so the primary Checkout button controls submission.
 
-### Step 8: Configure PlaceOrder Container
+## Step 10: Configure PlaceOrder Container
 
 ```javascript
 CheckoutProvider.render(PlaceOrder, {
@@ -292,7 +292,7 @@ CheckoutProvider.render(PlaceOrder, {
 })($placeOrder);
 ```
 
-#### Key Configuration Points
+### Key Configuration Points
 
 1. **Early Validation**: Ensures the shopper can't proceed until the card fields are valid.
 2. **Promise Bridge**: Keeps the spinner up while Adyen's async `onSubmit` finishes.
