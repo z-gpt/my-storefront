@@ -140,12 +140,6 @@ export default async function decorate(block) {
     locale: 'en_US',
     environment: 'test',
     countryCode: 'US',
-    paymentMethodsConfiguration: {
-      card: {
-        hasHolderName: true,
-        holderNameRequired: true,
-      },
-    },
     paymentMethodsResponse: {
       paymentMethods: [
         {
@@ -376,7 +370,7 @@ export default async function decorate(block) {
 
                 const checkout = await AdyenCheckout({
                   ...globalConfiguration,
-                  onSubmit: async (state) => {
+                  onSubmit: async (state, component) => {
                     const additionalData = {
                       stateData: JSON.stringify(state.data),
                     };
@@ -392,13 +386,19 @@ export default async function decorate(block) {
                       adyenCard._orderPromise.resolve();
                     } catch (error) {
                       // Reject the promise in handlePlaceOrder
+                      component.setStatus('ready');
                       adyenCard._orderPromise.reject(error);
                     }
                   },
                 });
 
                 // Now the container should be in the DOM, create and mount Adyen card
-                adyenCard = new Card(checkout, { showPayButton: false });
+                adyenCard = new Card(
+                  checkout,
+                  {
+                    showPayButton: false,
+                  },
+                );
                 adyenCard.mount($adyenCardContainer);
               });
             },
@@ -620,6 +620,7 @@ export default async function decorate(block) {
               adyenCard._orderPromise = { resolve, reject };
               adyenCard.submit();
             });
+            return;
           }
 
           if (isPaymentServices) {
