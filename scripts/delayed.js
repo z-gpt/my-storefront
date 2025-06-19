@@ -12,21 +12,6 @@ async function initAnalytics() {
       window.adobeDataLayer.push(
         {
           storefrontInstanceContext: {
-            // baseCurrencyCode: analyticsConfig['base-currency-code'],
-            // environment: analyticsConfig.environment,
-            // environmentId: analyticsConfig['environment-id'],
-            // storeCode: analyticsConfig['store-code'],
-            // storefrontTemplate: 'EDS',
-            // storeId: parseInt(analyticsConfig['store-id'], 10),
-            // storeName: analyticsConfig['store-name'],
-            // storeUrl: analyticsConfig['store-url'],
-            // storeViewCode: analyticsConfig['store-view-code'],
-            // storeViewCurrencyCode: analyticsConfig['base-currency-code'],
-            // storeViewId: parseInt(analyticsConfig['store-view-id'], 10),
-            // storeViewName: analyticsConfig['store-view-name'],
-            // websiteCode: analyticsConfig['website-code'],
-            // websiteId: parseInt(analyticsConfig['website-id'], 10),
-            // websiteName: analyticsConfig['website-name'],
             baseCurrencyCode: config['base-currency-code'],
             environment: config.environment,
             environmentId: csHeaders['AC-Environment-Id'],
