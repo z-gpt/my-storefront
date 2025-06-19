@@ -582,36 +582,51 @@ export default async function decorate(block) {
         return success;
       },
       handlePlaceOrder: async ({ cartId, code }) => {
+        // --- Early validation -------------------------------------------------
+        const isAdyen = code === 'adyen_cc';
+        const isPaymentServices = code === PaymentMethodCode.CREDIT_CARD;
+
+        // Validate Adyen component before any network activity
+        if (isAdyen) {
+          if (!adyenCard) {
+            console.error('Adyen card not rendered.');
+            return;
+          }
+
+          if (!adyenCard.state?.isValid) {
+            adyenCard.showValidation?.();
+            return;
+          }
+        }
+
+        // Validate Payment-Services credit-card form
+        if (isPaymentServices) {
+          if (!creditCardFormRef.current) {
+            console.error('Credit card form not rendered.');
+            return;
+          }
+          if (!creditCardFormRef.current.validate()) {
+            return;
+          }
+        }
+
+        // --- Show spinner now that we know we can proceed --------------------
         await displayOverlaySpinner();
+
         try {
-          if (code === 'adyen_cc') {
-            if (!adyenCard) {
-              console.error('Adyen card not rendered.');
-              return;
-            }
-
-            // Create a promise that resolves/rejects based on the onSubmit callback
+          // 1. Method-specific async work
+          if (isAdyen) {
             await new Promise((resolve, reject) => {
-              // Store the resolve/reject functions so onSubmit can call them
               adyenCard._orderPromise = { resolve, reject };
-
               adyenCard.submit();
             });
-          }
-          // Payment Services credit card
-          if (code === PaymentMethodCode.CREDIT_CARD) {
-            if (!creditCardFormRef.current) {
-              console.error('Credit card form not rendered.');
-              return;
-            }
-            if (!creditCardFormRef.current.validate()) {
-              // Credit card form invalid; abort order placement
-              return;
-            }
-            // Submit Payment Services credit card form
+          } 
+          
+          if (isPaymentServices) {
             await creditCardFormRef.current.submit();
           }
-          // Place order
+
+          // 2. Final order creation (required for every payment method)
           await orderApi.placeOrder(cartId);
         } catch (error) {
           console.error(error);
