@@ -57,7 +57,14 @@ import { AdyenCheckout, Dropin } from '@adyen/adyen-web/auto/auto.js';
 
 ### Step 6: Configure Payment Methods
 
-In your checkout block, locate the `CheckoutProvider.render(PaymentMethods, {...})` call and add the Adyen payment method (`adyen_cc`) to the slots structure:
+First, declare the `adyenCard` variable at the block level so it can be accessed by both the payment method slot and the `handlePlaceOrder` function:
+
+```javascript
+// Add this declaration at the block level
+let adyenCard;
+```
+
+Then, in your checkout block, locate the `CheckoutProvider.render(PaymentMethods, {...})` call and add the Adyen payment method (`adyen_cc`) to the slots structure:
 
 ```javascript
 CheckoutProvider.render(PaymentMethods, {
@@ -133,7 +140,7 @@ new Card(checkout).mount($container); // ← Container not in DOM yet!
 ```javascript
 ctx.appendChild($container);
 ctx.onRender(() => {
-  new Card(checkout).mount($container); // ← Container is now in DOM
+  adyenCard = new Card(checkout).mount($container); // ← Container is now in DOM
 });
 ```
 
