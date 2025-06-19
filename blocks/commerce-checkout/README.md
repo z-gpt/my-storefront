@@ -2,8 +2,6 @@
 
 This guide walks you through integrating Adyen payments with Adobe Commerce and AEM Commerce Checkout. The integration covers both backend Commerce configuration and frontend checkout implementation.
 
-> **Note**: This integration has been tested with Adyen version 9.18.1
-
 ## Step 1: Install and Setup Adyen Extension in the Commerce Instance
 
 ```bash
