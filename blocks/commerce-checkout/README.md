@@ -155,7 +155,6 @@ onSubmit: async (state, component) => {
     // Resolve the promise in handlePlaceOrder
     adyenCard._orderPromise.resolve();
   } catch (error) {
-    console.error('adyen error', error);
     component.setStatus('ready');
     
     // Reject the promise in handlePlaceOrder
@@ -290,9 +289,8 @@ CheckoutProvider.render(PlaceOrder, {
           adyenCard._orderPromise = { resolve, reject };
           adyenCard.submit();
         });
+        return;
       }
-
-      await orderApi.placeOrder(cartId);
     } finally {
       removeOverlaySpinner();
     }
@@ -305,8 +303,7 @@ CheckoutProvider.render(PlaceOrder, {
 1. **Early Validation**: Ensures the shopper can't proceed until the card fields are valid.
 2. **Promise Bridge**: Keeps the spinner up while Adyen's async `onSubmit` finishes.
 3. **Single Spinner**: Shown once for the whole sequence, hidden in `finally`.
-4. **Universal Order Creation**: `orderApi.placeOrder(cartId)` is executed for every payment method (including Adyen) to create the order and fire the `order/placed` event.
-5. **Error Safety**: Any error re-throws after the spinner is dismissed.
+4. **Error Safety**: Any error re-throws after the spinner is dismissed.
 
 #### Important Notes
 
