@@ -254,6 +254,79 @@ adyenCard = new Card(checkout, { showPayButton: false }).mount($adyenCardContain
 5. **Handle Errors**: Set component status to 'error', reject the Promise bridge to trigger error handling
 6. **Mount Component**: Create and mount the Adyen Card component with `showPayButton: false` to hide the Adyen submit button in favor of the checkout place order button
 
+### Step 11: Configure PlaceOrder Container
+
+In your `CheckoutProvider.render(PlaceOrder, {...})` call, you need to configure the `handlePlaceOrder` function to handle Adyen payments specifically. Add this logic to your PlaceOrder container configuration:
+
+```javascript
+CheckoutProvider.render(PlaceOrder, {
+  handleValidation: () => {
+    // ... your existing validation logic
+  },
+  handlePlaceOrder: async ({ cartId, code }) => {
+    await displayOverlaySpinner();
+    try {
+      if (code === 'adyen_cc') {
+        if (!adyenCard) {
+          console.error('Adyen card not rendered.');
+          return;
+        }
+
+        // Create a promise that resolves/rejects based on the onSubmit callback
+        await new Promise((resolve, reject) => {
+          // Store the resolve/reject functions so onSubmit can call them
+          adyenCard._orderPromise = { resolve, reject };
+
+          adyenCard.submit();
+        });
+        // Continue to placeOrder call below - required for Adyen as well
+      }
+      
+      // Handle other payment methods...
+      // Payment Services credit card
+      if (code === PaymentMethodCode.CREDIT_CARD) {
+        if (!creditCardFormRef.current) {
+          console.error('Credit card form not rendered.');
+          return;
+        }
+        if (!creditCardFormRef.current.validate()) {
+          // Credit card form invalid; abort order placement
+          return;
+        }
+        // Submit Payment Services credit card form
+        await creditCardFormRef.current.submit();
+      }
+      
+      // Place order - required for all payment methods including Adyen
+      await orderApi.placeOrder(cartId);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      removeOverlaySpinner();
+    }
+  },
+})($placeOrder)
+```
+
+#### Key Configuration Points
+
+1. **Check for Adyen Payment Method**: `if (code === 'adyen_cc')` identifies when the Adyen payment method is selected
+2. **Validate Adyen Component**: Ensure the `adyenCard` component is properly initialized before proceeding
+3. **Promise Bridge Pattern**: Use the Promise bridge to coordinate between the synchronous `handlePlaceOrder` flow and Adyen's asynchronous `onSubmit` callback
+4. **Two-Step Order Process**: For Adyen, payment method is set in `onSubmit` callback, but order placement still happens in `handlePlaceOrder`
+5. **Error Handling**: Proper error handling ensures the spinner is removed and errors are propagated correctly
+6. **Consistent Flow**: All payment methods, including Adyen, require the final `orderApi.placeOrder(cartId)` call
+
+#### Important Notes
+
+- **Two-Phase Process**: Adyen payments use a two-phase approach:
+  1. **Payment Method Setup**: The `onSubmit` callback calls `orderApi.setPaymentMethodAndPlaceOrder()` to set the payment method with Adyen data
+  2. **Order Creation**: The main `handlePlaceOrder` function still calls `orderApi.placeOrder(cartId)` to create the order in Commerce and trigger the `order/placed` event
+- **Event Triggering**: The `orderApi.placeOrder(cartId)` call is essential for triggering the `order/placed` event that shows the order confirmation page
+- **Spinner Management**: The overlay spinner stays visible until both the Adyen promise resolves and the order is successfully placed
+- **Error Propagation**: Errors from either the Adyen flow or the order placement are properly caught and re-thrown to maintain consistent error handling
+
 ## Verification
 
-After completing both parts, test the integration by navigating to `/checkout` and confirming that Adyen appears as an available payment method. Fill out the payment form with either fake or real card details, click "Place Order", and check the browser console. You should see either success logs when the promise resolves, or error logs like "adyen error" and "On submit error" when the promise rejects.
+After completing both parts, test the integration by navigating to `/checkout` and confirming that Adyen appears as an available payment method. Fill out the payment form with either fake or [test card numbers](https://docs.adyen.com/development-resources/testing/test-card-numbers/), click "Place Order", and check the browser console. You should see either success logs when the promise resolves and the order confirmation page, or error logs like "adyen error" and "On submit error" when the promise rejects.

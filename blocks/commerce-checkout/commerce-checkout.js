@@ -597,7 +597,6 @@ export default async function decorate(block) {
 
               adyenCard.submit();
             });
-            return;
           }
           // Payment Services credit card
           if (code === PaymentMethodCode.CREDIT_CARD) {
