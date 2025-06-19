@@ -1,23 +1,102 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{a as L}from"./chunks/initialize.js";import{c as et,g as rt,d as at,i as ot}from"./chunks/initialize.js";import{f as m,h}from"./chunks/fetch-graphql.js";import{g as ct,r as st,s as ut,a as it,b as lt}from"./chunks/fetch-graphql.js";import{h as O}from"./chunks/network-error.js";import{events as l}from"@dropins/tools/event-bus.js";import{PLACE_ORDER_FRAGMENT as _,PRODUCT_DETAILS_FRAGMENT as g,PRICE_DETAILS_FRAGMENT as R,GIFT_CARD_DETAILS_FRAGMENT as A,ORDER_ITEM_DETAILS_FRAGMENT as f,BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT as x,ORDER_SUMMARY_FRAGMENT as D,ADDRESS_FRAGMENT as y,ORDER_ITEM_FRAGMENT as C,GIFT_WRAPPING_FRAGMENT as M,GIFT_MESSAGE_FRAGMENT as $,APPLIED_GIFT_CARDS_FRAGMENT as b}from"./fragments.js";import{c as dt,r as Et}from"./chunks/requestGuestOrderCancel.js";import{g as mt}from"./chunks/getAttributesForm.js";import{g as Ot,a as _t,r as gt}from"./chunks/requestGuestReturn.js";import{g as At,a as ft}from"./chunks/getGuestOrder.js";import{g as Dt}from"./chunks/getCustomerOrdersReturn.js";import{g as Ct}from"./chunks/getStoreConfig.js";import{a as $t,c as bt,r as Nt}from"./chunks/confirmCancelOrder.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/transform-attributes-form.js";const N=(e,r)=>e+r.amount.value,F=(e,r)=>({id:e,totalQuantity:r.totalQuantity,possibleOnepageCheckout:!0,items:r.items.map(t=>{var a,o,n,c,s,u,i,p;return{canApplyMsrp:!0,formattedPrice:"",id:t.id,quantity:t.totalQuantity,product:{canonicalUrl:(a=t.product)==null?void 0:a.canonicalUrl,mainImageUrl:((o=t.product)==null?void 0:o.image)??"",name:((n=t.product)==null?void 0:n.name)??"",productId:0,productType:(c=t.product)==null?void 0:c.productType,sku:((s=t.product)==null?void 0:s.sku)??"",topLevelSku:(u=t.product)==null?void 0:u.sku},prices:{price:{value:t.price.value,currency:t.price.currency,regularPrice:((i=t.regularPrice)==null?void 0:i.value)??t.price.value}},configurableOptions:((p=t.selectedOptions)==null?void 0:p.map(d=>({optionLabel:d.label,valueLabel:d.value})))||[]}}),prices:{subtotalExcludingTax:{value:r.subtotalExclTax.value,currency:r.subtotalExclTax.currency},subtotalIncludingTax:{value:r.subtotalInclTax.value,currency:r.subtotalInclTax.currency}},discountAmount:r.discounts.reduce(N,0)}),S=e=>{var a,o,n;const r=e.coupons[0],t=(a=e.payments)==null?void 0:a[0];return{appliedCouponCode:(r==null?void 0:r.code)??"",email:e.email,grandTotal:e.grandTotal.value,orderId:e.number,orderType:"checkout",otherTax:0,salesTax:e.totalTax.value,shipping:{shippingMethod:((o=e.shipping)==null?void 0:o.code)??"",shippingAmount:((n=e.shipping)==null?void 0:n.amount)??0},subtotalExcludingTax:e.subtotalExclTax.value,subtotalIncludingTax:e.subtotalInclTax.value,payments:t?[{paymentMethodCode:(t==null?void 0:t.code)||"",paymentMethodName:(t==null?void 0:t.name)||"",total:e.grandTotal.value,orderId:e.number}]:[],discountAmount:e.discounts.reduce(N,0),taxAmount:e.totalTax.value}},v=e=>{var t,a;const r=(a=(t=e==null?void 0:e.data)==null?void 0:t.placeOrder)==null?void 0:a.orderV2;return r?L(r):null},E={SHOPPING_CART_CONTEXT:"shoppingCartContext",ORDER_CONTEXT:"orderContext"},w={PLACE_ORDER:"place-order"};function G(){return window.adobeDataLayer=window.adobeDataLayer||[],window.adobeDataLayer}function T(e,r){const t=G();t.push({[e]:null}),t.push({[e]:r})}function U(e){G().push(t=>{const a=t.getState?t.getState():{};t.push({event:e,eventInfo:{...a}})})}function P(e,r){const t=S(r),a=F(e,r);T(E.ORDER_CONTEXT,{...t}),T(E.SHOPPING_CART_CONTEXT,{...a}),U(w.PLACE_ORDER)}class k extends Error{constructor(r){super(r),this.name="PlaceOrderError"}}const I=e=>{const r=e.map(t=>t.message).join(" ");throw new k(r)},Q=`
-  mutation PLACE_ORDER_MUTATION($cartId: String!) {
-    placeOrder(input: { cart_id: $cartId }) {
-      ${_}
+import{a as f}from"./chunks/initialize.js";import{c as re,g as te,d as ae,i as oe}from"./chunks/initialize.js";import{f as m,h as T}from"./chunks/fetch-graphql.js";import{g as se,r as ce,s as ie,a as ue,b as de}from"./chunks/fetch-graphql.js";import{h as R}from"./chunks/network-error.js";import{events as d}from"@dropins/tools/event-bus.js";import{ADDRESS_FRAGMENT as G,BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT as C,GIFT_CARD_DETAILS_FRAGMENT as N,ORDER_ITEM_DETAILS_FRAGMENT as x,ORDER_SUMMARY_FRAGMENT as y,PRICE_DETAILS_FRAGMENT as F,PRODUCT_DETAILS_FRAGMENT as I,ORDER_ITEM_FRAGMENT as P,GIFT_WRAPPING_FRAGMENT as b,GIFT_MESSAGE_FRAGMENT as S,APPLIED_GIFT_CARDS_FRAGMENT as v}from"./fragments.js";import{c as pe,r as Ee}from"./chunks/requestGuestOrderCancel.js";import{g as me}from"./chunks/getAttributesForm.js";import{g as Re,a as Ae,r as ge}from"./chunks/requestGuestReturn.js";import{g as he,a as De}from"./chunks/getGuestOrder.js";import{g as fe}from"./chunks/getCustomerOrdersReturn.js";import{g as Ce}from"./chunks/getStoreConfig.js";import{c as xe,a as ye,r as Fe}from"./chunks/confirmCancelOrder.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/transform-attributes-form.js";const A=(r,t)=>r+t.amount.value,L=(r,t)=>({id:r,totalQuantity:t.totalQuantity,possibleOnepageCheckout:!0,items:t.items.map(e=>{var a,o,n,s,c,i,u,l;return{canApplyMsrp:!0,formattedPrice:"",id:e.id,quantity:e.totalQuantity,product:{canonicalUrl:(a=e.product)==null?void 0:a.canonicalUrl,mainImageUrl:((o=e.product)==null?void 0:o.image)??"",name:((n=e.product)==null?void 0:n.name)??"",productId:0,productType:(s=e.product)==null?void 0:s.productType,sku:((c=e.product)==null?void 0:c.sku)??"",topLevelSku:(i=e.product)==null?void 0:i.sku},prices:{price:{value:e.price.value,currency:e.price.currency,regularPrice:((u=e.regularPrice)==null?void 0:u.value)??e.price.value}},configurableOptions:((l=e.selectedOptions)==null?void 0:l.map(p=>({optionLabel:p.label,valueLabel:p.value})))||[]}}),prices:{subtotalExcludingTax:{value:t.subtotalExclTax.value,currency:t.subtotalExclTax.currency},subtotalIncludingTax:{value:t.subtotalInclTax.value,currency:t.subtotalInclTax.currency}},discountAmount:t.discounts.reduce(A,0)}),$=r=>{var a,o,n;const t=r.coupons[0],e=(a=r.payments)==null?void 0:a[0];return{appliedCouponCode:(t==null?void 0:t.code)??"",email:r.email,grandTotal:r.grandTotal.value,orderId:r.number,orderType:"checkout",otherTax:0,salesTax:r.totalTax.value,shipping:{shippingMethod:((o=r.shipping)==null?void 0:o.code)??"",shippingAmount:((n=r.shipping)==null?void 0:n.amount)??0},subtotalExcludingTax:r.subtotalExclTax.value,subtotalIncludingTax:r.subtotalInclTax.value,payments:e?[{paymentMethodCode:(e==null?void 0:e.code)||"",paymentMethodName:(e==null?void 0:e.name)||"",total:r.grandTotal.value,orderId:r.number}]:[],discountAmount:r.discounts.reduce(A,0),taxAmount:r.totalTax.value}},g=r=>{var e,a;const t=(a=(e=r==null?void 0:r.data)==null?void 0:e.placeOrder)==null?void 0:a.orderV2;return t?f(t):null},E={SHOPPING_CART_CONTEXT:"shoppingCartContext",ORDER_CONTEXT:"orderContext"},w={PLACE_ORDER:"place-order"};function O(){return window.adobeDataLayer=window.adobeDataLayer||[],window.adobeDataLayer}function _(r,t){const e=O();e.push({[r]:null}),e.push({[r]:t})}function k(r){O().push(e=>{const a=e.getState?e.getState():{};e.push({event:r,eventInfo:{...a}})})}function h(r,t){const e=$(t),a=L(r,t);_(E.ORDER_CONTEXT,{...e}),_(E.SHOPPING_CART_CONTEXT,{...a}),k(w.PLACE_ORDER)}class U extends Error{constructor(t){super(t),this.name="PlaceOrderError"}}const D=r=>{const t=r.map(e=>e.message).join(" ");throw new U(t)},M=`
+  fragment PLACE_ORDER_FRAGMENT on CustomerOrder {
+    printed_card_included
+    gift_receipt_included
+    gift_wrapping {
+      ...GIFT_WRAPPING_FRAGMENT
+    }
+    gift_message {
+      ...GIFT_MESSAGE_FRAGMENT
+    }
+    applied_gift_cards {
+      ...APPLIED_GIFT_CARDS_FRAGMENT
+    }
+    email
+    available_actions
+    status
+    number
+    token
+    id
+    order_date
+    carrier
+    shipping_method
+    is_virtual
+    applied_coupons {
+      code
+    }
+    shipments {
+      id
+      number
+      tracking {
+        title
+        number
+        carrier
+      }
+      comments {
+        message
+        timestamp
+      }
+      items {
+        id
+        product_sku
+        product_name
+        order_item {
+          ...ORDER_ITEM_DETAILS_FRAGMENT
+          ... on GiftCardOrderItem {
+            ...GIFT_CARD_DETAILS_FRAGMENT
+            product {
+              ...PRODUCT_DETAILS_FRAGMENT
+            }
+          }
+        }
+      }
+    }
+    payment_methods {
+      name
+      type
+    }
+    shipping_address {
+      ...ADDRESS_FRAGMENT
+    }
+    billing_address {
+      ...ADDRESS_FRAGMENT
+    }
+    items {
+      ...ORDER_ITEM_FRAGMENT
+    }
+    total {
+      ...ORDER_SUMMARY_FRAGMENT
     }
   }
-  ${g}
-  ${R}
-  ${A}
-  ${f}
-  ${x}
-  ${D}
-  ${y}
+
+  ${G}
   ${C}
-  ${M}
-  ${$}
+  ${N}
+  ${x}
+  ${y}
+  ${F}
+  ${I}
+  ${P}
   ${b}
-`,J=async e=>{if(!e)throw new Error("No cart ID found");return m(Q,{variables:{cartId:e}}).then(r=>{var a,o,n,c,s;(a=r.errors)!=null&&a.length&&h(r.errors),(c=(n=(o=r.data)==null?void 0:o.placeOrder)==null?void 0:n.errors)!=null&&c.length&&I((s=r.data.placeOrder)==null?void 0:s.errors);const t=v(r);return t&&(l.emit("order/placed",t),l.emit("cart/reset",void 0),P(e,t)),t}).catch(O)},H=`
+  ${S}
+  ${v}
+`,Q=`
+  mutation PLACE_ORDER_MUTATION($cartId: String!) {
+    placeOrder(input: { cart_id: $cartId }) {
+      errors {
+        code
+        message
+      }
+      orderV2 {
+        ...PLACE_ORDER_FRAGMENT
+      }
+    }
+  }
+
+  ${M}
+`,J=async r=>{if(!r)throw new Error("No cart ID found");return m(Q,{variables:{cartId:r}}).then(t=>{var a,o,n,s,c;(a=t.errors)!=null&&a.length&&T(t.errors),(s=(n=(o=t.data)==null?void 0:o.placeOrder)==null?void 0:n.errors)!=null&&s.length&&D((c=t.data.placeOrder)==null?void 0:c.errors);const e=g(t);return e&&(d.emit("order/placed",e),d.emit("cart/reset",void 0),h(r,e)),e}).catch(R)},H=`
   mutation setPaymentMethodAndPlaceOrder($cartId: String!, $paymentMethod: PaymentMethodInput!) {
     setPaymentMethodOnCart(
       input: {
@@ -33,18 +112,15 @@ import{a as L}from"./chunks/initialize.js";import{c as et,g as rt,d as at,i as o
       }
     }
     placeOrder(input: { cart_id: $cartId }) {
-      ${_}
+      errors {
+        code
+        message
+      }
+      orderV2 {
+        ...PLACE_ORDER_FRAGMENT
+      }
     }
   }
-  ${g}
-  ${R}
-  ${A}
-  ${f}
-  ${x}
-  ${D}
-  ${y}
-  ${C}
+
   ${M}
-  ${$}
-  ${b}
-`,K=async(e,r)=>{if(!e)throw new Error("No cart ID found");if(!r)throw new Error("No payment method found");return m(H,{variables:{cartId:e,paymentMethod:r}}).then(t=>{var o,n,c,s,u,i;(o=t.errors)!=null&&o.length&&h(t.errors),(s=(c=(n=t.data)==null?void 0:n.placeOrder)==null?void 0:c.errors)!=null&&s.length&&I((u=t.data.placeOrder)==null?void 0:u.errors);const a=v({data:{placeOrder:(i=t.data)==null?void 0:i.placeOrder}});return a&&(l.emit("order/placed",a),l.emit("cart/reset",void 0),P(e,a)),a}).catch(O)};export{dt as cancelOrder,et as config,$t as confirmCancelOrder,bt as confirmGuestReturn,m as fetchGraphQl,mt as getAttributesForm,Ot as getAttributesList,ct as getConfig,At as getCustomer,Dt as getCustomerOrdersReturn,ft as getGuestOrder,rt as getOrderDetailsById,Ct as getStoreConfig,at as guestOrderByToken,ot as initialize,J as placeOrder,st as removeFetchGraphQlHeader,Nt as reorderItems,Et as requestGuestOrderCancel,_t as requestGuestReturn,gt as requestReturn,ut as setEndpoint,it as setFetchGraphQlHeader,lt as setFetchGraphQlHeaders,K as setPaymentMethodAndPlaceOrder};
+`,K=async(r,t)=>{if(!r)throw new Error("No cart ID found");if(!t)throw new Error("No payment method found");return m(H,{variables:{cartId:r,paymentMethod:t}}).then(e=>{var o,n,s,c,i,u;(o=e.errors)!=null&&o.length&&T(e.errors),(c=(s=(n=e.data)==null?void 0:n.placeOrder)==null?void 0:s.errors)!=null&&c.length&&D((i=e.data.placeOrder)==null?void 0:i.errors);const a=g({data:{placeOrder:(u=e.data)==null?void 0:u.placeOrder}});return a&&(d.emit("order/placed",a),d.emit("cart/reset",void 0),h(r,a)),a}).catch(R)};export{pe as cancelOrder,re as config,xe as confirmCancelOrder,ye as confirmGuestReturn,m as fetchGraphQl,me as getAttributesForm,Re as getAttributesList,se as getConfig,he as getCustomer,fe as getCustomerOrdersReturn,De as getGuestOrder,te as getOrderDetailsById,Ce as getStoreConfig,ae as guestOrderByToken,oe as initialize,J as placeOrder,ce as removeFetchGraphQlHeader,Fe as reorderItems,Ee as requestGuestOrderCancel,Ae as requestGuestReturn,ge as requestReturn,ie as setEndpoint,ue as setFetchGraphQlHeader,de as setFetchGraphQlHeaders,K as setPaymentMethodAndPlaceOrder};

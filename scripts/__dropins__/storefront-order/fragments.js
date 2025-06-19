@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-const d=`
+const o=`
   fragment REQUEST_RETURN_ORDER_FRAGMENT on Return {
     __typename
     uid
@@ -134,7 +134,7 @@ const d=`
       }
     }
   }
-`,i=`
+`,E=`
   fragment DOWNLOADABLE_ORDER_ITEMS_FRAGMENT on DownloadableOrderItem {
     product_name
     downloadable_links {
@@ -142,7 +142,7 @@ const d=`
       title
     }
   }
-`,E=`
+`,i=`
   fragment ORDER_ITEM_FRAGMENT on OrderItemInterface {
     ...ORDER_ITEM_DETAILS_FRAGMENT
     ... on BundleOrderItem {
@@ -157,7 +157,7 @@ const d=`
     ...DOWNLOADABLE_ORDER_ITEMS_FRAGMENT
   }
 
-  ${i}
+  ${E}
 `,R=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     gift_options {
@@ -276,14 +276,14 @@ const d=`
       currency
     }
   }
-`,A=`
+`,u=`
   fragment GIFT_MESSAGE_FRAGMENT on GiftMessage {
     __typename
     from
     to
     message
   }
-`,u=`
+`,A=`
   fragment GIFT_WRAPPING_FRAGMENT on GiftWrapping {
     __typename
     uid
@@ -296,7 +296,7 @@ const d=`
       currency
     }
   }
-`,o=`
+`,d=`
   fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {
    __typename
    uid
@@ -399,82 +399,8 @@ const d=`
   ${R}
   ${e}
   ${c}
-  ${E}
-  ${u}
+  ${i}
   ${A}
+  ${u}
   ${T}
-`,G=`
-  errors {
-    code
-    message
-  }
-  orderV2 {
-    printed_card_included
-    gift_receipt_included
-    gift_wrapping {
-      ...GIFT_WRAPPING_FRAGMENT
-    }
-    gift_message {
-      ...GIFT_MESSAGE_FRAGMENT
-    }
-    applied_gift_cards {
-      ...APPLIED_GIFT_CARDS_FRAGMENT
-    }
-    email
-    available_actions
-    status
-    number
-    token
-    id
-    order_date
-    carrier
-    shipping_method
-    is_virtual
-    applied_coupons {
-      code
-    }
-    shipments {
-      id
-      number
-      tracking {
-        title
-        number
-        carrier
-      }
-      comments {
-        message
-        timestamp
-      }
-      items {
-        id
-        product_sku
-        product_name
-        order_item {
-          ...ORDER_ITEM_DETAILS_FRAGMENT
-          ... on GiftCardOrderItem {
-            ...GIFT_CARD_DETAILS_FRAGMENT
-            product {
-              ...PRODUCT_DETAILS_FRAGMENT
-            }
-          }
-        }
-      }
-    }
-    payment_methods {
-      name
-      type
-    }
-    shipping_address {
-      ...ADDRESS_FRAGMENT
-    }
-    billing_address {
-      ...ADDRESS_FRAGMENT
-    }
-    items {
-      ...ORDER_ITEM_FRAGMENT
-    }
-    total {
-      ...ORDER_SUMMARY_FRAGMENT
-    }
-  }
-`;export{e as ADDRESS_FRAGMENT,T as APPLIED_GIFT_CARDS_FRAGMENT,o as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,i as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,A as GIFT_MESSAGE_FRAGMENT,u as GIFT_WRAPPING_FRAGMENT,s as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,E as ORDER_ITEM_FRAGMENT,R as ORDER_SUMMARY_FRAGMENT,G as PLACE_ORDER_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,d as REQUEST_RETURN_ORDER_FRAGMENT,c as RETURNS_FRAGMENT};
+`;export{e as ADDRESS_FRAGMENT,T as APPLIED_GIFT_CARDS_FRAGMENT,d as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,E as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,u as GIFT_MESSAGE_FRAGMENT,A as GIFT_WRAPPING_FRAGMENT,s as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,i as ORDER_ITEM_FRAGMENT,R as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,o as REQUEST_RETURN_ORDER_FRAGMENT,c as RETURNS_FRAGMENT};
