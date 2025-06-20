@@ -331,12 +331,8 @@ export default async function decorate(block) {
               // Append the container to the slot
               ctx.appendChild($adyenCardContainer);
               
-              // Use onRender to wait for DOM to be ready before mounting Adyen
-              // This ensures the container is properly attached to the DOM
+              // Initialize Adyen each time the slot renders
               ctx.onRender(async () => {
-                // Only initialize once
-                if (adyenCard) return;
-                
                 try {
                   // Dynamically import Adyen Web v6.x as an ES module
                   await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});
