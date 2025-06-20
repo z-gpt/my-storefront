@@ -25,7 +25,7 @@ import {
 } from "../../fixtures/index";
 import * as fields from "../../fields";
 
-describe("Verify guest user can place order", () => {
+describe("Verify guest user can place order testing", () => {
   it("Verify guest user can place order", () => {
     cy.visit("");
     cy.get(".nav-drop").first().trigger("mouseenter");
