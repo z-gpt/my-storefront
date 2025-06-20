@@ -4,20 +4,12 @@ import { events } from '@dropins/tools/event-bus.js';
 // Cart dropin
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 
-import { render as provider } from '@dropins/storefront-product-discovery/render.js';
-import { SearchBarInput } from '@dropins/storefront-product-discovery/containers/SearchBarInput.js';
-import { SearchBarResults } from '@dropins/storefront-product-discovery/containers/SearchBarResults.js';
-
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
 import { rootLink } from '../../scripts/scripts.js';
-
-// Required on all pages to track state updates that may affect personalization
-import '../../scripts/initializers/personalization.js';
-import '../../scripts/initializers/search.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -307,47 +299,52 @@ export default async function decorate(block) {
   const searchInput = searchPanel.querySelector('#search-bar-input');
   const searchResult = searchPanel.querySelector('.search-bar-result');
 
-  // Render the SearchBarInput component
-  provider.render(SearchBarInput, {
-    routeSearch: (searchQuery) => {
-      const url = `${rootLink('/search')}?q=${encodeURIComponent(
-        searchQuery,
-      )}`;
-      window.location.href = url;
-    },
-    slots: {
-      SearchIcon: (ctx) => {
-        // replace the search icon in the dropin input since theres already one in the header
-        const searchIcon = document.createElement('span');
-        searchIcon.className = 'search-icon';
-        searchIcon.innerHTML = '';
-        ctx.replaceWith(searchIcon);
-      },
-    },
-  })(searchInput);
-
-  // Render the SearchBarResult component
-  provider.render(SearchBarResults, {
-    productRouteSearch: ({ urlKey, sku }) => rootLink(`products/${urlKey}/${sku}`),
-    routeSearch: (searchQuery) => {
-      const url = `${rootLink('/search')}?q=${encodeURIComponent(
-        searchQuery,
-      )}`;
-      window.location.href = url;
-    },
-  })(searchResult);
-
   async function toggleSearch(state) {
     const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
 
     searchPanel.classList.toggle('nav-tools-panel--show', show);
 
     if (show) {
+      // Load search initializer
+      await import('../../scripts/initializers/search.js');
+
+      // Load search components
+      const { render: searchProvider } = await import('@dropins/storefront-product-discovery/render.js');
+      const { SearchBarInput } = await import('@dropins/storefront-product-discovery/containers/SearchBarInput.js');
+      const { SearchBarResults } = await import('@dropins/storefront-product-discovery/containers/SearchBarResults.js');
+
+      // Render the SearchBarInput component
+      searchProvider.render(SearchBarInput, {
+        routeSearch: (searchQuery) => {
+          const url = `${rootLink('/search')}?q=${encodeURIComponent(
+            searchQuery,
+          )}`;
+          window.location.href = url;
+        },
+        slots: {
+          SearchIcon: (ctx) => {
+            // replace the search icon in the dropin input since theres already one in the header
+            const searchIcon = document.createElement('span');
+            searchIcon.className = 'search-icon';
+            searchIcon.innerHTML = '';
+            ctx.replaceWith(searchIcon);
+          },
+        },
+      })(searchInput);
+
+      // Render the SearchBarResult component
+      searchProvider.render(SearchBarResults, {
+        productRouteSearch: ({ urlKey, sku }) => rootLink(`products/${urlKey}/${sku}`),
+        routeSearch: (searchQuery) => {
+          const url = `${rootLink('/search')}?q=${encodeURIComponent(
+            searchQuery,
+          )}`;
+          window.location.href = url;
+        },
+      })(searchResult);
+
       // Focus on the SearchBarInput component if it has a focusable element
-      const inputElement = searchInput.querySelector('input');
-      if (inputElement) {
-        inputElement.focus();
-      }
+      searchInput.querySelector('input')?.focus();
     }
   }
 
