@@ -49,10 +49,13 @@ export default async function initializeDropins() {
     setEndpoint(getConfigValue('commerce-core-endpoint'));
 
     // Initialize Global Drop-ins
-    await import('./auth.js');
-    await import('./personalization.js');
+    await Promise.all([
+      import('./auth.js'),
+      import('./personalization.js'),
+    ]);
+    
+    import('./cart.js'),
 
-    import('./cart.js');
 
     events.on('aem/lcp', async () => {
       // Recaptcha
