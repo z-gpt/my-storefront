@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{h as f}from"./network-error.js";import{f as u,h as _}from"./fetch-graphql.js";import{a as O}from"./initialize.js";import{events as a}from"@dropins/tools/event-bus.js";import{REQUEST_RETURN_ORDER_FRAGMENT as I,GUEST_ORDER_FRAGMENT as T}from"../fragments.js";const N=`
+import{h as f}from"./network-error.js";import{f as u,h as _}from"./fetch-graphql.js";import{REQUEST_RETURN_ORDER_FRAGMENT as I,GUEST_ORDER_FRAGMENT as O}from"../fragments.js";import{a}from"./initialize.js";import{events as T}from"@dropins/tools/event-bus.js";const N=`
   mutation REORDER_ITEMS_MUTATION($orderNumber: String!) {
     reorderItems(orderNumber: $orderNumber) {
       cart {
@@ -34,8 +34,8 @@ import{h as f}from"./network-error.js";import{f as u,h as _}from"./fetch-graphql
     }
   }
   ${I}
-  ${T}
-`,G=async(E,t)=>await u(l,{method:"POST",variables:{orderId:E,confirmationKey:t}}).then(e=>{var r,n,o,i,c,m,R;if((r=e.errors)!=null&&r.length)return _(e.errors);if((i=(o=(n=e==null?void 0:e.data)==null?void 0:n.confirmReturn)==null?void 0:o.return)!=null&&i.order){const d=O((R=(m=(c=e==null?void 0:e.data)==null?void 0:c.confirmReturn)==null?void 0:m.return)==null?void 0:R.order);return a.emit("order/data",d),d}return null}).catch(f),h=`
+  ${O}
+`,G=async(E,t)=>await u(l,{method:"POST",variables:{orderId:E,confirmationKey:t}}).then(e=>{var r,n,o,i,c,m,R;if((r=e.errors)!=null&&r.length)return _(e.errors);if((i=(o=(n=e==null?void 0:e.data)==null?void 0:n.confirmReturn)==null?void 0:o.return)!=null&&i.order){const d=a((R=(m=(c=e==null?void 0:e.data)==null?void 0:c.confirmReturn)==null?void 0:m.return)==null?void 0:R.order);return T.emit("order/data",d),d}return null}).catch(f),h=`
   mutation CONFIRM_CANCEL_ORDER_MUTATION(
     $orderId: ID!
     $confirmationKey: String!
@@ -52,5 +52,5 @@ import{h as f}from"./network-error.js";import{f as u,h as _}from"./fetch-graphql
       }
     }
   }
-  ${T}
-`,y=async(E,t)=>u(h,{variables:{orderId:E,confirmationKey:t}}).then(async({errors:e,data:r})=>{var i,c,m,R;const n=[...(i=r==null?void 0:r.confirmCancelOrder)!=null&&i.errorV2?[(c=r==null?void 0:r.confirmCancelOrder)==null?void 0:c.errorV2]:[],...e??[]];let o=null;return(m=r==null?void 0:r.confirmCancelOrder)!=null&&m.order&&(o=O((R=r==null?void 0:r.confirmCancelOrder)==null?void 0:R.order),a.emit("order/data",o)),n.length>0?_(n):o});export{G as a,y as c,$ as r};
+  ${O}
+`,y=async(E,t)=>u(h,{variables:{orderId:E,confirmationKey:t}}).then(async({errors:e,data:r})=>{var i,c,m,R;const n=[...(i=r==null?void 0:r.confirmCancelOrder)!=null&&i.errorV2?[(c=r==null?void 0:r.confirmCancelOrder)==null?void 0:c.errorV2]:[],...e??[]];let o=null;return(m=r==null?void 0:r.confirmCancelOrder)!=null&&m.order&&(o=a((R=r==null?void 0:r.confirmCancelOrder)==null?void 0:R.order),T.emit("order/data",o)),n.length>0?_(n):o});export{G as a,y as c,$ as r};

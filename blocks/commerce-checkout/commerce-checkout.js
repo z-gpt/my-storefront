@@ -221,6 +221,8 @@ export default async function decorate(block) {
   // Adobe Commerce GraphQL endpoint
   const commerceCoreEndpoint = await getConfigValue('commerce-core-endpoint');
 
+
+
   // Render the initial containers
   const [
     _mergedCartBanner,
@@ -322,80 +324,87 @@ export default async function decorate(block) {
           adyen_cc: {
             autoSync: false,
             render: async (ctx) => {
+              // Create container in the slot render
               const $adyenCardContainer = document.createElement('div');
               $adyenCardContainer.className = 'adyen-card-container';
-
-              // Add the container to the slot
+              
+              // Append the container to the slot
               ctx.appendChild($adyenCardContainer);
-
-              // Use onRender to wait for the DOM to be updated before mounting Adyen
+              
+              // Use onRender to wait for DOM to be ready before mounting Adyen
+              // This ensures the container is properly attached to the DOM
               ctx.onRender(async () => {
-                // Dynamically import Adyen Web v6.x as an ES module
-                await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});
-                // Load Adyen CSS from CDN if not already loaded
-                await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
+                // Only initialize once
+                if (adyenCard) return;
+                
+                try {
+                  // Dynamically import Adyen Web v6.x as an ES module
+                  await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});
+                  // Load Adyen CSS from CDN if not already loaded
+                  await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
 
-                // Access AdyenWeb safely without optional-chaining to satisfy ESLint
-                const { AdyenCheckout, Card } = (window.AdyenWeb) || {};
+                  // Access AdyenWeb safely without optional-chaining to satisfy ESLint
+                  const { AdyenCheckout, Card } = (window.AdyenWeb) || {};
 
-                if (!AdyenCheckout) {
-                  console.error('AdyenCheckout not available after import.');
-                  return;
-                }
+                  if (!AdyenCheckout) {
+                    console.error('AdyenCheckout not available after import.');
+                    return;
+                  }
 
-                const checkout = await AdyenCheckout({
-                  clientKey: 'test_UJLHEXDC5JDOZBLAHE7EB4XCAEANSI6H',
-                  locale: 'en_US',
-                  environment: 'test',
-                  countryCode: 'US',
-                  paymentMethodsResponse: {
-                    paymentMethods: [
-                      {
-                        name: 'Cards',
-                        type: 'scheme',
-                        brand: null,
-                        brands: [
-                          'visa',
-                          'mc',
-                          'amex',
-                          'discover',
-                          'cup',
-                          'diners',
-                        ],
-                        configuration: null,
-                      },
-                    ],
-                  },
-                  onSubmit: async (state, component) => {
-                    const additionalData = {
-                      stateData: JSON.stringify(state.data),
-                    };
-                    try {
-                      const paymentMethod = {
-                        code: 'adyen_cc',
-                        adyen_additional_data_cc: additionalData,
+                  const checkout = await AdyenCheckout({
+                    clientKey: 'test_UJLHEXDC5JDOZBLAHE7EB4XCAEANSI6H',
+                    locale: 'en_US',
+                    environment: 'test',
+                    countryCode: 'US',
+                    paymentMethodsResponse: {
+                      paymentMethods: [
+                        {
+                          name: 'Cards',
+                          type: 'scheme',
+                          brand: null,
+                          brands: [
+                            'visa',
+                            'mc',
+                            'amex',
+                            'discover',
+                            'cup',
+                            'diners',
+                          ],
+                          configuration: null,
+                        },
+                      ],
+                    },
+                    onSubmit: async (state, component) => {
+                      const additionalData = {
+                        stateData: JSON.stringify(state.data),
                       };
+                      try {
+                        const paymentMethod = {
+                          code: 'adyen_cc',
+                          adyen_additional_data_cc: additionalData,
+                        };
 
-                      await orderApi.setPaymentMethodAndPlaceOrder(ctx.cartId, paymentMethod);
+                        const currentCartId = checkoutApi.getCartIdFromCache();
+                        await orderApi.setPaymentMethodAndPlaceOrder(currentCartId, paymentMethod);
 
-                      // Resolve the promise in handlePlaceOrder
-                      adyenCard._orderPromise.resolve();
-                    } catch (error) {
-                      // Reject the promise in handlePlaceOrder
-                      component.setStatus('ready');
-                      adyenCard._orderPromise.reject(error);
-                    }
-                  },
-                });
+                        // Resolve the promise in handlePlaceOrder
+                        adyenCard._orderPromise.resolve();
+                      } catch (error) {
+                        // Reject the promise in handlePlaceOrder
+                        component.setStatus('ready');
+                        adyenCard._orderPromise.reject(error);
+                      }
+                    },
+                  });
 
-                // Now the container should be in the DOM, create and mount Adyen card
-                adyenCard = new Card(
-                  checkout,
-                  {
+                  // Create and mount Adyen card
+                  adyenCard = new Card(checkout, {
                     showPayButton: false,
-                  },
-                );
-                adyenCard.mount($adyenCardContainer);
+                  });
+                  adyenCard.mount($adyenCardContainer);
+                } catch (error) {
+                  console.error('Failed to initialize Adyen:', error);
+                }
               });
             },
           },
