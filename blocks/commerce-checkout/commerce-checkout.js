@@ -333,6 +333,14 @@ export default async function decorate(block) {
               
               // Initialize Adyen each time the slot renders
               ctx.onRender(async () => {
+                // Check if Adyen is already mounted to this specific container
+                if ($adyenCardContainer.hasChildNodes()) {
+                  return;
+                }
+                
+                // Clear any previous adyenCard reference since we're mounting to a new container
+                adyenCard = null;
+
                 try {
                   // Dynamically import Adyen Web v6.x as an ES module
                   await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});

@@ -102,6 +102,14 @@ adyen_cc: {
     
     // 3. Use onRender to wait for DOM update before mounting 3rd party component
     ctx.onRender(async () => {
+      // Check if component is already mounted to prevent duplicates
+      if ($container.hasChildNodes()) {
+        return;
+      }
+      
+      // Clear any previous reference when mounting to a new container
+      adyenCard = null;
+      
       // 4. Now mount the 3rd party component to the DOM-connected element
       const checkout = await AdyenCheckout(config);
       adyenCard = new Card(checkout, options);
@@ -116,6 +124,7 @@ adyen_cc: {
 - **Slot methods are asynchronous**: `ctx.appendChild()`, `ctx.replaceWith()`, etc. don't immediately update the DOM - they queue changes
 - **3rd party components need DOM-connected elements**: Adyen (and most other components) require mounting to elements that are already in the document
 - **`ctx.onRender()` ensures proper timing**: This callback runs after the slot's DOM has been updated
+- **Duplicate prevention**: The `hasChildNodes()` check prevents remounting the same component multiple times
 - **Framework handles cleanup automatically**: When users switch payment methods, the slot system automatically cleans up and re-renders
 
 #### ❌ Don't Do This (Won't Work)
@@ -130,6 +139,14 @@ new Card(checkout).mount($container); // ← Container not in DOM yet!
 ```javascript
 ctx.appendChild($container);
 ctx.onRender(() => {
+  // Check if already mounted to prevent duplicates
+  if ($container.hasChildNodes()) {
+    return;
+  }
+  
+  // Clear previous reference for new container
+  adyenCard = null;
+  
   adyenCard = new Card(checkout, options);
   adyenCard.mount($container); // ← Container is now in DOM
 });
