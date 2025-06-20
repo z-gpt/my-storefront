@@ -233,6 +233,22 @@ export async function fetchPlaceholders(path) {
   return fetchPromise;
 }
 
+export async function fetchAllPlaceholders() {
+  [
+    'placeholders/account.json',
+    'placeholders/auth.json',
+    'placeholders/cart.json',
+    'placeholders/checkout.json',
+    'placeholders/order.json',
+    'placeholders/pdp.json',
+    'placeholders/recommendations.json',
+    'placeholders/search.json',
+    'placeholders/wishlist.json',
+  ].forEach(async (path) => {
+    await fetchPlaceholders(path);
+  });
+}
+
 /**
  * Fetches config from remote and saves in session, then returns it, otherwise
  * returns if it already exists.

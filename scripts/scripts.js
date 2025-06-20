@@ -15,7 +15,7 @@ import {
   loadSections,
   loadCSS,
 } from './aem.js';
-import { getConfigFromSession, trackHistory } from './commerce.js';
+import { getConfigFromSession, trackHistory, fetchAllPlaceholders } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 
 /**
@@ -184,6 +184,7 @@ async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
 
+  await fetchAllPlaceholders();
   await initializeDropins();
 
   window.adobeDataLayer = window.adobeDataLayer || [];
