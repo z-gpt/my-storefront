@@ -298,6 +298,8 @@ export default async function decorate(block) {
   const searchButton = navTools.querySelector('.nav-search-button');
   const searchInput = searchPanel.querySelector('#search-bar-input');
   const searchResult = searchPanel.querySelector('.search-bar-result');
+  let searchBarInput = null;
+  let searchBarResults = null;
 
   async function toggleSearch(state) {
     const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
@@ -314,7 +316,7 @@ export default async function decorate(block) {
       const { SearchBarResults } = await import('@dropins/storefront-product-discovery/containers/SearchBarResults.js');
 
       // Render the SearchBarInput component
-      searchProvider.render(SearchBarInput, {
+      searchBarInput = await searchProvider.render(SearchBarInput, {
         routeSearch: (searchQuery) => {
           const url = `${rootLink('/search')}?q=${encodeURIComponent(
             searchQuery,
@@ -333,7 +335,7 @@ export default async function decorate(block) {
       })(searchInput);
 
       // Render the SearchBarResult component
-      searchProvider.render(SearchBarResults, {
+      searchBarResults = await searchProvider.render(SearchBarResults, {
         productRouteSearch: ({ urlKey, sku }) => rootLink(`products/${urlKey}/${sku}`),
         routeSearch: (searchQuery) => {
           const url = `${rootLink('/search')}?q=${encodeURIComponent(
@@ -345,6 +347,9 @@ export default async function decorate(block) {
 
       // Focus on the SearchBarInput component if it has a focusable element
       searchInput.querySelector('input')?.focus();
+    } else {
+      searchBarInput?.remove();
+      searchBarResults?.remove();
     }
   }
 
