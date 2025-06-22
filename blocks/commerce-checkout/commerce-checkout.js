@@ -417,6 +417,11 @@ export default async function decorate(block) {
           tryRenderAemAssetsImage(ctx, {
             alias: item.sku,
             imageProps: defaultImageProps,
+
+            params: {
+              width: defaultImageProps.width,
+              height: defaultImageProps.height,
+            },
           });
         },
         Footer: (ctx) => {
@@ -464,24 +469,20 @@ export default async function decorate(block) {
           if (!success) scrollToElement($login);
         }
 
-        const selectedShippingForm = forms[SHIPPING_FORM_NAME];
+        const isFormVisible = (form) => form && form.offsetParent !== null;
 
         if (
           success
-          && shippingFormRef.current
-          && selectedShippingForm
-          && selectedShippingForm.checkVisibility()
+        && shippingFormRef.current
+        && isFormVisible(forms[SHIPPING_FORM_NAME])
         ) {
           success = shippingFormRef.current.handleValidationSubmit(false);
         }
 
-        const selectedBillingForm = forms[BILLING_FORM_NAME];
-
         if (
           success
-          && billingFormRef.current
-          && selectedBillingForm
-          && selectedBillingForm.checkVisibility()
+        && billingFormRef.current
+        && isFormVisible(forms[BILLING_FORM_NAME])
         ) {
           success = billingFormRef.current.handleValidationSubmit(false);
         }
@@ -938,10 +939,14 @@ export default async function decorate(block) {
         },
         CartSummaryItemImage: (ctx) => {
           const { data, defaultImageProps } = ctx;
-
           tryRenderAemAssetsImage(ctx, {
             alias: data.product.sku,
             imageProps: defaultImageProps,
+
+            params: {
+              width: defaultImageProps.width,
+              height: defaultImageProps.height,
+            },
           });
         },
       },
@@ -1037,5 +1042,10 @@ function swatchImageSlot(ctx) {
     alias: imageSwatchContext.label,
     imageProps: defaultImageProps,
     wrapper: document.createElement('span'),
+
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
   });
 }
