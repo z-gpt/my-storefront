@@ -4,15 +4,7 @@
  */
 Cypress.Commands.add('waitForWishlistPageLoaded', () => {
   // Wait for loading to disappear and page to be fully loaded
-  cy.get('body').then($body => {
-    if ($body.text().includes('Loading...')) {
-      cy.log('Still loading after 60s');
-      // Optionally, take a screenshot or dump localStorage/cookies
-      cy.window().then(win => {
-        cy.log('localStorage:', JSON.stringify(win.localStorage));
-      });
-    }
-  });
+  cy.get('body').should('not.contain', 'Loading...');
   
   // Ensure we're on the wishlist page
   cy.url().should('include', '/wishlist');
