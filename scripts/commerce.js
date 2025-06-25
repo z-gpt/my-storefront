@@ -121,7 +121,7 @@ async function handleCommercePageType(pageType) {
     await import('./initializers/pdp.js');
   } else if (pageType === 'Category') {
     if (document.body.querySelector('main .product-list-page')) {
-      preloadFile('/scripts/widgets/search.js', 'script');
+      // Legacy search widget removed
     } else if (document.body.querySelector('main .product-list-page-custom')) {
       // TODO Remove this bracket if not using custom PLP
       const plpBlock = document.body.querySelector('main .product-list-page-custom');
