@@ -23,7 +23,11 @@
         "store-view-id": 1,
         "store-view-name": "default",
         "website-id": 1,
-        "website-name": "Main Website"
+        "website-name": "Main Website",
+        "Magento-Environment-Id": "861iUXRfBWuoGqNcwajH4c",
+        "Magento-Website-Code": "base",
+        "Magento-Store-Code": "main_website_store",
+        "Magento-Store-View-Code": "default"
       }
     }
   }
