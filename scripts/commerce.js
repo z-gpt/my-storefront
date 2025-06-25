@@ -7,7 +7,7 @@ import {
   getListOfRootPaths,
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
-import { getMetadata, readBlockConfig } from './aem.js';
+import { getMetadata } from './aem.js';
 import initializeDropins from './initializers/index.js';
 
 // PATH CONSTANTS
@@ -101,8 +101,6 @@ function detectPageType() {
     return 'Product';
   } if (document.body.querySelector('main .product-list-page')) {
     return 'Category';
-  } if (document.body.querySelector('main .product-list-page-custom')) {
-    return 'Category';
   } if (document.body.querySelector('main .commerce-cart')) {
     return 'Cart';
   } if (document.body.querySelector('main .commerce-checkout')) {
@@ -119,27 +117,6 @@ async function handleCommercePageType(pageType) {
   if (pageType === 'Product') {
     // initialize pdp
     await import('./initializers/pdp.js');
-  } else if (pageType === 'Category') {
-    if (document.body.querySelector('main .product-list-page')) {
-      // Legacy search widget removed
-    } else if (document.body.querySelector('main .product-list-page-custom')) {
-      // TODO Remove this bracket if not using custom PLP
-      const plpBlock = document.body.querySelector('main .product-list-page-custom');
-      const { category, urlpath } = readBlockConfig(plpBlock);
-
-      if (category && urlpath) {
-        try {
-          const module = await import('../blocks/product-list-page-custom/product-list-page-custom.js');
-          if (module.preloadCategory && typeof module.preloadCategory === 'function') {
-            module.preloadCategory({ id: category, urlPath: urlpath });
-          } else {
-            console.warn('preloadCategory function not found in product-list-page-custom module');
-          }
-        } catch (error) {
-          console.error('Failed to import or execute preloadCategory:', error);
-        }
-      }
-    }
   }
 }
 

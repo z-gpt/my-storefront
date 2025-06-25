@@ -16,8 +16,7 @@ export default async function decorate(block) {
     }
 
     if (type === 'category') {
-      const plpBlock = document.querySelector('.block.product-list-page')
-        || document.querySelector('.block.product-list-page-custom');
+      const plpBlock = document.querySelector('.block.product-list-page');
       if (!plpBlock) {
         throw new Error('No product list page block found');
       }
