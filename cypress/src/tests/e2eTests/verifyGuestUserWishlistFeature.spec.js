@@ -14,6 +14,13 @@ import { products } from "../../fixtures";
 import { signUpUser } from "../../actions";
 
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
+  beforeEach(() => {
+    cy.clearLocalStorage();
+    cy.window().then((win) => {
+      win.localStorage.setItem('wishlist', JSON.stringify({ id: "", items: [] }));
+    });
+  });
+
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
     cy.visit("");
     cy.get(".wishlist-wrapper").should('be.visible').click();
