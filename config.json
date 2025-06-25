@@ -9,7 +9,7 @@
           "Magento-Website-Code": "base",
           "Magento-Store-Code": "main_website_store",
           "Magento-Store-View-Code": "default",
-          "Magento-Customer-Group": "NLI",
+          "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
           "X-Api-Key": "storefront-catalog-apollo",
           "content-type": "application/json"
         }
