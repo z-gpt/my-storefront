@@ -10,5 +10,5 @@ Cypress.Commands.add('waitForWishlistPageLoaded', () => {
   cy.url().should('include', '/wishlist');
   
   // Wait for the main wishlist content area to be present
-  cy.get('.commerce-wishlist-wrapper').should('be.visible');
+  cy.get('.commerce-wishlist-wrapper').should("exist").should('be.visible');
 }); 
