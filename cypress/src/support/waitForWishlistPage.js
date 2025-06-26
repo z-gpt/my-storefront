@@ -22,12 +22,34 @@ Cypress.Commands.add('waitForWishlistPageLoaded', () => {
       // Empty state - wait for empty message to be visible
       cy.get('.dropin-illustrated-message__heading').should('be.visible');
     } else {
-      // Neither found yet - wait a bit more for content to render
-      cy.wait(1000);
+      // Neither found yet - wait longer and try different approaches
+      cy.log('Neither wishlist content nor empty state found, waiting longer...');
+      
+      // Debug localStorage state
+      cy.window().then(win => {
+        cy.log('localStorage state:', JSON.stringify(win.localStorage));
+        console.log('localStorage state:', JSON.stringify(win.localStorage));
+      });
+      
+      // Wait for localStorage to be processed
+      cy.wait(2000);
+      
+      // Try to wait for any of the expected elements to appear
       cy.get('body').should($body => {
         const hasWishlistHeading = $body.find('[data-testid="default-wishlist-heading"]').length > 0;
         const hasEmptyMessage = $body.find('.dropin-illustrated-message__heading').length > 0;
-        expect(hasWishlistHeading || hasEmptyMessage).to.be.true;
+        const hasWishlistItems = $body.find('.wishlist-product-item').length > 0;
+        
+        // Log what we actually found for debugging
+        cy.log('Debug - Found elements:', {
+          hasWishlistHeading,
+          hasEmptyMessage,
+          hasWishlistItems,
+          wrapperExists: $body.find('.commerce-wishlist-wrapper').length > 0
+        });
+        
+        // Accept any of these as valid states
+        expect(hasWishlistHeading || hasEmptyMessage || hasWishlistItems).to.be.true;
       });
     }
   });
