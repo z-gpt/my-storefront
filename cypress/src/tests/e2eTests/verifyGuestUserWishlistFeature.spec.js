@@ -14,15 +14,16 @@ import { products } from "../../fixtures";
 import { signUpUser } from "../../actions";
 
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
-  // beforeEach(() => {
-  //   cy.clearLocalStorage('DROPIN__WISHLIST__WISHLIST__DATA');
-  //   cy.window().then((win) => {
-  //     win.localStorage.setItem('DROPIN__WISHLIST__WISHLIST__DATA', JSON.stringify({ id: "", items: [] }));
-  //   });
-  // });
+  beforeEach(() => {
+    cy.clearLocalStorage('DROPIN__WISHLIST__WISHLIST__DATA');
+    cy.visit("", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem('DROPIN__WISHLIST__WISHLIST__DATA', JSON.stringify({ id: "", items: [] }));
+      }
+    });
+  });
 
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
-    cy.visit("");
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
@@ -124,7 +125,6 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
   });
 
   it("Successfully add configurable product with all required options to wishlist, move it to cart and return this to wishlist", () => {
-    cy.visit("");
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
@@ -299,7 +299,6 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
   });
 
   it("Successfully merge wishlist", () => {
-    cy.visit("");
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
