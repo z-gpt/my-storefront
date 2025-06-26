@@ -268,9 +268,6 @@ export const assertGiftOptionsReadOnlyFormView = () => {
 };
 
 export const assertWishlistEmpty = () => {
-  cy.window().then(win => {
-    cy.log('localStorage before wishlist empty assertion:', JSON.stringify(win.localStorage));
-  });
   cy.get(".dropin-illustrated-message__heading")
     .should("exist")
     .and("contain", "Your wishlist is empty");
