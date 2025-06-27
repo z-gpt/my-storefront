@@ -180,7 +180,7 @@ describe("Verify auth user can place order", () => {
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 2);
     checkTermsAndConditions();
     cy.wait(5000);
-    y.percyTakeSnapshot('Checkout Page', 1280);
+    cy.percyTakeSnapshot('Checkout Page', 1280);
     placeOrder();
     assertOrderConfirmationCommonDetails(
       customerBillingAddress,
