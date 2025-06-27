@@ -32,7 +32,7 @@ Cypress.Commands.add('waitForWishlistPageLoaded', () => {
       });
       
       // Wait for localStorage to be processed
-      cy.wait(2000);
+      cy.wait(5000);
       
       // Now wait for any of the expected elements to appear (with retries)
       cy.get('body').should($body => {
