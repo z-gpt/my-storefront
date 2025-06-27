@@ -34,21 +34,13 @@ Cypress.Commands.add('waitForWishlistPageLoaded', () => {
       // Wait for localStorage to be processed
       cy.wait(2000);
       
-      // Try to wait for any of the expected elements to appear
+      // Now wait for any of the expected elements to appear (with retries)
       cy.get('body').should($body => {
         const hasWishlistHeading = $body.find('[data-testid="default-wishlist-heading"]').length > 0;
         const hasEmptyMessage = $body.find('.dropin-illustrated-message__heading').length > 0;
         const hasWishlistItems = $body.find('.wishlist-product-item').length > 0;
         
-        // Log what we actually found for debugging
-        cy.log('Debug - Found elements:', {
-          hasWishlistHeading,
-          hasEmptyMessage,
-          hasWishlistItems,
-          wrapperExists: $body.find('.commerce-wishlist-wrapper').length > 0
-        });
-        
-        // Accept any of these as valid states
+        // This will retry until one of these conditions is true
         expect(hasWishlistHeading || hasEmptyMessage || hasWishlistItems).to.be.true;
       });
     }
