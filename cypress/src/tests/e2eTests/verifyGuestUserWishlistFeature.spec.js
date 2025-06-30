@@ -16,6 +16,7 @@ import { signUpUser } from "../../actions";
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
   beforeEach(() => {
     cy.visit('/wishlist');
+    cy.wait(4000);
   });
 
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
@@ -46,6 +47,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(4000);
     assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
@@ -65,6 +67,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.contains("Move To Cart").should('be.visible').and('not.be.disabled').click();
 
     // Wait for move operation to complete by checking wishlist becomes empty
+    cy.wait(4000);
     assertWishlistEmptyWithWait();
 
     // Check cart has the item
@@ -100,6 +103,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(4000);
     assertWishlistCountWithWait(1);
 
     assertWishlistItem(
@@ -114,6 +118,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
       .click();
 
     // Wait for move operation to complete by checking wishlist becomes empty
+    cy.wait(4000);
     assertWishlistEmptyWithWait();
   });
 
@@ -142,6 +147,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(4000);
     assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
@@ -163,6 +169,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.contains("Move To Cart").should('be.visible').and('not.be.disabled').click();
 
     // Wait for wishlist page to load and assert empty state
+    cy.wait(4000);
     assertWishlistEmptyWithWait();
 
     // Check cart has the item
@@ -198,6 +205,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(4000);
     assertWishlistCountWithWait(1);
 
     assertWishlistItem(
@@ -212,6 +220,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
       .click();
 
     // Wait for wishlist page to load and assert empty state
+    cy.wait(4000);
     assertWishlistEmptyWithWait();
   });
 
@@ -240,6 +249,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(4000);
     assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
@@ -269,6 +279,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(4000);
     assertWishlistCountWithWait(1);
 
     assertWishlistItem(
@@ -283,6 +294,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
       .click();
 
     // Wait for wishlist page to load and assert empty state
+    cy.wait(4000);
     assertWishlistEmptyWithWait();
   });
 
@@ -314,6 +326,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(4000);
     assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
@@ -341,6 +354,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(4000);
     assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
