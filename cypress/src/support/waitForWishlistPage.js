@@ -3,54 +3,139 @@
  * This command ensures the page is ready before running assertions
  */
 Cypress.Commands.add('waitForWishlistPageLoaded', () => {
+  // Add persistent debugging log that will show in the command log
+  Cypress.log({
+    name: 'waitForWishlistPageLoaded',
+    message: 'Starting wishlist page load wait',
+    consoleProps: () => {
+      return {
+        'Step': 'Starting wishlist page load wait',
+        'URL': window.location?.href || 'unknown'
+      };
+    }
+  });
+
   // Wait for generic loading to disappear
   cy.get('body').should('not.contain', 'Loading...');
+
+  // Debug step 1: Check URL
+  cy.url().then(url => {
+    Cypress.log({
+      name: 'debug',
+      message: `Current URL: ${url}`,
+      consoleProps: () => ({ url })
+    });
+  });
 
   // Ensure we're on the wishlist page
   cy.url().should('include', '/wishlist');
 
-  // Wait for the wishlist wrapper to exist (but don't check visibility since it can have height: 0)
+  // Debug step 2: Check for wishlist wrapper
+  cy.get('body').then($body => {
+    const hasWrapper = $body.find('.commerce-wishlist-wrapper').length > 0;
+    Cypress.log({
+      name: 'debug',
+      message: `Wishlist wrapper exists: ${hasWrapper}`,
+      consoleProps: () => ({ hasWrapper })
+    });
+  });
+
+  // Wait for the wishlist wrapper to exist
   cy.get('.commerce-wishlist-wrapper').should("exist");
 
-  // Add comprehensive debugging when page seems stuck
+  // Debug step 3: Comprehensive state check with error handling
   cy.window().then(win => {
-    // Log localStorage state
-    cy.log('=== DEBUGGING STUCK LOADING ===');
-    cy.log('localStorage keys:', Object.keys(win.localStorage));
-    cy.log('DROPIN__WISHLIST__WISHLIST__DATA:', win.localStorage.getItem('DROPIN__WISHLIST__WISHLIST__DATA'));
+    try {
+      const debugInfo = {
+        localStorage: {
+          keys: Object.keys(win.localStorage || {}),
+          wishlistData: win.localStorage?.getItem('DROPIN__WISHLIST__WISHLIST__DATA') || 'not found'
+        },
+        domElements: {},
+        networkState: 'unknown'
+      };
 
-    // Log any JavaScript errors
-    cy.log('JavaScript errors on page:', win.console?.error?.length || 'none detected');
+      // Check DOM elements
+      const elements = [
+        'loader-wishlist-heading',
+        'wishlist-loader', 
+        'empty-wishlist',
+        'default-wishlist-heading'
+      ];
 
-    // Log DOM state
-    const loaderHeading = win.document.querySelector('[data-testid="loader-wishlist-heading"]');
-    const skeletonLoader = win.document.querySelector('[data-testid="wishlist-loader"]');
-    const emptyWishlist = win.document.querySelector('[data-testid="empty-wishlist"]');
-    const wishlistHeading = win.document.querySelector('[data-testid="default-wishlist-heading"]');
+      elements.forEach(testId => {
+        const element = win.document.querySelector(`[data-testid="${testId}"]`);
+        debugInfo.domElements[testId] = {
+          exists: !!element,
+          visible: element ? element.offsetParent !== null : false,
+          innerHTML: element ? element.innerHTML.substring(0, 100) : null
+        };
+      });
 
-    cy.log('DOM Elements Present:', {
-      loaderHeading: !!loaderHeading,
-      skeletonLoader: !!skeletonLoader,
-      emptyWishlist: !!emptyWishlist,
-      wishlistHeading: !!wishlistHeading
-    });
+      // Check for wishlist items
+      const wishlistItems = win.document.querySelectorAll('.wishlist-product-item');
+      debugInfo.domElements.wishlistItems = {
+        count: wishlistItems.length,
+        visible: Array.from(wishlistItems).filter(item => item.offsetParent !== null).length
+      };
 
-    // Log network requests if available
-    if (win.performance) {
-      const resources = win.performance.getEntriesByType('resource');
-      const pendingResources = resources.filter(r => !r.responseEnd);
-      cy.log('Pending network requests:', pendingResources.length);
+      // Network state
+      if (win.performance) {
+        const resources = win.performance.getEntriesByType('resource');
+        const pendingResources = resources.filter(r => !r.responseEnd);
+        debugInfo.networkState = `${pendingResources.length} pending requests`;
+      }
+
+      Cypress.log({
+        name: 'debug-state',
+        message: 'Wishlist page state analysis',
+        consoleProps: () => debugInfo
+      });
+
+      // Also log to browser console for easier debugging
+      console.log('=== WISHLIST DEBUG STATE ===', debugInfo);
+
+    } catch (error) {
+      Cypress.log({
+        name: 'debug-error',
+        message: `Debug failed: ${error.message}`,
+        consoleProps: () => ({ error: error.toString() })
+      });
     }
   });
 
-  // Wait for actual content to appear (either wishlist items or empty state)
-  // This will use the full 60-second timeout to wait for loading to complete
-  cy.get('body').should($body => {
+  // Take a screenshot for visual debugging
+  cy.screenshot('wishlist-debug-state', { capture: 'viewport' });
+
+  // Take screenshot before final check for debugging
+  cy.screenshot('wishlist-before-final-check', { capture: 'viewport' });
+
+  // Debug step 4: Wait with multiple checks and timeouts
+  cy.get('body', { timeout: 30000 }).should($body => {
     const hasWishlistHeading = $body.find('[data-testid="default-wishlist-heading"]').length > 0;
     const hasEmptyWishlist = $body.find('[data-testid="empty-wishlist"]').length > 0;
     const hasWishlistItems = $body.find('.wishlist-product-item').length > 0;
 
+    // Log current state for debugging
+    Cypress.log({
+      name: 'final-check-attempt',
+      message: `Checking content: heading=${hasWishlistHeading}, empty=${hasEmptyWishlist}, items=${hasWishlistItems}`,
+      consoleProps: () => ({
+        hasWishlistHeading,
+        hasEmptyWishlist,
+        hasWishlistItems,
+        bodyHTML: $body.html().substring(0, 500)
+      })
+    });
+
     // At least one of these should be present when loading is complete
     expect(hasWishlistHeading || hasEmptyWishlist || hasWishlistItems).to.be.true;
+  });
+
+  // Final success log
+  Cypress.log({
+    name: 'waitForWishlistPageLoaded',
+    message: 'Wishlist page loaded successfully',
+    consoleProps: () => ({ status: 'completed' })
   });
 });
