@@ -10,7 +10,7 @@ module.exports = defineConfig({
   ...baseConfig,
   env: {
     ...baseConfig.env,
-    graphqlEndPoint: "https://na1-sandbox.api.commerce.adobe.com/QhUjcEq9dMrdCF7h8a4e5g/graphql",
+    graphqlEndPoint: "https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql",
     giftCardA: "00419VQ5C341",
     productUrlWithOptions:
       "/products/cypress-configurable-product-latest/CYPRESS456?optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz",
